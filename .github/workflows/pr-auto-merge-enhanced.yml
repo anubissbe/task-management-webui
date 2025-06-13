@@ -1,0 +1,291 @@
+name: Enhanced Auto-Merge System
+
+on:
+  pull_request:
+    types: [labeled, unlabeled, synchronize, opened, edited, ready_for_review]
+  pull_request_review:
+    types: [submitted]
+  check_suite:
+    types: [completed]
+  workflow_run:
+    workflows: ["CI/CD Pipeline"]
+    types: [completed]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  auto-merge-on-approval:
+    runs-on: ubuntu-latest
+    if: |
+      (github.event_name == 'pull_request_review' && github.event.review.state == 'approved') ||
+      (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'auto-merge')) ||
+      (github.event_name == 'check_suite' && github.event.check_suite.conclusion == 'success') ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
+    
+    steps:
+    - name: Get PR Details
+      id: pr-details
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const { owner, repo } = context.repo;
+          let pr;
+          
+          if (context.payload.pull_request) {
+            pr = context.payload.pull_request;
+          } else if (context.payload.check_suite) {
+            // Find PRs for this check suite
+            const { data: prs } = await github.rest.pulls.list({
+              owner,
+              repo,
+              head: context.payload.check_suite.head_sha,
+              state: 'open'
+            });
+            if (prs.length > 0) pr = prs[0];
+          } else if (context.payload.workflow_run) {
+            // Find PRs for this workflow run
+            const { data: prs } = await github.rest.pulls.list({
+              owner,
+              repo,
+              head: context.payload.workflow_run.head_sha,
+              state: 'open'
+            });
+            if (prs.length > 0) pr = prs[0];
+          }
+          
+          if (!pr) {
+            console.log('No PR found');
+            return;
+          }
+          
+          core.setOutput('pr_number', pr.number);
+          core.setOutput('pr_state', pr.state);
+          return pr;
+    
+    - name: Check Merge Conditions
+      if: steps.pr-details.outputs.pr_number
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const { owner, repo } = context.repo;
+          const pr_number = ${{ steps.pr-details.outputs.pr_number }};
+          
+          // Get PR details
+          const { data: pr } = await github.rest.pulls.get({
+            owner,
+            repo,
+            pull_number: pr_number
+          });
+          
+          // Check if PR is open
+          if (pr.state !== 'open') {
+            console.log('PR is not open');
+            return;
+          }
+          
+          // Check if PR is mergeable
+          if (pr.mergeable === false) {
+            console.log('PR has conflicts');
+            return;
+          }
+          
+          // Check for auto-merge label or if it's from dependabot
+          const hasAutoMergeLabel = pr.labels.some(label => label.name === 'auto-merge');
+          const isDependabot = pr.user.login === 'dependabot[bot]';
+          const isOwner = pr.user.login === 'anubissbe';
+          
+          if (!hasAutoMergeLabel && !isDependabot && !isOwner) {
+            console.log('PR does not have auto-merge label');
+            return;
+          }
+          
+          // Check reviews
+          const { data: reviews } = await github.rest.pulls.listReviews({
+            owner,
+            repo,
+            pull_number: pr_number
+          });
+          
+          const hasApproval = reviews.some(review => 
+            review.state === 'APPROVED' && 
+            review.user.login !== pr.user.login
+          ) || isDependabot || isOwner;
+          
+          if (!hasApproval) {
+            console.log('PR does not have required approvals');
+            return;
+          }
+          
+          // Check CI status
+          const { data: checkRuns } = await github.rest.checks.listForRef({
+            owner,
+            repo,
+            ref: pr.head.sha
+          });
+          
+          const requiredChecks = [
+            'Test Frontend',
+            'Test Backend',
+            'Docker Build Test',
+            'Security Scan'
+          ];
+          
+          const pendingChecks = checkRuns.check_runs.filter(
+            check => check.status !== 'completed'
+          );
+          
+          if (pendingChecks.length > 0) {
+            console.log('Some checks are still pending');
+            // Set up retry
+            await github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number: pr_number,
+              body: '⏳ Waiting for checks to complete before auto-merge...'
+            });
+            return;
+          }
+          
+          const failedChecks = checkRuns.check_runs.filter(
+            check => check.conclusion !== 'success' && 
+                    check.conclusion !== 'neutral' &&
+                    check.conclusion !== 'skipped'
+          );
+          
+          if (failedChecks.length > 0) {
+            console.log('Some checks failed');
+            await github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number: pr_number,
+              body: `❌ Cannot auto-merge: The following checks failed:\n${failedChecks.map(c => `- ${c.name}`).join('\n')}`
+            });
+            
+            // Remove auto-merge label
+            await github.rest.issues.removeLabel({
+              owner,
+              repo,
+              issue_number: pr_number,
+              name: 'auto-merge'
+            }).catch(() => {});
+            
+            return;
+          }
+          
+          // All conditions met - merge the PR
+          console.log('All conditions met, merging PR');
+          
+          try {
+            // Determine merge method based on PR size
+            let merge_method = 'squash';
+            if (pr.commits > 10 || pr.changed_files > 20) {
+              merge_method = 'merge'; // Preserve history for large PRs
+            }
+            
+            const mergeResult = await github.rest.pulls.merge({
+              owner,
+              repo,
+              pull_number: pr_number,
+              merge_method: merge_method,
+              commit_title: pr.title,
+              commit_message: `${pr.body || ''}\n\nCo-authored-by: ${pr.user.login} <${pr.user.id}+${pr.user.login}@users.noreply.github.com>`
+            });
+            
+            if (mergeResult.data.merged) {
+              console.log(`Successfully merged PR #${pr_number}`);
+              
+              // Post success message
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: pr_number,
+                body: `✅ PR successfully auto-merged!\n\nMerge method: ${merge_method}\nMerged by: Auto-merge bot\nCommit: ${mergeResult.data.sha}`
+              });
+              
+              // Delete branch if it's not from a fork
+              if (pr.head.repo && pr.head.repo.full_name === pr.base.repo.full_name) {
+                try {
+                  await github.rest.git.deleteRef({
+                    owner,
+                    repo,
+                    ref: `heads/${pr.head.ref}`
+                  });
+                  console.log(`Deleted branch ${pr.head.ref}`);
+                } catch (error) {
+                  console.log('Could not delete branch:', error.message);
+                }
+              }
+            }
+          } catch (error) {
+            console.error('Merge failed:', error);
+            
+            await github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number: pr_number,
+              body: `❌ Auto-merge failed: ${error.message}\n\nThis might be due to:\n- Branch protection rules\n- Merge conflicts\n- Required status checks\n\nPlease merge manually or resolve the issue.`
+            });
+            
+            // Remove auto-merge label
+            await github.rest.issues.removeLabel({
+              owner,
+              repo,
+              issue_number: pr_number,
+              name: 'auto-merge'
+            }).catch(() => {});
+          }
+
+  handle-merge-queue:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    
+    steps:
+    - name: Process Merge Queue
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const { owner, repo } = context.repo;
+          
+          // Get all PRs with auto-merge label
+          const { data: issues } = await github.rest.issues.listForRepo({
+            owner,
+            repo,
+            labels: 'auto-merge',
+            state: 'open'
+          });
+          
+          const prs = issues.filter(issue => issue.pull_request);
+          
+          console.log(`Found ${prs.length} PRs in merge queue`);
+          
+          for (const pr of prs) {
+            console.log(`Processing PR #${pr.number}`);
+            
+            // Trigger merge check
+            await github.rest.actions.createWorkflowDispatch({
+              owner,
+              repo,
+              workflow_id: 'pr-auto-merge-enhanced.yml',
+              ref: 'main',
+              inputs: {
+                pr_number: pr.number.toString()
+              }
+            }).catch(() => {
+              // Fallback: add a comment to trigger the workflow
+              github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: pr.number,
+                body: '/merge'
+              });
+            });
+            
+            // Wait between PRs to avoid conflicts
+            await new Promise(resolve => setTimeout(resolve, 5000));
+          }
