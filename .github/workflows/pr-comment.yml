@@ -1,0 +1,66 @@
+name: PR Comment Bot
+
+on:
+  pull_request:
+    types: [opened]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  welcome:
+    runs-on: ubuntu-latest
+    steps:
+    - name: PR Comment
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{secrets.GITHUB_TOKEN}}
+        script: |
+          const pr = context.payload.pull_request;
+          const isFirstPR = pr.author_association === 'FIRST_TIME_CONTRIBUTOR';
+          
+          let comment = `## 👋 Thank you for your contribution!
+          
+          I'll review your pull request as soon as possible. In the meantime, please ensure:
+          
+          ✅ **Code Quality**
+          - [ ] All tests are passing
+          - [ ] Code follows the project style guide
+          - [ ] No ESLint/TypeScript errors
+          
+          ✅ **Documentation**
+          - [ ] Updated relevant documentation
+          - [ ] Added/updated tests if needed
+          - [ ] Updated CHANGELOG.md if applicable
+          
+          ✅ **PR Description**
+          - [ ] Clear description of changes
+          - [ ] Linked related issues
+          - [ ] Screenshots for UI changes
+          
+          🤖 **Automated Checks**
+          The CI pipeline will run automatically to validate your changes.
+          `;
+          
+          if (isFirstPR) {
+            comment = `## 🎉 Welcome to Task Management Web UI!
+            
+          Thank you for your first contribution! We're excited to have you join our community.
+          
+          ${comment}
+          
+          💡 **First Time Contributor Tips**
+          - Check out our [Contributing Guide](https://github.com/anubissbe/task-management-webui/blob/main/CONTRIBUTING.md)
+          - Feel free to ask questions if you need help
+          - Join the discussion in our [GitHub Discussions](https://github.com/anubissbe/task-management-webui/discussions)
+          
+          ☕ If you enjoy contributing to this project, consider [buying me a coffee](https://buymeacoffee.com/anubissbe)!
+          `;
+          }
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: comment
+          });
