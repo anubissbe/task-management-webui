@@ -17,7 +17,7 @@
     "pg": "^8.11.3",
     "dotenv": "^16.3.1",
     "socket.io": "^4.7.2",
-    "zod": "^3.22.4",
+    "zod": "^3.25.64",
     "winston": "^3.11.0"
   },
   "devDependencies": {
