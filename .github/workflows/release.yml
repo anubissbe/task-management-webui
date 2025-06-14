@@ -1,0 +1,85 @@
+name: 🏷️ Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  create-release:
+    name: 🏷️ Create Release
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📦 Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        
+    - name: 📦 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: 🏗️ Build frontend
+      working-directory: ./frontend
+      run: |
+        npm ci
+        npm run build
+        
+    - name: 🏗️ Build backend
+      working-directory: ./backend
+      run: |
+        npm ci
+        npm run build
+        
+    - name: 🐳 Build Docker images
+      run: |
+        docker build -t task-management-frontend:${{ github.ref_name }} ./frontend
+        docker build -t task-management-backend:${{ github.ref_name }} ./backend
+        
+    - name: 📦 Create release archive
+      run: |
+        mkdir -p release
+        cp -r frontend/dist release/frontend-dist
+        cp -r backend/dist release/backend-dist
+        cp docker-compose.yml release/
+        cp README.md release/
+        cp LICENSE release/
+        tar -czf task-management-webui-${{ github.ref_name }}.tar.gz -C release .
+        
+    - name: 📝 Generate changelog
+      id: changelog
+      run: |
+        # Generate changelog from commits since last tag
+        LAST_TAG=$(git describe --tags --abbrev=0 HEAD^)
+        echo "## Changes since $LAST_TAG" > CHANGELOG.md
+        git log --pretty=format:"- %s (%h)" $LAST_TAG..HEAD >> CHANGELOG.md
+        
+    - name: 🏷️ Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        name: Release ${{ github.ref_name }}
+        body_path: CHANGELOG.md
+        files: |
+          task-management-webui-${{ github.ref_name }}.tar.gz
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: 🐳 Push Docker images to registry
+      if: success()
+      run: |
+        echo "🐳 Would push Docker images to registry"
+        # docker push task-management-frontend:${{ github.ref_name }}
+        # docker push task-management-backend:${{ github.ref_name }}
+        
+    - name: 📱 Notify release
+      uses: 8398a7/action-slack@v3
+      if: always()
+      with:
+        status: ${{ job.status }}
+        text: "🎉 New release ${{ github.ref_name }} created for Task Management WebUI!"
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }
