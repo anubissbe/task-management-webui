@@ -59,7 +59,7 @@ const initialFilters = {
 export const useProjectStore = create<ProjectState>()(
   devtools(
     persist(
-      (set, get) => ({
+      (set) => ({
         // Current project
         currentProject: null,
         setCurrentProject: (project) => set({ currentProject: project }),

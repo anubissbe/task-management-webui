@@ -1,6 +1,6 @@
 import React, { useMemo, useRef, useEffect, useState } from 'react';
 import { Task } from '../types';
-import { format, differenceInDays, addDays, startOfDay, endOfDay, isWithinInterval, startOfWeek, endOfWeek } from 'date-fns';
+import { format, differenceInDays, addDays, startOfDay, endOfDay, isWithinInterval } from 'date-fns';
 import clsx from 'clsx';
 
 interface TimelineViewProps {
@@ -10,7 +10,6 @@ interface TimelineViewProps {
 
 export const TimelineView: React.FC<TimelineViewProps> = ({ tasks, onTaskClick }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [viewRange, setViewRange] = useState({ start: 0, end: 30 }); // Days to show
 
   // Calculate date range for all tasks
   const dateRange = useMemo(() => {
@@ -201,7 +200,7 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ tasks, onTaskClick }
 
             {/* Task rows grouped by assignee */}
             <div className="relative">
-              {taskGroups.map(([groupName, groupTasks], groupIndex) => (
+              {taskGroups.map(([groupName, groupTasks]) => (
                 <div key={groupName} className="border-b border-gray-200 dark:border-gray-700">
                   {/* Group header */}
                   <div className="sticky left-0 z-20 bg-gray-50 dark:bg-gray-900 px-4 py-2 border-b border-gray-200 dark:border-gray-700">
