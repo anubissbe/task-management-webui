@@ -7,7 +7,6 @@ import { ProjectList } from './pages/ProjectList';
 import { ProjectDetail } from './pages/ProjectDetail';
 import { Board } from './pages/Board';
 import { BoardSelector } from './pages/BoardSelector';
-import { Analytics } from './pages/Analytics';
 import { EnhancedAnalytics } from './pages/EnhancedAnalytics';
 // import { TestPage } from './TestPage';
 

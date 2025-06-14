@@ -11,7 +11,7 @@ import { CreateTaskModal } from '../components/CreateTaskModal';
 import { EditTaskModal } from '../components/EditTaskModal';
 import { ExportTasks } from '../components/ExportTasks';
 import { DraggableTaskList } from '../components/SimpleDraggableTaskList';
-import { format } from 'date-fns';
+// import { format } from 'date-fns';
 import toast from 'react-hot-toast';
 import clsx from 'clsx';
 import { Task, TaskStatus } from '../types';
@@ -97,22 +97,22 @@ export const ProjectDetail: React.FC = () => {
   };
 
 
-  const getStatusIcon = (status: TaskStatus) => {
-    switch (status) {
-      case 'completed':
-        return '✓';
-      case 'in_progress':
-        return '→';
-      case 'blocked':
-        return '✗';
-      case 'testing':
-        return '🧪';
-      case 'failed':
-        return '!';
-      default:
-        return '○';
-    }
-  };
+  // const getStatusIcon = (status: TaskStatus) => {
+  //   switch (status) {
+  //     case 'completed':
+  //       return '✓';
+  //     case 'in_progress':
+  //       return '→';
+  //     case 'blocked':
+  //       return '✗';
+  //     case 'testing':
+  //       return '🧪';
+  //     case 'failed':
+  //       return '!';
+  //     default:
+  //       return '○';
+  //   }
+  // };
 
   if (projectLoading || tasksLoading) {
     return (
@@ -291,6 +291,10 @@ export const ProjectDetail: React.FC = () => {
             refetchTasks();
             setCreateModalOpen(false);
           }}
+          onTaskCreated={() => {
+            refetchTasks();
+            setCreateModalOpen(false);
+          }}
         />
       )}
 
@@ -298,6 +302,10 @@ export const ProjectDetail: React.FC = () => {
         <EditTaskModal
           task={editingTask}
           onClose={() => {
+            refetchTasks();
+            setEditModalOpen(false);
+          }}
+          onTaskUpdated={() => {
             refetchTasks();
             setEditModalOpen(false);
           }}

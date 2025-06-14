@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Task } from '../types';
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, isSameDay, isSameMonth, addMonths, subMonths } from 'date-fns';
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, isSameDay, addMonths, subMonths } from 'date-fns';
 import clsx from 'clsx';
 
 interface CalendarViewProps {
@@ -151,7 +151,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ tasks, onTaskClick }
                     {format(day, 'd')}
                   </div>
                   <div className="flex-1 space-y-1 overflow-y-auto">
-                    {dayTasks.slice(0, 3).map((task, index) => (
+                    {dayTasks.slice(0, 3).map((task) => (
                       <div
                         key={task.id}
                         onClick={() => onTaskClick(task)}
