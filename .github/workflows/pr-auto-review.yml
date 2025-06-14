@@ -1,0 +1,292 @@
+name: Automated PR Review & Management
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  pull_request_review:
+    types: [submitted]
+  status: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  checks: write
+
+jobs:
+  auto-review:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Auto Review PR
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const pr = context.payload.pull_request;
+          const { owner, repo } = context.repo;
+          
+          // Skip if PR is from repository owner
+          if (pr.user.login === owner) {
+            console.log('Skipping auto-review for repository owner');
+            return;
+          }
+          
+          // Get PR diff stats
+          const { data: prData } = await github.rest.pulls.get({
+            owner,
+            repo,
+            pull_number: pr.number
+          });
+          
+          // Auto-approve conditions
+          let shouldApprove = false;
+          let reviewBody = '## 🤖 Automated Review\n\n';
+          
+          // Check if it's a dependency update
+          if (pr.user.login === 'dependabot[bot]' || pr.user.login.includes('renovate')) {
+            shouldApprove = true;
+            reviewBody += '✅ **Dependency Update**: Automatically approved\n';
+          }
+          
+          // Check if it's a documentation-only change
+          const { data: files } = await github.rest.pulls.listFiles({
+            owner,
+            repo,
+            pull_number: pr.number
+          });
+          
+          const isDocsOnly = files.every(file => 
+            file.filename.endsWith('.md') || 
+            file.filename.includes('docs/') ||
+            file.filename === 'LICENSE'
+          );
+          
+          if (isDocsOnly && files.length < 10) {
+            shouldApprove = true;
+            reviewBody += '✅ **Documentation Update**: Changes look good\n';
+          }
+          
+          // Check for small, safe changes
+          if (prData.additions < 50 && prData.deletions < 50 && prData.changed_files < 5) {
+            const hasOnlyAllowedExtensions = files.every(file => {
+              const ext = file.filename.split('.').pop();
+              return ['md', 'json', 'yml', 'yaml', 'txt', 'gitignore'].includes(ext);
+            });
+            
+            if (hasOnlyAllowedExtensions) {
+              shouldApprove = true;
+              reviewBody += '✅ **Small Safe Change**: Under 50 lines and only configuration files\n';
+            }
+          }
+          
+          // Add PR statistics
+          reviewBody += `\n### 📊 PR Statistics\n`;
+          reviewBody += `- **Files Changed**: ${prData.changed_files}\n`;
+          reviewBody += `- **Lines Added**: ${prData.additions}\n`;
+          reviewBody += `- **Lines Removed**: ${prData.deletions}\n`;
+          reviewBody += `- **Total Changes**: ${prData.additions + prData.deletions}\n`;
+          
+          // Submit review
+          if (shouldApprove) {
+            reviewBody += '\n✅ **Status**: Approved for automatic merge';
+            
+            await github.rest.pulls.createReview({
+              owner,
+              repo,
+              pull_number: pr.number,
+              body: reviewBody,
+              event: 'APPROVE'
+            });
+            
+            // Add auto-merge label
+            await github.rest.issues.addLabels({
+              owner,
+              repo,
+              issue_number: pr.number,
+              labels: ['auto-merge']
+            });
+          } else {
+            reviewBody += '\n⏳ **Status**: Requires manual review\n';
+            reviewBody += '\nThis PR requires manual review because:\n';
+            
+            if (prData.additions + prData.deletions > 100) {
+              reviewBody += '- Large number of changes (>100 lines)\n';
+            }
+            if (prData.changed_files > 10) {
+              reviewBody += '- Many files changed (>10 files)\n';
+            }
+            
+            const hasCodeChanges = files.some(file => {
+              const ext = file.filename.split('.').pop();
+              return ['ts', 'tsx', 'js', 'jsx', 'py', 'go', 'java'].includes(ext);
+            });
+            
+            if (hasCodeChanges) {
+              reviewBody += '- Contains code changes that need review\n';
+            }
+            
+            await github.rest.pulls.createReview({
+              owner,
+              repo,
+              pull_number: pr.number,
+              body: reviewBody,
+              event: 'COMMENT'
+            });
+          }
+
+  auto-merge:
+    runs-on: ubuntu-latest
+    needs: [auto-review]
+    if: contains(github.event.pull_request.labels.*.name, 'auto-merge')
+    
+    steps:
+    - name: Auto Merge PR
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const pr = context.payload.pull_request;
+          const { owner, repo } = context.repo;
+          
+          // Wait for all checks to complete
+          let attempts = 0;
+          while (attempts < 30) { // Wait up to 5 minutes
+            const { data: checkRuns } = await github.rest.checks.listForRef({
+              owner,
+              repo,
+              ref: pr.head.sha
+            });
+            
+            const pendingChecks = checkRuns.check_runs.filter(
+              check => check.status !== 'completed'
+            );
+            
+            if (pendingChecks.length === 0) {
+              // All checks completed
+              const failedChecks = checkRuns.check_runs.filter(
+                check => check.conclusion !== 'success' && check.conclusion !== 'neutral'
+              );
+              
+              if (failedChecks.length === 0) {
+                // All checks passed - merge the PR
+                try {
+                  await github.rest.pulls.merge({
+                    owner,
+                    repo,
+                    pull_number: pr.number,
+                    merge_method: 'squash'
+                  });
+                  
+                  console.log(`Successfully merged PR #${pr.number}`);
+                  
+                  // Delete the branch if it's from a fork
+                  if (pr.head.repo.full_name === `${owner}/${repo}`) {
+                    await github.rest.git.deleteRef({
+                      owner,
+                      repo,
+                      ref: `heads/${pr.head.ref}`
+                    });
+                  }
+                  
+                  return;
+                } catch (error) {
+                  console.error('Failed to merge PR:', error);
+                  
+                  // Comment about merge failure
+                  await github.rest.issues.createComment({
+                    owner,
+                    repo,
+                    issue_number: pr.number,
+                    body: `❌ Auto-merge failed: ${error.message}\n\nPlease merge manually or resolve any conflicts.`
+                  });
+                }
+              } else {
+                // Some checks failed
+                await github.rest.issues.createComment({
+                  owner,
+                  repo,
+                  issue_number: pr.number,
+                  body: '❌ Auto-merge cancelled: Some checks failed. Please fix the issues and push new commits.'
+                });
+                
+                // Remove auto-merge label
+                await github.rest.issues.removeLabel({
+                  owner,
+                  repo,
+                  issue_number: pr.number,
+                  name: 'auto-merge'
+                });
+                
+                return;
+              }
+            }
+            
+            // Wait 10 seconds before checking again
+            await new Promise(resolve => setTimeout(resolve, 10000));
+            attempts++;
+          }
+          
+          // Timeout reached
+          await github.rest.issues.createComment({
+            owner,
+            repo,
+            issue_number: pr.number,
+            body: '⏱️ Auto-merge timeout: Checks are taking too long. Please merge manually once all checks pass.'
+          });
+
+  conflict-detection:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request
+    
+    steps:
+    - name: Check for conflicts
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const pr = context.payload.pull_request;
+          const { owner, repo } = context.repo;
+          
+          // Get PR details
+          const { data: pullRequest } = await github.rest.pulls.get({
+            owner,
+            repo,
+            pull_number: pr.number
+          });
+          
+          if (pullRequest.mergeable === false) {
+            // Has conflicts
+            await github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number: pr.number,
+              body: `⚠️ **Merge Conflicts Detected**\n\nThis PR has conflicts with the base branch. Please resolve them by:\n\n1. Pulling the latest changes from main\n2. Resolving conflicts locally\n3. Pushing the resolved changes\n\n\`\`\`bash\ngit checkout ${pr.head.ref}\ngit pull origin main\n# Resolve conflicts\ngit add .\ngit commit -m "Resolve merge conflicts"\ngit push\n\`\`\``
+            });
+            
+            // Add conflict label
+            await github.rest.issues.addLabels({
+              owner,
+              repo,
+              issue_number: pr.number,
+              labels: ['has-conflicts']
+            });
+          } else if (pullRequest.mergeable === true) {
+            // No conflicts - remove label if exists
+            try {
+              await github.rest.issues.removeLabel({
+                owner,
+                repo,
+                issue_number: pr.number,
+                name: 'has-conflicts'
+              });
+            } catch (error) {
+              // Label might not exist, ignore
+            }
+          }

@@ -1,0 +1,72 @@
+name: Mark stale issues and PRs
+
+on:
+  schedule:
+    - cron: "30 1 * * *"  # Run daily at 1:30 AM UTC
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+
+    steps:
+    - uses: actions/stale@v9
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        
+        # Issue configuration
+        stale-issue-message: |
+          👋 This issue has been automatically marked as stale because it has not had recent activity. 
+          
+          It will be closed in 7 days if no further activity occurs. 
+          
+          If this issue is still relevant, please leave a comment or remove the stale label.
+          
+          Thank you for your contributions! 🙏
+        
+        close-issue-message: |
+          🔒 This issue has been automatically closed due to inactivity. 
+          
+          If you believe this issue is still relevant, please feel free to reopen it or create a new issue.
+          
+          Thank you for your understanding!
+        
+        stale-issue-label: 'stale'
+        days-before-issue-stale: 30
+        days-before-issue-close: 7
+        exempt-issue-labels: 'pinned,security,bug,enhancement'
+        
+        # PR configuration
+        stale-pr-message: |
+          👋 This pull request has been automatically marked as stale because it has not had recent activity.
+          
+          It will be closed in 14 days if no further activity occurs.
+          
+          If you're still working on this, please:
+          - Push new commits
+          - Leave a comment with your status
+          - Remove the stale label
+          
+          Thank you for your contributions! 🙏
+        
+        close-pr-message: |
+          🔒 This pull request has been automatically closed due to inactivity.
+          
+          If you'd like to continue working on this, please:
+          1. Reopen this PR or create a new one
+          2. Rebase your changes on the latest main branch
+          3. Address any review feedback
+          
+          Thank you for your understanding!
+        
+        stale-pr-label: 'stale'
+        days-before-pr-stale: 30
+        days-before-pr-close: 14
+        exempt-pr-labels: 'work-in-progress,ready-for-review'
+        
+        # General configuration
+        operations-per-run: 30
+        remove-stale-when-updated: true
+        debug-only: false
