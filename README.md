@@ -59,11 +59,22 @@
 - Node.js 18+ (for local development)
 - PostgreSQL (handled by Docker)
 
-### Installation
+### Quick Installation (Recommended)
+
+Download and run the latest release:
+```bash
+# Download and extract the latest release
+curl -L https://github.com/anubissbe/task-management-webui/releases/download/v1.0.0/task-management-webui-v1.0.0-full.tar.gz | tar -xz
+
+# Start the application
+docker compose up -d
+```
+
+### Development Installation
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/task-management-webui.git
+git clone https://github.com/anubissbe/task-management-webui.git
 cd task-management-webui
 ```
 
