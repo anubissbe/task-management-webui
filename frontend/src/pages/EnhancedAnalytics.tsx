@@ -9,7 +9,6 @@ import {
   AreaChart, Area, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar
 } from 'recharts';
 import clsx from 'clsx';
-import { Task, Project } from '../types';
 
 export const EnhancedAnalytics: React.FC = () => {
   const [selectedProjectId, setSelectedProjectId] = useState<string>('all');
