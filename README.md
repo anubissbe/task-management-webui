@@ -2,7 +2,7 @@
 
 A modern, full-featured task management application built with React, TypeScript, and Node.js. Features a beautiful UI with multiple views, real-time updates, and comprehensive project tracking capabilities.
 
-![Task Management WebUI](docs/images/projects-page-buttons.png)
+![Task Management WebUI](docs/images/homepage.png)
 
 ## 🌟 Features
 
@@ -72,17 +72,23 @@ npm run dev
 
 ## 📸 Screenshots
 
-### Project Dashboard
-![Project List](docs/images/projects-final.png)
+### Project Dashboard & Tasks
+![Project Tasks](docs/images/project-tasks.png)
 
-### Projects Overview with Actions
-![Projects Page](docs/images/projects-page-buttons.png)
+### Analytics Dashboard
+![Analytics](docs/images/analytics.png)
 
 ### Kanban Board View
-![Kanban Board](docs/images/board-page.png)
+![Kanban Board](docs/images/kanban.png)
 
-### Dark Mode Support
-![Dark Theme](docs/images/dark-theme.png)
+### Board View with Drag & Drop
+![Board View](docs/images/board.png)
+
+### List View
+![List View](docs/images/list.png)
+
+### Calendar View
+![Calendar View](docs/images/calendar.png)
 
 ## 🏗️ Architecture
 

@@ -11,7 +11,7 @@ services:
     environment:
       - NODE_ENV=development
       - PORT=3001
-      - DATABASE_URL=postgresql://mcp_user:mcp_secure_password_2024@192.168.1.25:5432/mcp_learning
+      - DATABASE_URL=postgresql://mcp_user:mcp_secure_password_2024@172.19.0.4:5432/mcp_learning
       - CORS_ORIGIN=http://localhost:5173
     volumes:
       - ./backend:/app
@@ -31,9 +31,8 @@ services:
     ports:
       - "5173:5173"
     environment:
-      - NODE_ENV=development
-      - VITE_API_URL=http://192.168.1.25:3001/api
-      - VITE_WS_URL=http://192.168.1.25:3001
+      - VITE_API_URL=http://localhost:3001/api
+      - VITE_WS_URL=http://localhost:3001
     volumes:
       - ./frontend:/app
       - /app/node_modules
@@ -42,4 +41,5 @@ services:
 
 networks:
   task-management-network:
-    driver: bridge
+    external: true
+    name: project-tasks-webui_task-management-network
