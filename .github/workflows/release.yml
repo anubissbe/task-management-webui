@@ -4,11 +4,20 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g., v1.0.0)'
+        required: true
+        type: string
 
 jobs:
   create-release:
     name: 🏷️ Create Release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
     
     steps:
     - name: 📦 Checkout code
@@ -20,66 +29,170 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '18'
+        cache: 'npm'
+        
+    - name: 🔍 Set version
+      id: version
+      run: |
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          VERSION="${{ github.event.inputs.version }}"
+        else
+          VERSION="${{ github.ref_name }}"
+        fi
+        echo "version=${VERSION}" >> $GITHUB_OUTPUT
+        echo "Version: ${VERSION}"
         
     - name: 🏗️ Build frontend
       working-directory: ./frontend
       run: |
         npm ci
         npm run build
+        npm run typecheck
         
     - name: 🏗️ Build backend
       working-directory: ./backend
       run: |
         npm ci
         npm run build
+        npm run typecheck
         
-    - name: 🐳 Build Docker images
+    - name: 🧪 Run tests
       run: |
-        docker build -t task-management-frontend:${{ github.ref_name }} ./frontend
-        docker build -t task-management-backend:${{ github.ref_name }} ./backend
+        cd frontend && npm test -- --coverage --watchAll=false
+        cd ../backend && npm test
         
-    - name: 📦 Create release archive
+    - name: 🐳 Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      
+    - name: 🐳 Build Docker images
+      uses: docker/build-push-action@v6
+      with:
+        context: ./frontend
+        file: ./frontend/Dockerfile
+        tags: |
+          task-management-frontend:${{ steps.version.outputs.version }}
+          task-management-frontend:latest
+        outputs: type=docker,dest=/tmp/frontend-image.tar
+        
+    - name: 🐳 Build Backend Docker image
+      uses: docker/build-push-action@v6
+      with:
+        context: ./backend
+        file: ./backend/Dockerfile
+        tags: |
+          task-management-backend:${{ steps.version.outputs.version }}
+          task-management-backend:latest
+        outputs: type=docker,dest=/tmp/backend-image.tar
+        
+    - name: 📦 Create release artifacts
       run: |
         mkdir -p release
+        
+        # Copy built assets
         cp -r frontend/dist release/frontend-dist
         cp -r backend/dist release/backend-dist
+        
+        # Copy configuration files
         cp docker-compose.yml release/
+        cp docker-compose.prod.yml release/ 2>/dev/null || echo "No prod compose file"
         cp README.md release/
         cp LICENSE release/
-        tar -czf task-management-webui-${{ github.ref_name }}.tar.gz -C release .
+        cp CHANGELOG.md release/ 2>/dev/null || echo "No changelog file"
         
-    - name: 📝 Generate changelog
-      id: changelog
+        # Copy Docker images
+        cp /tmp/frontend-image.tar release/
+        cp /tmp/backend-image.tar release/
+        
+        # Create archives
+        tar -czf task-management-webui-${{ steps.version.outputs.version }}-full.tar.gz -C release .
+        tar -czf task-management-webui-${{ steps.version.outputs.version }}-dist-only.tar.gz -C release frontend-dist backend-dist docker-compose.yml README.md LICENSE
+        
+    - name: 📝 Generate release notes
+      id: release_notes
       run: |
-        # Generate changelog from commits since last tag
-        LAST_TAG=$(git describe --tags --abbrev=0 HEAD^)
-        echo "## Changes since $LAST_TAG" > CHANGELOG.md
-        git log --pretty=format:"- %s (%h)" $LAST_TAG..HEAD >> CHANGELOG.md
+        VERSION="${{ steps.version.outputs.version }}"
+        
+        # Try to get previous tag
+        PREV_TAG=$(git describe --tags --abbrev=0 HEAD^1 2>/dev/null || echo "")
+        
+        if [ -z "$PREV_TAG" ]; then
+          echo "## 🎉 Initial Release ${VERSION}" > release_notes.md
+          echo "" >> release_notes.md
+          echo "This is the first release of Task Management WebUI!" >> release_notes.md
+          echo "" >> release_notes.md
+          echo "### ✨ Features" >> release_notes.md
+          echo "- Complete task management interface with Kanban board, list, calendar, and timeline views" >> release_notes.md
+          echo "- Real-time updates with WebSocket support" >> release_notes.md
+          echo "- Dark mode support with excellent contrast" >> release_notes.md
+          echo "- Responsive design for desktop and mobile" >> release_notes.md
+          echo "- Advanced filtering and search capabilities" >> release_notes.md
+          echo "- Analytics dashboard with comprehensive insights" >> release_notes.md
+          echo "- Docker containerization for easy deployment" >> release_notes.md
+          echo "- PostgreSQL database integration" >> release_notes.md
+          echo "- RESTful API with comprehensive endpoints" >> release_notes.md
+          echo "- Professional CI/CD pipeline with automated testing" >> release_notes.md
+        else
+          echo "## 🚀 Release ${VERSION}" > release_notes.md
+          echo "" >> release_notes.md
+          echo "### 📋 Changes since ${PREV_TAG}" >> release_notes.md
+          git log --pretty=format:"- %s (%h)" ${PREV_TAG}..HEAD >> release_notes.md
+        fi
+        
+        echo "" >> release_notes.md
+        echo "### 📦 Installation" >> release_notes.md
+        echo "" >> release_notes.md
+        echo "\`\`\`bash" >> release_notes.md
+        echo "# Download and extract" >> release_notes.md
+        echo "curl -L https://github.com/anubissbe/task-management-webui/releases/download/${VERSION}/task-management-webui-${VERSION}-full.tar.gz | tar -xz" >> release_notes.md
+        echo "" >> release_notes.md
+        echo "# Run with Docker" >> release_notes.md
+        echo "docker compose up -d" >> release_notes.md
+        echo "\`\`\`" >> release_notes.md
+        echo "" >> release_notes.md
+        echo "### 🔗 Links" >> release_notes.md
+        echo "- [📖 Documentation](https://github.com/anubissbe/task-management-webui#readme)" >> release_notes.md
+        echo "- [🐛 Report Issues](https://github.com/anubissbe/task-management-webui/issues)" >> release_notes.md
+        echo "- [💡 Feature Requests](https://github.com/anubissbe/task-management-webui/issues/new?template=feature_request.md)" >> release_notes.md
+        echo "- [☕ Support Development](https://www.buymeacoffee.com/anubissbe)" >> release_notes.md
         
     - name: 🏷️ Create GitHub Release
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       with:
-        name: Release ${{ github.ref_name }}
-        body_path: CHANGELOG.md
+        tag_name: ${{ steps.version.outputs.version }}
+        name: "🚀 Task Management WebUI ${{ steps.version.outputs.version }}"
+        body_path: release_notes.md
         files: |
-          task-management-webui-${{ github.ref_name }}.tar.gz
+          task-management-webui-${{ steps.version.outputs.version }}-full.tar.gz
+          task-management-webui-${{ steps.version.outputs.version }}-dist-only.tar.gz
         draft: false
-        prerelease: false
+        prerelease: ${{ contains(steps.version.outputs.version, 'alpha') || contains(steps.version.outputs.version, 'beta') || contains(steps.version.outputs.version, 'rc') }}
+        generate_release_notes: false
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
-    - name: 🐳 Push Docker images to registry
-      if: success()
+    - name: 📊 Update project metrics
       run: |
-        echo "🐳 Would push Docker images to registry"
-        # docker push task-management-frontend:${{ github.ref_name }}
-        # docker push task-management-backend:${{ github.ref_name }}
+        echo "🎯 Release ${{ steps.version.outputs.version }} completed successfully!"
+        echo "📈 Project statistics:"
+        echo "  - Frontend build size: $(du -h release/frontend-dist | cut -f1)"
+        echo "  - Backend build size: $(du -h release/backend-dist | cut -f1)"
+        echo "  - Total package size: $(du -h task-management-webui-${{ steps.version.outputs.version }}-full.tar.gz | cut -f1)"
         
-    - name: 📱 Notify release
-      uses: 8398a7/action-slack@v3
-      if: always()
-      with:
-        status: ${{ job.status }}
-        text: "🎉 New release ${{ github.ref_name }} created for Task Management WebUI!"
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }
+    - name: 🔄 Create next version PR
+      if: github.event_name == 'push'
+      run: |
+        # Extract version number and increment patch
+        VERSION="${{ steps.version.outputs.version }}"
+        CURRENT_VERSION=${VERSION#v}
+        
+        # Simple version increment (major.minor.patch)
+        IFS='.' read -ra VERSION_PARTS <<< "$CURRENT_VERSION"
+        MAJOR=${VERSION_PARTS[0]}
+        MINOR=${VERSION_PARTS[1]}
+        PATCH=${VERSION_PARTS[2]}
+        
+        NEXT_PATCH=$((PATCH + 1))
+        NEXT_VERSION="v${MAJOR}.${MINOR}.${NEXT_PATCH}"
+        
+        echo "📋 Next suggested version: ${NEXT_VERSION}"
+        echo "🔄 Consider creating a PR to update version numbers for the next release"
