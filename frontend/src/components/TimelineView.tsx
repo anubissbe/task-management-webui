@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useEffect, useState } from 'react';
+import React, { useMemo, useRef, useEffect } from 'react';
 import { Task } from '../types';
 import { format, differenceInDays, addDays, startOfDay, endOfDay, isWithinInterval } from 'date-fns';
 import clsx from 'clsx';
