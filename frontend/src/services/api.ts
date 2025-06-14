@@ -11,7 +11,7 @@ const getApiUrl = () => {
   const currentUrl = window.location.href;
   
   // Extract the hostname from the URL
-  const urlMatch = currentUrl.match(/^https?:\/\/([^:\/]+)/);
+  const urlMatch = currentUrl.match(/^https?:\/\/([^:/]+)/);
   const hostname = urlMatch ? urlMatch[1] : 'localhost';
   
   const protocol = window.location.protocol;
