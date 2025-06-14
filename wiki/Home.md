@@ -23,6 +23,7 @@ Task Management WebUI is a modern, enterprise-grade task management application 
 
 ### Development
 - [Development Setup](Development-Setup)
+- [AI Development Tools](AI-Development-Tools)
 - [Architecture Overview](Architecture-Overview)
 - [API Documentation](API-Documentation)
 - [Contributing Guidelines](Contributing-Guidelines)
