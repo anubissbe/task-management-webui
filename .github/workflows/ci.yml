@@ -36,7 +36,7 @@ jobs:
       run: npm test -- --coverage --watchAll=false
       
     - name: 📊 Upload coverage reports
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v5
       with:
         files: ./frontend/coverage/lcov.info
         flags: frontend
@@ -95,7 +95,7 @@ jobs:
         NODE_ENV: test
         
     - name: 📊 Upload coverage reports
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v5
       with:
         files: ./backend/coverage/lcov.info
         flags: backend
@@ -118,7 +118,7 @@ jobs:
       uses: docker/setup-buildx-action@v3
       
     - name: 🏗️ Build frontend image
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       with:
         context: ./frontend
         file: ./frontend/Dockerfile
@@ -128,7 +128,7 @@ jobs:
         cache-to: type=gha,mode=max
         
     - name: 🏗️ Build backend image
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       with:
         context: ./backend
         file: ./backend/Dockerfile
