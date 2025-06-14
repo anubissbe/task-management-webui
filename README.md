@@ -73,16 +73,16 @@ npm run dev
 ## 📸 Screenshots
 
 ### Project Dashboard
-![Project List](docs/images/final-state.png)
+![Project List](docs/images/projects-final.png)
+
+### Projects Overview with Actions
+![Projects Page](docs/images/projects-page-buttons.png)
 
 ### Kanban Board View
 ![Kanban Board](docs/images/board-page.png)
 
 ### Dark Mode Support
 ![Dark Theme](docs/images/dark-theme.png)
-
-### Analytics & Insights
-![UI Screenshot](docs/images/ui-screenshot.png)
 
 ## 🏗️ Architecture
 
