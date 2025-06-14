@@ -17,7 +17,7 @@ const SOCKET_URL = getWsUrl();
 
 class WebSocketService {
   private socket: Socket | null = null;
-  private listeners: Map<string, Set<Function>> = new Map();
+  private listeners: Map<string, Set<(...args: unknown[]) => void>> = new Map();
 
   connect() {
     if (this.socket?.connected) return;
@@ -72,21 +72,21 @@ class WebSocketService {
     }
   }
 
-  on(event: string, callback: Function) {
+  on(event: string, callback: (...args: unknown[]) => void) {
     if (!this.listeners.has(event)) {
       this.listeners.set(event, new Set());
     }
     this.listeners.get(event)!.add(callback);
   }
 
-  off(event: string, callback: Function) {
+  off(event: string, callback: (...args: unknown[]) => void) {
     const callbacks = this.listeners.get(event);
     if (callbacks) {
       callbacks.delete(callback);
     }
   }
 
-  private emit(event: string, data: any) {
+  private emit(event: string, data: unknown) {
     const callbacks = this.listeners.get(event);
     if (callbacks) {
       callbacks.forEach(callback => callback(data));

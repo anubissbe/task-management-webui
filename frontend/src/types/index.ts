@@ -7,7 +7,7 @@ export interface Project {
   name: string;
   description?: string;
   status: ProjectStatus;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   requirements?: string;
   acceptance_criteria?: string;
   created_at: string;
@@ -27,7 +27,7 @@ export interface Task {
   order_index: number;
   estimated_hours?: number;
   actual_hours?: number;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   implementation_notes?: string;
   test_criteria?: string;
   verification_steps?: string;
@@ -88,7 +88,7 @@ export interface ActivityEntry {
   task_id?: string;
   user: string;
   action: 'created' | 'updated' | 'commented' | 'status_changed' | 'assigned' | 'attached_file' | 'dependency_added';
-  details: Record<string, any>;
+  details: Record<string, unknown>;
   created_at: string;
 }
 
@@ -96,8 +96,8 @@ export interface TaskHistory {
   id: string;
   task_id: string;
   action: string;
-  old_value?: Record<string, any>;
-  new_value?: Record<string, any>;
+  old_value?: Record<string, unknown>;
+  new_value?: Record<string, unknown>;
   notes?: string;
   created_at: string;
   created_by: string;
@@ -110,7 +110,7 @@ export interface TestResult {
   status: 'passed' | 'failed' | 'skipped';
   output?: string;
   error_message?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   created_at: string;
 }
 

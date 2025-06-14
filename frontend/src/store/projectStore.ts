@@ -22,7 +22,7 @@ interface ProjectState {
     assignee: string | null;
     dateRange: { start: Date | null; end: Date | null };
   };
-  setFilter: (key: keyof ProjectState['filters'], value: any) => void;
+  setFilter: (key: keyof ProjectState['filters'], value: unknown) => void;
   resetFilters: () => void;
 
   // View preferences
@@ -178,10 +178,11 @@ export const useFilteredTasks = () => {
       case 'updated_at':
         comparison = new Date(a[sortBy]).getTime() - new Date(b[sortBy]).getTime();
         break;
-      case 'priority':
+      case 'priority': {
         const priorityOrder = { critical: 4, high: 3, medium: 2, low: 1 };
         comparison = (priorityOrder[a.priority] || 0) - (priorityOrder[b.priority] || 0);
         break;
+      }
       case 'status':
         comparison = a.status.localeCompare(b.status);
         break;

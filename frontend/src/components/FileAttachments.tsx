@@ -24,7 +24,7 @@ const DEFAULT_ALLOWED_TYPES = [
 ];
 
 export function FileAttachments({
-  taskId: _taskId,
+  taskId,
   attachments,
   onFileUpload,
   onFileDelete,

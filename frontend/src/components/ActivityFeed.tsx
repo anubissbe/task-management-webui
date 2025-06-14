@@ -19,7 +19,7 @@ interface ActivityFilter {
 export function ActivityFeed({ 
   activities, 
   tasks, 
-  project: _project, 
+  project, 
   currentUser, 
   showFilters = true 
 }: ActivityFeedProps) {
@@ -136,9 +136,10 @@ export function ActivityFeed({
     switch (activity.action) {
       case 'created':
         return `created task "${taskName}"`;
-      case 'updated':
+      case 'updated': {
         const changes = Object.keys(activity.details.changes || {});
         return `updated ${changes.join(', ')} in "${taskName}"`;
+      }
       case 'commented':
         return `commented on "${taskName}"`;
       case 'status_changed':
@@ -193,7 +194,7 @@ export function ActivityFeed({
             {/* Time Range Filter */}
             <select
               value={timeRange}
-              onChange={(e) => setTimeRange(e.target.value as any)}
+              onChange={(e) => setTimeRange(e.target.value as 'all' | 'today' | 'week' | 'month')}
               className="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
             >
               <option value="today">Today</option>
