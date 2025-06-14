@@ -1,0 +1,343 @@
+name: PR Triage & Assignment
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+  
+permissions:
+  pull-requests: write
+  issues: write
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Triage PR
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const pr = context.payload.pull_request;
+          const { owner, repo } = context.repo;
+          
+          // Auto-assign PR to repository owner
+          if (!pr.assignee) {
+            await github.rest.issues.addAssignees({
+              owner,
+              repo,
+              issue_number: pr.number,
+              assignees: ['anubissbe']
+            });
+          }
+          
+          // Analyze PR and assign priority
+          const { data: files } = await github.rest.pulls.listFiles({
+            owner,
+            repo,
+            pull_number: pr.number
+          });
+          
+          let priority = 'low';
+          let size = 'small';
+          
+          // Determine size
+          const totalChanges = pr.additions + pr.deletions;
+          if (totalChanges > 1000) {
+            size = 'extra-large';
+            priority = 'high';
+          } else if (totalChanges > 500) {
+            size = 'large';
+            priority = 'medium';
+          } else if (totalChanges > 100) {
+            size = 'medium';
+            priority = 'medium';
+          } else if (totalChanges > 10) {
+            size = 'small';
+          } else {
+            size = 'tiny';
+          }
+          
+          // Check for critical files
+          const criticalFiles = [
+            'package.json',
+            'package-lock.json',
+            'docker-compose.yml',
+            'Dockerfile',
+            '.github/workflows/',
+            'backend/src/index.ts',
+            'frontend/src/main.tsx'
+          ];
+          
+          const hasCriticalChanges = files.some(file =>
+            criticalFiles.some(critical => file.filename.includes(critical))
+          );
+          
+          if (hasCriticalChanges) {
+            priority = 'high';
+          }
+          
+          // Check for security-related changes
+          const securityKeywords = ['security', 'auth', 'password', 'token', 'secret', 'vulnerability'];
+          const hasSecurityChanges = pr.title.toLowerCase().includes('security') ||
+            pr.body?.toLowerCase().includes('security') ||
+            files.some(file => securityKeywords.some(keyword => file.filename.includes(keyword)));
+          
+          if (hasSecurityChanges) {
+            priority = 'critical';
+            await github.rest.issues.addLabels({
+              owner,
+              repo,
+              issue_number: pr.number,
+              labels: ['security']
+            });
+          }
+          
+          // Add size label
+          const sizeLabel = `size/${size}`;
+          await github.rest.issues.addLabels({
+            owner,
+            repo,
+            issue_number: pr.number,
+            labels: [sizeLabel]
+          });
+          
+          // Add priority label
+          const priorityLabel = `priority/${priority}`;
+          await github.rest.issues.addLabels({
+            owner,
+            repo,
+            issue_number: pr.number,
+            labels: [priorityLabel]
+          });
+          
+          // Create size labels if they don't exist
+          const sizeLabels = [
+            { name: 'size/tiny', color: '69db7c', description: 'Less than 10 lines' },
+            { name: 'size/small', color: '40c057', description: '10-100 lines' },
+            { name: 'size/medium', color: 'fab005', description: '100-500 lines' },
+            { name: 'size/large', color: 'fd7e14', description: '500-1000 lines' },
+            { name: 'size/extra-large', color: 'e03131', description: 'More than 1000 lines' }
+          ];
+          
+          const priorityLabels = [
+            { name: 'priority/critical', color: 'e03131', description: 'Critical priority - security or breaking changes' },
+            { name: 'priority/high', color: 'fd7e14', description: 'High priority' },
+            { name: 'priority/medium', color: 'fab005', description: 'Medium priority' },
+            { name: 'priority/low', color: '40c057', description: 'Low priority' }
+          ];
+          
+          // Create labels if they don't exist
+          for (const label of [...sizeLabels, ...priorityLabels]) {
+            try {
+              await github.rest.issues.createLabel({
+                owner,
+                repo,
+                name: label.name,
+                color: label.color,
+                description: label.description
+              });
+            } catch (error) {
+              // Label already exists
+            }
+          }
+          
+          // Set milestone based on priority
+          if (priority === 'critical' || priority === 'high') {
+            // Get or create current milestone
+            const { data: milestones } = await github.rest.issues.listMilestones({
+              owner,
+              repo,
+              state: 'open',
+              sort: 'due_on',
+              direction: 'asc'
+            });
+            
+            if (milestones.length > 0) {
+              await github.rest.issues.update({
+                owner,
+                repo,
+                issue_number: pr.number,
+                milestone: milestones[0].number
+              });
+            }
+          }
+
+  pr-commands:
+    runs-on: ubuntu-latest
+    if: github.event.issue.pull_request && contains(github.event.comment.body, '/') 
+    
+    steps:
+    - name: Handle PR Commands
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const comment = context.payload.comment;
+          const { owner, repo } = context.repo;
+          const issueNumber = context.issue.number;
+          
+          // Parse command
+          const command = comment.body.trim().toLowerCase();
+          
+          // Check if user has permission (repository owner or collaborator)
+          const { data: commenter } = await github.rest.repos.getCollaboratorPermissionLevel({
+            owner,
+            repo,
+            username: comment.user.login
+          });
+          
+          const hasPermission = ['admin', 'write'].includes(commenter.permission);
+          
+          if (!hasPermission && comment.user.login !== 'anubissbe') {
+            await github.rest.reactions.createForIssueComment({
+              owner,
+              repo,
+              comment_id: comment.id,
+              content: '-1'
+            });
+            return;
+          }
+          
+          // Handle commands
+          switch (command) {
+            case '/merge':
+            case '/lgtm':
+              await github.rest.issues.addLabels({
+                owner,
+                repo,
+                issue_number: issueNumber,
+                labels: ['auto-merge']
+              });
+              await github.rest.reactions.createForIssueComment({
+                owner,
+                repo,
+                comment_id: comment.id,
+                content: 'rocket'
+              });
+              break;
+              
+            case '/approve':
+              await github.rest.pulls.createReview({
+                owner,
+                repo,
+                pull_number: issueNumber,
+                event: 'APPROVE'
+              });
+              await github.rest.reactions.createForIssueComment({
+                owner,
+                repo,
+                comment_id: comment.id,
+                content: '+1'
+              });
+              break;
+              
+            case '/close':
+              await github.rest.pulls.update({
+                owner,
+                repo,
+                pull_number: issueNumber,
+                state: 'closed'
+              });
+              await github.rest.reactions.createForIssueComment({
+                owner,
+                repo,
+                comment_id: comment.id,
+                content: 'eyes'
+              });
+              break;
+              
+            case '/reopen':
+              await github.rest.pulls.update({
+                owner,
+                repo,
+                pull_number: issueNumber,
+                state: 'open'
+              });
+              await github.rest.reactions.createForIssueComment({
+                owner,
+                repo,
+                comment_id: comment.id,
+                content: 'eyes'
+              });
+              break;
+              
+            case '/ready':
+              // Mark as ready for review
+              await github.rest.issues.removeLabel({
+                owner,
+                repo,
+                issue_number: issueNumber,
+                name: 'work-in-progress'
+              }).catch(() => {});
+              
+              await github.rest.issues.addLabels({
+                owner,
+                repo,
+                issue_number: issueNumber,
+                labels: ['ready-for-review']
+              });
+              await github.rest.reactions.createForIssueComment({
+                owner,
+                repo,
+                comment_id: comment.id,
+                content: 'rocket'
+              });
+              break;
+              
+            case '/wip':
+              // Mark as work in progress
+              await github.rest.issues.removeLabel({
+                owner,
+                repo,
+                issue_number: issueNumber,
+                name: 'ready-for-review'
+              }).catch(() => {});
+              
+              await github.rest.issues.addLabels({
+                owner,
+                repo,
+                issue_number: issueNumber,
+                labels: ['work-in-progress']
+              });
+              await github.rest.reactions.createForIssueComment({
+                owner,
+                repo,
+                comment_id: comment.id,
+                content: 'eyes'
+              });
+              break;
+              
+            case '/help':
+              const helpMessage = `## 🤖 Available PR Commands
+              
+              | Command | Description | Permission Required |
+              |---------|-------------|-------------------|
+              | \`/merge\` or \`/lgtm\` | Approve and auto-merge this PR | Write |
+              | \`/approve\` | Approve this PR | Write |
+              | \`/close\` | Close this PR | Write |
+              | \`/reopen\` | Reopen this PR | Write |
+              | \`/ready\` | Mark PR as ready for review | Write |
+              | \`/wip\` | Mark PR as work in progress | Write |
+              | \`/help\` | Show this help message | Any |
+              
+              Only repository collaborators can use these commands.`;
+              
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: issueNumber,
+                body: helpMessage
+              });
+              break;
+              
+            default:
+              if (command.startsWith('/')) {
+                await github.rest.reactions.createForIssueComment({
+                  owner,
+                  repo,
+                  comment_id: comment.id,
+                  content: 'confused'
+                });
+              }
+          }

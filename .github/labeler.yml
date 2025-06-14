@@ -1,0 +1,68 @@
+# Configuration for automatic PR labeling
+frontend:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'frontend/**/*'
+      - '*.tsx'
+      - '*.ts'
+      - '*.css'
+
+backend:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'backend/**/*'
+      - 'backend/src/**/*.ts'
+
+documentation:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/*.md'
+      - 'docs/**/*'
+      - 'README.md'
+      - 'CONTRIBUTING.md'
+      - 'CHANGELOG.md'
+
+docker:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/Dockerfile*'
+      - 'docker-compose.yml'
+      - '.dockerignore'
+
+github-actions:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '.github/workflows/*'
+      - '.github/actions/*'
+
+dependencies:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/package.json'
+      - '**/package-lock.json'
+      - '**/yarn.lock'
+      - '**/requirements.txt'
+
+security:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'SECURITY.md'
+      - '.github/dependabot.yml'
+      - '**/security/*'
+
+tests:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/*.test.ts'
+      - '**/*.test.tsx'
+      - '**/*.spec.ts'
+      - '**/*.spec.tsx'
+      - 'tests/**/*'
+
+ui-ux:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'frontend/src/components/**/*'
+      - 'frontend/src/pages/**/*'
+      - '**/*.css'
+      - '**/tailwind.config.js'
