@@ -1,0 +1,176 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import dark mode overrides */
+@import './dark-mode-overrides.css';
+
+/* Preemptive fixes for dynamically generated styles */
+@layer base {
+  /* Reset for any dynamically generated classes */
+  [class^="go"]:where(:not(html)),
+  [class*=" go"]:where(:not(html)) {
+    /* Ensure vendor prefixes come FIRST */
+    -webkit-text-size-adjust: inherit;
+    text-size-adjust: inherit;
+  }
+}
+
+/* COMPLETE BROWSER COMPATIBILITY FIXES - CORRECT VENDOR PREFIX ORDER */
+@layer base {
+  /* Fix text-size-adjust - Vendor prefix FIRST for proper compatibility */
+  html {
+    -webkit-text-size-adjust: 100%; /* Vendor prefix FIRST */
+    text-size-adjust: 100%; /* Standard property LAST */
+  }
+  
+  /* Enhanced line-clamp utilities - VENDOR PREFIXES FIRST */
+  .line-clamp-1 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1; /* Vendor prefix FIRST */
+    line-clamp: 1; /* Standard property LAST */
+  }
+  
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; /* Vendor prefix FIRST */
+    line-clamp: 2; /* Standard property LAST */
+  }
+  
+  .line-clamp-3 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3; /* Vendor prefix FIRST */
+    line-clamp: 3; /* Standard property LAST */
+  }
+}
+
+:root {
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Ensure proper scrolling behavior */
+html {
+  overflow-x: hidden;
+  overflow-y: visible;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  overflow-y: visible;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* Enhanced compatibility fixes */
+
+/* Mask properties - Vendor prefixes for Edge 79+ compatibility */
+.mask-compatible {
+  -webkit-mask-image: var(--mask-image); /* Edge 79+ support */
+  mask-image: var(--mask-image); /* Standard property */
+  -webkit-mask-position: var(--mask-position, center); /* Edge 79+ support */
+  mask-position: var(--mask-position, center); /* Standard property */
+  -webkit-mask-repeat: var(--mask-repeat, no-repeat); /* Edge 79+ support */
+  mask-repeat: var(--mask-repeat, no-repeat); /* Standard property */
+}
+
+/* Line clamp compatibility for all browsers */
+.line-clamp-fallback {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+/* Field sizing and form element compatibility - ONLY for supporting browsers */
+@supports (field-sizing: content) {
+  input, textarea, select {
+    field-sizing: content;
+  }
+}
+
+/* Universal form element styling */
+input, textarea, select {
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+/* Background-clip - Vendor prefix FIRST for proper compatibility */
+.bg-clip-text {
+  -webkit-background-clip: text; /* Vendor prefix FIRST */
+  background-clip: text; /* Standard property LAST */
+}
+
+/* Add additional browser support fixes */
+* {
+  box-sizing: border-box;
+}
+
+/* Global fixes for third-party libraries - Vendor prefix FIRST */
+[class*="go"] {
+  -webkit-background-clip: text !important; /* Vendor prefix FIRST */
+  background-clip: text !important; /* Standard property LAST */
+}
+
+/* User-select compatibility for Safari */
+.user-select-none {
+  -webkit-user-select: none; /* Safari 3+ support */
+  user-select: none; /* Standard property */
+}
+
+/* Performance optimized animations - avoid layout triggers */
+@keyframes optimized-fade {
+  0% { opacity: 0; transform: scale(0.95); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes optimized-slide {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Override problematic third-party animations that trigger layout */
+@keyframes go651618207 {
+  0% { opacity: 0; transform: scale(0.95); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* Specific fixes for goober-generated styles */
+[class*="go"]:not([class*="text"]) {
+  /* Fix mask properties - vendor prefix FIRST */
+  -webkit-mask-image: var(--tw-mask-image, none) !important;
+  mask-image: var(--tw-mask-image, none) !important;
+  -webkit-mask-position: var(--tw-mask-position, center) !important;
+  mask-position: var(--tw-mask-position, center) !important;
+  -webkit-mask-repeat: var(--tw-mask-repeat, no-repeat) !important;
+  mask-repeat: var(--tw-mask-repeat, no-repeat) !important;
+  -webkit-mask-size: var(--tw-mask-size, auto) !important;
+  mask-size: var(--tw-mask-size, auto) !important;
+}
+
+/* Fix field-sizing warnings - use @supports for progressive enhancement */
+@supports not (field-sizing: content) {
+  /* Fallback for browsers that don't support field-sizing */
+  input, textarea, select {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  textarea {
+    resize: vertical;
+    min-height: 2.5rem;
+  }
+}

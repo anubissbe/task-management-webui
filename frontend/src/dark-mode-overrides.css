@@ -1,0 +1,225 @@
+/* Dark Mode Text Readability Overrides */
+
+/* Ensure dark mode class properly cascades */
+.dark {
+  color-scheme: dark;
+}
+
+/* Global text color fixes for dark mode */
+.dark body {
+  color: rgb(229 231 235); /* text-gray-200 */
+}
+
+/* Fix any remaining gray text issues */
+.dark .text-gray-500 {
+  color: rgb(156 163 175) !important; /* Lighter gray for better contrast */
+}
+
+.dark .text-gray-600 {
+  color: rgb(156 163 175) !important; /* text-gray-400 equivalent */
+}
+
+.dark .text-gray-700 {
+  color: rgb(209 213 219) !important; /* text-gray-300 equivalent */
+}
+
+.dark .text-gray-800 {
+  color: rgb(229 231 235) !important; /* text-gray-200 equivalent */
+}
+
+.dark .text-gray-900 {
+  color: rgb(243 244 246) !important; /* text-gray-100 equivalent */
+}
+
+/* Status badges - ensure proper contrast */
+.dark .bg-gray-100 {
+  background-color: rgb(55 65 81) !important; /* bg-gray-700 */
+  color: rgb(229 231 235) !important; /* text-gray-200 */
+}
+
+.dark .bg-blue-100 {
+  background-color: rgb(29 78 216 / 0.2) !important;
+  color: rgb(147 197 253) !important; /* text-blue-300 */
+}
+
+.dark .bg-green-100 {
+  background-color: rgb(34 197 94 / 0.2) !important;
+  color: rgb(134 239 172) !important; /* text-green-300 */
+}
+
+.dark .bg-red-100 {
+  background-color: rgb(239 68 68 / 0.2) !important;
+  color: rgb(252 165 165) !important; /* text-red-300 */
+}
+
+.dark .bg-yellow-100 {
+  background-color: rgb(250 204 21 / 0.2) !important;
+  color: rgb(253 224 71) !important; /* text-yellow-300 */
+}
+
+.dark .bg-orange-100 {
+  background-color: rgb(249 115 22 / 0.2) !important;
+  color: rgb(253 186 116) !important; /* text-orange-300 */
+}
+
+.dark .bg-purple-100 {
+  background-color: rgb(147 51 234 / 0.2) !important;
+  color: rgb(196 181 253) !important; /* text-purple-300 */
+}
+
+/* Button text fixes */
+.dark button:not([class*="bg-"]) {
+  color: inherit;
+}
+
+/* Input and form elements */
+.dark input:not([type="checkbox"]):not([type="radio"]),
+.dark textarea,
+.dark select {
+  background-color: rgb(55 65 81); /* bg-gray-700 */
+  color: rgb(229 231 235); /* text-gray-200 */
+  border-color: rgb(75 85 99); /* border-gray-600 */
+}
+
+/* Select dropdown options */
+.dark select option {
+  background-color: rgb(31 41 55); /* bg-gray-800 */
+  color: rgb(229 231 235); /* text-gray-200 */
+}
+
+/* Option elements in dropdown menus */
+.dark option {
+  background-color: rgb(31 41 55) !important; /* bg-gray-800 */
+  color: rgb(229 231 235) !important; /* text-gray-200 */
+  padding: 0.5rem;
+}
+
+.dark option:hover,
+.dark option:checked {
+  background-color: rgb(55 65 81) !important; /* bg-gray-700 */
+}
+
+/* Ensure select elements are readable */
+.dark select:not([class*="dark:bg-"]) {
+  background-color: rgb(55 65 81) !important; /* bg-gray-700 */
+  color: rgb(229 231 235) !important; /* text-gray-200 */
+  border-color: rgb(75 85 99) !important; /* border-gray-600 */
+}
+
+/* Select hover and focus states */
+.dark select:hover {
+  border-color: rgb(107 114 128); /* border-gray-500 */
+}
+
+.dark select:focus {
+  border-color: rgb(99 102 241); /* border-indigo-500 */
+  box-shadow: 0 0 0 3px rgb(99 102 241 / 0.1);
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: rgb(156 163 175); /* text-gray-400 */
+}
+
+/* Links */
+.dark a:not([class*="text-"]) {
+  color: rgb(96 165 250); /* text-blue-400 */
+}
+
+.dark a:not([class*="text-"]):hover {
+  color: rgb(147 197 253); /* text-blue-300 */
+}
+
+/* Card and modal backgrounds */
+.dark .bg-white {
+  background-color: rgb(31 41 55); /* bg-gray-800 */
+  color: rgb(229 231 235); /* text-gray-200 */
+}
+
+/* Borders */
+.dark .border-gray-200 {
+  border-color: rgb(55 65 81); /* border-gray-700 */
+}
+
+.dark .border-gray-300 {
+  border-color: rgb(75 85 99); /* border-gray-600 */
+}
+
+/* Hover states */
+.dark .hover\:bg-gray-100:hover {
+  background-color: rgb(55 65 81) !important; /* bg-gray-700 */
+}
+
+.dark .hover\:bg-gray-200:hover {
+  background-color: rgb(75 85 99) !important; /* bg-gray-600 */
+}
+
+/* Focus states */
+.dark .focus\:border-gray-300:focus {
+  border-color: rgb(75 85 99) !important; /* border-gray-600 */
+}
+
+/* Disabled states */
+.dark input:disabled,
+.dark textarea:disabled,
+.dark select:disabled {
+  background-color: rgb(31 41 55); /* bg-gray-800 */
+  color: rgb(107 114 128); /* text-gray-500 */
+  opacity: 0.7;
+}
+
+/* Table cells */
+.dark td,
+.dark th {
+  color: rgb(229 231 235); /* text-gray-200 */
+}
+
+/* Code blocks */
+.dark code,
+.dark pre {
+  background-color: rgb(17 24 39); /* bg-gray-900 */
+  color: rgb(229 231 235); /* text-gray-200 */
+}
+
+/* Tooltips */
+.dark [role="tooltip"] {
+  background-color: rgb(17 24 39); /* bg-gray-900 */
+  color: rgb(243 244 246); /* text-gray-100 */
+}
+
+/* Ensure all text has sufficient contrast */
+.dark * {
+  color: inherit;
+}
+
+/* Override any inline styles that might cause issues */
+.dark [style*="color: rgb(107"],
+.dark [style*="color: rgb(75"],
+.dark [style*="color: rgb(55"] {
+  color: rgb(156 163 175) !important;
+}
+
+/* Webkit-specific select dropdown styling */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  .dark select {
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='rgb(229 231 235)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+  }
+}
+
+/* Firefox-specific select styling */
+@-moz-document url-prefix() {
+  .dark select {
+    background-color: rgb(55 65 81) !important;
+    color: rgb(229 231 235) !important;
+  }
+  
+  .dark select option {
+    background-color: rgb(31 41 55) !important;
+    color: rgb(229 231 235) !important;
+  }
+}
