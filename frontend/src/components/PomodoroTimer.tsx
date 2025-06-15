@@ -152,7 +152,7 @@ export function PomodoroTimer({ task, onTimeUpdate, onComplete }: PomodoroTimerP
     }
 
     onComplete?.();
-  }, [timer.mode, timer.pomodoroCount, task, onTimeUpdate, audioEnabled, onComplete, playNotificationSound]);
+  }, [timer.mode, timer.pomodoroCount, task, onTimeUpdate, onComplete, playNotificationSound]);
 
   const startTimer = () => {
     // Request notification permission

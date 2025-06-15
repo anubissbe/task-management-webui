@@ -33,7 +33,7 @@ jobs:
       run: npm run lint
       
     - name: 🧪 Run tests
-      run: npm test -- --coverage --watchAll=false
+      run: npm run test:coverage
       
     - name: 📊 Upload coverage reports
       uses: codecov/codecov-action@v5

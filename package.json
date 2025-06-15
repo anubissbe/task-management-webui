@@ -16,5 +16,8 @@
   "dependencies": {
     "playwright": "^1.53.0",
     "puppeteer": "^24.10.0"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^3.2.3"
   }
 }
