@@ -1,19 +1,35 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { projectService } from '../services/projectService';
-import { Project } from '../types';
+import { Project, ProjectStats } from '../types';
 import toast from 'react-hot-toast';
 import clsx from 'clsx';
 import { format } from 'date-fns';
 
 export const ProjectList: React.FC = () => {
   const queryClient = useQueryClient();
+  const [projectStats, setProjectStats] = useState<Record<string, ProjectStats>>({});
 
   const { data: projects, isLoading, error } = useQuery({
     queryKey: ['projects'],
     queryFn: projectService.getAllProjects,
   });
+
+  // Fetch stats for all projects
+  useEffect(() => {
+    if (projects) {
+      projects.forEach(project => {
+        projectService.getProjectStats(project.id)
+          .then(stats => {
+            setProjectStats(prev => ({ ...prev, [project.id]: stats }));
+          })
+          .catch(() => {
+            // Silently fail if stats can't be loaded
+          });
+      });
+    }
+  }, [projects]);
 
   const deleteProjectMutation = useMutation({
     mutationFn: projectService.deleteProject,
@@ -23,6 +39,21 @@ export const ProjectList: React.FC = () => {
     },
     onError: () => {
       toast.error('Failed to delete project');
+    },
+  });
+
+  const completeProjectMutation = useMutation({
+    mutationFn: (projectId: string) => 
+      projectService.updateProject(projectId, { 
+        status: 'completed', 
+        completed_at: new Date().toISOString() 
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['projects'] });
+      toast.success('Project marked as completed');
+    },
+    onError: () => {
+      toast.error('Failed to complete project');
     },
   });
 
@@ -41,6 +72,13 @@ export const ProjectList: React.FC = () => {
       default:
         return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
     }
+  };
+
+  const canCompleteProject = (project: Project): boolean => {
+    if (project.status !== 'active') return false;
+    const stats = projectStats[project.id];
+    if (!stats) return false;
+    return stats.statistics.completion_rate === '100.0%';
   };
 
   if (isLoading) {
@@ -131,6 +169,21 @@ export const ProjectList: React.FC = () => {
                           : project.description}
                       </div>
                     )}
+                    {projectStats[project.id] && (
+                      <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                        {projectStats[project.id].statistics.task_breakdown.total > 0 ? (
+                          <>
+                            <span className="font-medium">
+                              {projectStats[project.id].statistics.completion_rate}
+                            </span>
+                            {' complete '}
+                            ({projectStats[project.id].statistics.task_breakdown.completed}/{projectStats[project.id].statistics.task_breakdown.total} tasks)
+                          </>
+                        ) : (
+                          'No tasks yet'
+                        )}
+                      </div>
+                    )}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
@@ -154,6 +207,19 @@ export const ProjectList: React.FC = () => {
                     >
                       View
                     </Link>
+                    {canCompleteProject(project) && (
+                      <button
+                        onClick={() => {
+                          if (confirm(`Are you sure you want to mark "${project.name}" as completed? This action cannot be undone.`)) {
+                            completeProjectMutation.mutate(project.id);
+                          }
+                        }}
+                        disabled={completeProjectMutation.isPending}
+                        className="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {completeProjectMutation.isPending ? 'Completing...' : 'Complete'}
+                      </button>
+                    )}
                     <button
                       onClick={() => {
                         if (confirm('Are you sure you want to delete this project? This action cannot be undone.')) {

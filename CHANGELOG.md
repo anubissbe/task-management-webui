@@ -5,6 +5,26 @@ All notable changes to the Task Management Web UI project will be documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.0] - 2025-06-15
+
+### 🚀 Features Added
+
+#### Project Management Enhancements
+- **Added** project completion functionality in the project list view
+- **Added** visual completion percentage display for each project
+- **Added** smart validation ensuring all tasks are completed before allowing project completion
+- **Added** confirmation dialog for project completion with irreversible action warning
+
+### 🐛 Bug Fixes
+- **Fixed** dropdown text visibility issue in dark mode on the Analytics page
+- **Fixed** select element styling to support proper dark mode theming
+
+### 💻 UI/UX Improvements
+- **Added** green "Complete" button that appears only for eligible projects
+- **Added** task completion statistics (X/Y tasks) under project names
+- **Enhanced** project list with real-time completion rate display
+- **Improved** dark mode contrast for form elements
+
 ## [3.0.0] - 2025-06-13
 
 ### 🚀 Major Features Added
