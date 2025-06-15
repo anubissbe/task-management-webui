@@ -44,6 +44,7 @@
 - **Time Tracking**: Built-in Pomodoro timer and time logging
 - **Task Templates**: Reusable task templates for common workflows
 - **Export Options**: Export tasks to CSV, JSON, PDF, or Excel
+- **Project Completion**: Mark projects as completed when all tasks are done
 
 ### Collaboration
 - **Comments System**: Threaded comments with mentions
