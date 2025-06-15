@@ -95,14 +95,15 @@ jobs:
           
           // Submit review
           if (shouldApprove) {
-            reviewBody += '\n✅ **Status**: Approved for automatic merge';
+            reviewBody += '\n✅ **Status**: Ready for automatic merge (pending manual approval)';
+            reviewBody += '\n\n*Note: GitHub Actions cannot approve PRs. A maintainer must manually approve.*';
             
             await github.rest.pulls.createReview({
               owner,
               repo,
               pull_number: pr.number,
               body: reviewBody,
-              event: 'APPROVE'
+              event: 'COMMENT'
             });
             
             // Add auto-merge label

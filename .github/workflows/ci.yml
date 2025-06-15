@@ -202,10 +202,15 @@ jobs:
         fetch-depth: 0
         
     - name: 🔍 SonarCloud Scan
+      if: ${{ secrets.SONAR_TOKEN != '' }}
       uses: SonarSource/sonarcloud-github-action@master
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        
+    - name: ⚠️ SonarCloud Skipped
+      if: ${{ secrets.SONAR_TOKEN == '' }}
+      run: echo "SonarCloud scan skipped - SONAR_TOKEN not configured"
         
     - name: 📊 CodeQL Analysis
       uses: github/codeql-action/init@v3
@@ -227,7 +232,7 @@ jobs:
       
     - name: 🐳 Start services
       run: |
-        docker compose up -d --wait
+        docker compose -f docker-compose.ci.yml up -d --wait
         sleep 30
         
     - name: ⚡ Lighthouse CI
@@ -239,7 +244,7 @@ jobs:
         
     - name: 🛑 Stop services
       if: always()
-      run: docker compose down
+      run: docker compose -f docker-compose.ci.yml down
 
   # Deployment (only on main branch)
   deploy:
