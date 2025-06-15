@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Task } from '../types';
 import { taskService } from '../services/taskService';
 
@@ -77,12 +77,13 @@ export function PomodoroTimer({ task, onTimeUpdate, onComplete }: PomodoroTimerP
     if (timer.isRunning && timer.timeLeft === 0) {
       handleTimerComplete();
     }
-  }, [timer.timeLeft, timer.isRunning]);
+  }, [timer.timeLeft, timer.isRunning, handleTimerComplete]);
 
-  const playNotificationSound = () => {
+  const playNotificationSound = useCallback(() => {
     if (audioEnabled && audioRef.current) {
       // Create a simple beep sound using Web Audio API
-      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      const audioContext = new AudioContextClass();
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
       
@@ -98,9 +99,9 @@ export function PomodoroTimer({ task, onTimeUpdate, onComplete }: PomodoroTimerP
       oscillator.start(audioContext.currentTime);
       oscillator.stop(audioContext.currentTime + 0.5);
     }
-  };
+  }, [audioEnabled]);
 
-  const handleTimerComplete = async () => {
+  const handleTimerComplete = useCallback(async () => {
     playNotificationSound();
     
     // Log work time
@@ -151,7 +152,7 @@ export function PomodoroTimer({ task, onTimeUpdate, onComplete }: PomodoroTimerP
     }
 
     onComplete?.();
-  };
+  }, [timer.mode, timer.pomodoroCount, task, onTimeUpdate, audioEnabled, onComplete, playNotificationSound]);
 
   const startTimer = () => {
     // Request notification permission

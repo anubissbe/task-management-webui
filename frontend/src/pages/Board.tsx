@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { taskService } from '../services/taskService';
 import { projectService } from '../services/projectService';
@@ -72,7 +72,7 @@ export function Board() {
       // Auto-select first project if none selected
       setSelectedProjectId(projects[0].id);
     }
-  }, [activeProjectId, projects, projectIdFromUrl]);
+  }, [activeProjectId, projects, projectIdFromUrl, fetchProjectAndTasks, setSelectedProjectId]);
 
   const fetchProjects = async () => {
     try {
@@ -83,7 +83,7 @@ export function Board() {
     }
   };
 
-  const fetchProjectAndTasks = async () => {
+  const fetchProjectAndTasks = useCallback(async () => {
     if (!activeProjectId) return;
     
     setLoading(true);
@@ -120,7 +120,7 @@ export function Board() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [activeProjectId]);
 
   const updateTaskStatus = async (taskId: string, newStatus: string) => {
     try {
@@ -554,7 +554,7 @@ export function Board() {
           projectId={activeProjectId}
           defaultStatus={createTaskStatus}
           onClose={() => setShowCreateTask(false)}
-          onTaskCreated={(_task) => {
+          onTaskCreated={() => {
             fetchProjectAndTasks();
             setShowCreateTask(false);
           }}
@@ -566,7 +566,7 @@ export function Board() {
         <EditTaskModal
           task={editingTask}
           onClose={() => setEditingTask(null)}
-          onTaskUpdated={(_updatedTask) => {
+          onTaskUpdated={() => {
             fetchProjectAndTasks();
             setEditingTask(null);
           }}

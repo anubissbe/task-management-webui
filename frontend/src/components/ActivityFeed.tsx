@@ -4,7 +4,7 @@ import { ActivityEntry, Task, Project } from '../types';
 interface ActivityFeedProps {
   activities: ActivityEntry[];
   tasks: Task[];
-  project: Project;
+  project?: Project;
   currentUser: string;
   showFilters?: boolean;
 }
@@ -19,7 +19,6 @@ interface ActivityFilter {
 export function ActivityFeed({ 
   activities, 
   tasks, 
-  project, 
   currentUser, 
   showFilters = true 
 }: ActivityFeedProps) {

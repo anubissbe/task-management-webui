@@ -4,8 +4,8 @@ import { Task, TaskDependency } from '../types';
 interface TaskDependencyGraphProps {
   tasks: Task[];
   dependencies: TaskDependency[];
-  onDependencyAdd: (taskId: string, dependsOnTaskId: string) => void;
-  onDependencyRemove: (taskId: string, dependsOnTaskId: string) => void;
+  onDependencyAdd?: (taskId: string, dependsOnTaskId: string) => void;
+  onDependencyRemove?: (taskId: string, dependsOnTaskId: string) => void;
   selectedTaskId?: string;
   onTaskSelect: (taskId: string) => void;
 }
@@ -31,8 +31,6 @@ interface GraphEdge {
 export function TaskDependencyGraph({ 
   tasks, 
   dependencies, 
-  onDependencyAdd: _onDependencyAdd, 
-  onDependencyRemove: _onDependencyRemove, 
   selectedTaskId, 
   onTaskSelect 
 }: TaskDependencyGraphProps) {
@@ -293,7 +291,7 @@ export function TaskDependencyGraph({
         <div className="flex items-center gap-2">
           <select
             value={layoutMode}
-            onChange={(e) => setLayoutMode(e.target.value as any)}
+            onChange={(e) => setLayoutMode(e.target.value as 'hierarchical' | 'force' | 'timeline')}
             className="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
           >
             <option value="hierarchical">Hierarchical</option>

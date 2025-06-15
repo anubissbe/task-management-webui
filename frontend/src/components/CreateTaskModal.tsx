@@ -52,8 +52,8 @@ export function CreateTaskModal({ projectId, onClose, onTaskCreated, defaultStat
       
       onTaskCreated(newTask);
       onClose();
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to create task');
+    } catch (err) {
+      setError((err as Error).message || 'Failed to create task');
     } finally {
       setLoading(false);
     }
