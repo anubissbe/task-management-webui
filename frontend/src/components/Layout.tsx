@@ -10,19 +10,22 @@ export const Layout: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
-      <nav className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
+      <nav className="bg-gradient-to-r from-black via-gray-900 to-black border-b-2 border-orange-500 sticky top-0 z-50 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex">
               <div className="flex-shrink-0 flex items-center">
                 <div className="flex items-center space-x-3">
-                  <div className="bg-black px-3 py-1 rounded-lg flex items-center space-x-1">
-                    <span className="text-white font-bold text-lg">Project</span>
-                    <span className="text-orange-500 font-bold text-lg">hub</span>
+                  <div className="bg-gradient-to-r from-black to-gray-800 px-4 py-2 rounded-lg flex items-center space-x-1 border border-orange-500/30 shadow-md">
+                    <span className="text-white font-bold text-xl tracking-wide">Project</span>
+                    <span className="text-orange-500 font-bold text-xl tracking-wide">hub</span>
                   </div>
-                  <div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                  <div className="hidden md:block">
+                    <p className="text-xs text-orange-300 font-medium">
                       MCP Enhanced Workspace
+                    </p>
+                    <p className="text-xs text-gray-400">
+                      Project Management Evolved
                     </p>
                   </div>
                 </div>
@@ -31,35 +34,35 @@ export const Layout: React.FC = () => {
                 <Link
                   to="/"
                   className={clsx(
-                    'inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium',
+                    'inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-all duration-200',
                     isActive('/')
-                      ? 'border-primary-500 text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
+                      ? 'border-orange-500 text-white shadow-sm'
+                      : 'border-transparent text-gray-300 hover:text-orange-300 hover:border-orange-400'
                   )}
                 >
-                  Projects
+                  📁 Projects
                 </Link>
                 <Link
                   to="/board"
                   className={clsx(
-                    'inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium',
+                    'inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-all duration-200',
                     isActive('/board')
-                      ? 'border-primary-500 text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
+                      ? 'border-orange-500 text-white shadow-sm'
+                      : 'border-transparent text-gray-300 hover:text-orange-300 hover:border-orange-400'
                   )}
                 >
-                  Board
+                  📋 Board
                 </Link>
                 <Link
                   to="/analytics"
                   className={clsx(
-                    'inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium',
+                    'inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-all duration-200',
                     isActive('/analytics')
-                      ? 'border-primary-500 text-gray-900 dark:text-white'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
+                      ? 'border-orange-500 text-white shadow-sm'
+                      : 'border-transparent text-gray-300 hover:text-orange-300 hover:border-orange-400'
                   )}
                 >
-                  Analytics
+                  📊 Analytics
                 </Link>
               </div>
             </div>
@@ -74,27 +77,27 @@ export const Layout: React.FC = () => {
         <Outlet />
       </main>
       
-      <footer className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-auto">
+      <footer className="bg-gradient-to-r from-gray-900 via-black to-gray-900 border-t-2 border-orange-500/50 mt-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
-                <div className="bg-black px-2 py-1 rounded flex items-center space-x-1">
-                  <span className="text-white font-bold text-xs">Project</span>
-                  <span className="text-orange-500 font-bold text-xs">hub</span>
+                <div className="bg-gradient-to-r from-black to-gray-800 px-3 py-1 rounded-lg flex items-center space-x-1 border border-orange-500/30">
+                  <span className="text-white font-bold text-sm">Project</span>
+                  <span className="text-orange-500 font-bold text-sm">hub</span>
                 </div>
               </div>
               <div className="hidden sm:flex items-center space-x-2">
-                <span className="inline-flex items-center px-2 py-1 text-xs font-medium bg-brand-100 text-brand-800 dark:bg-brand-900 dark:text-brand-200 rounded-full">
+                <span className="inline-flex items-center px-3 py-1 text-xs font-medium bg-orange-500/20 text-orange-300 border border-orange-500/30 rounded-full">
                   🔗 MCP Enhanced
                 </span>
-                <span className="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 rounded-full">
+                <span className="inline-flex items-center px-3 py-1 text-xs font-medium bg-green-500/20 text-green-300 border border-green-500/30 rounded-full">
                   ✅ Production Ready
                 </span>
               </div>
             </div>
-            <div className="text-xs text-gray-500 dark:text-gray-400">
-              Powered by MCP Protocol
+            <div className="text-xs text-orange-300 font-medium">
+              Powered by MCP Protocol ⚡
             </div>
           </div>
         </div>
