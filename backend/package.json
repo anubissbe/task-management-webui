@@ -1,7 +1,7 @@
 {
-  "name": "task-management-backend",
-  "version": "1.0.0",
-  "description": "Backend API for Task Management Web UI",
+  "name": "projecthub-mcp-backend",
+  "version": "4.0.0",
+  "description": "ProjectHub-Mcp Backend API - MCP Enhanced Project Management with PostgreSQL integration, RESTful API, and real-time collaboration features",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",

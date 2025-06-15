@@ -1,6 +1,6 @@
-# Contributing to Task Management WebUI
+# Contributing to ProjectHub-Mcp
 
-First off, thank you for considering contributing to Task Management WebUI! It's people like you that make this project great.
+Thank you for considering contributing to ProjectHub-Mcp! We welcome contributions from the community and are excited to see what you'll bring to the project.
 
 ## Code of Conduct
 
@@ -52,7 +52,142 @@ Enhancement suggestions are tracked as GitHub issues. When creating an enhanceme
 
 ### Setting Up Your Development Environment
 
+<<<<<<< HEAD
 1. Fork and clone the repository:
+=======
+1. **Fork and Clone**
+   ```bash
+   git clone https://github.com/your-username/ProjectHub-Mcp.git
+   cd ProjectHub-Mcp
+   ```
+
+2. **Install Dependencies**
+   ```bash
+   # Frontend
+   cd frontend
+   npm install
+   
+   # Backend
+   cd ../backend
+   npm install
+   ```
+
+3. **Environment Setup**
+   ```bash
+   # Copy environment templates
+   cp frontend/.env.example frontend/.env
+   cp backend/.env.example backend/.env
+   
+   # Configure your database and API URLs
+   ```
+
+4. **Start Development Services**
+   ```bash
+   # Using Docker (recommended)
+   docker-compose up -d
+   
+   # Or manually
+   cd backend && npm run dev
+   cd frontend && npm run dev
+   ```
+
+## 📋 Ways to Contribute
+
+### 🐛 Bug Reports
+- Use the [Bug Report template](.github/ISSUE_TEMPLATE/bug_report.md)
+- Include reproduction steps and environment details
+- Add screenshots or screen recordings when helpful
+
+### ✨ Feature Requests
+- Use the [Feature Request template](.github/ISSUE_TEMPLATE/feature_request.md)
+- Describe the problem you're solving
+- Consider implementation complexity and user impact
+
+### 🔧 Code Contributions
+- Fork the repository and create a feature branch
+- Follow our coding standards and conventions
+- Include tests for new functionality
+- Update documentation as needed
+
+### 📚 Documentation
+- Improve existing documentation
+- Add examples and use cases
+- Fix typos and clarify instructions
+- Translate documentation (future consideration)
+
+## 🛠️ Development Guidelines
+
+### Code Style
+
+#### Frontend (React/TypeScript)
+```typescript
+// Use functional components with hooks
+const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdate }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  
+  // Prefer explicit typing
+  const handleStatusChange = (newStatus: TaskStatus): void => {
+    onUpdate(task.id, { status: newStatus });
+  };
+  
+  return (
+    <div className="task-card">
+      {/* JSX content */}
+    </div>
+  );
+};
+```
+
+#### Backend (Express/TypeScript)
+```typescript
+// Use async/await for promises
+export const createTask = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const taskData = validateTaskData(req.body);
+    const task = await taskService.createTask(taskData);
+    res.status(201).json(task);
+  } catch (error) {
+    next(error);
+  }
+};
+```
+
+### Naming Conventions
+- **Files**: camelCase for TypeScript, kebab-case for CSS
+- **Components**: PascalCase (e.g., `TaskDetailModal.tsx`)
+- **Variables/Functions**: camelCase (e.g., `handleSubmit`)
+- **Constants**: UPPER_SNAKE_CASE (e.g., `API_BASE_URL`)
+- **Database**: snake_case (e.g., `task_dependencies`)
+
+### Git Workflow
+
+1. **Branch Naming**
+   ```bash
+   feature/add-task-templates
+   bugfix/fix-timer-notification
+   hotfix/security-vulnerability
+   docs/update-api-reference
+   ```
+
+2. **Commit Messages**
+   ```bash
+   feat: add Pomodoro timer integration
+   fix: resolve task deletion cascade issue
+   docs: update API endpoint documentation
+   refactor: optimize dependency graph rendering
+   test: add unit tests for task service
+   ```
+
+3. **Pull Request Process**
+   - Create a descriptive title and description
+   - Link related issues
+   - Include screenshots for UI changes
+   - Ensure all CI checks pass
+   - Request review from maintainers
+
+## 🧪 Testing
+
+### Frontend Testing
 ```bash
 git clone https://github.com/yourusername/task-management-webui.git
 cd task-management-webui
@@ -237,4 +372,22 @@ Contributors are recognized in:
 
 ## License
 
+<<<<<<< HEAD
 By contributing, you agree that your contributions will be licensed under the MIT License.
+=======
+## 🙏 Recognition
+
+Contributors are recognized in several ways:
+- Listed in the project's README
+- Featured in release notes for significant contributions
+- Invited to join the core contributor team for consistent contributions
+
+## 📄 License
+
+By contributing to this project, you agree that your contributions will be licensed under the same license as the project (see [LICENSE](LICENSE) file).
+
+---
+
+**Thank you for contributing to ProjectHub-Mcp!** 🎉
+
+Your contributions help make MCP-enhanced project management more efficient and enjoyable for teams worldwide.

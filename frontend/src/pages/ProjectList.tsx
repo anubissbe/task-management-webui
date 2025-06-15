@@ -83,16 +83,25 @@ export const ProjectList: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+      <div className="flex flex-col justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-600"></div>
+        <p className="mt-4 text-gray-600 dark:text-gray-400">Loading ProjectHub-Mcp...</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="text-center text-red-600 dark:text-red-400 py-8">
-        Failed to load projects
+      <div className="flex flex-col items-center justify-center py-12">
+        <div className="w-16 h-16 bg-gradient-to-br from-brand-500 to-accent-600 rounded-lg flex items-center justify-center mb-4">
+          <span className="text-white font-bold text-xl">!</span>
+        </div>
+        <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+          Unable to load projects
+        </h3>
+        <p className="text-center text-gray-600 dark:text-gray-400">
+          There was an issue connecting to ProjectHub-Mcp
+        </p>
       </div>
     );
   }
@@ -105,7 +114,7 @@ export const ProjectList: React.FC = () => {
             Projects
           </h1>
           <p className="mt-2 text-sm text-gray-700 dark:text-gray-300">
-            A list of all projects in your workspace
+            Manage your projects in the MCP-enhanced workspace
           </p>
         </div>
         <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">

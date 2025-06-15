@@ -1,4 +1,4 @@
-# Task Management Web UI - Deployment Guide
+# ProjectHub-Mcp - Deployment Guide
 
 ## Current Implementation Details
 
@@ -58,8 +58,8 @@
 
 ```bash
 # Create deployment package
-cd /opt/projects/projects/task-management-webui
-tar -czf task-management-webui.tar.gz \
+cd /opt/projects/projects/ProjectHub-Mcp
+tar -czf ProjectHub-Mcp.tar.gz \
   backend/ \
   frontend/ \
   docker-compose.yml \
@@ -67,7 +67,7 @@ tar -czf task-management-webui.tar.gz \
   DEPLOYMENT.md
 
 # Copy to remote server
-scp task-management-webui.tar.gz drwho@192.168.1.25:/home/drwho/
+scp ProjectHub-Mcp.tar.gz drwho@192.168.1.25:/home/drwho/
 ```
 
 ### Step 2: Remote Server Setup
@@ -77,11 +77,11 @@ scp task-management-webui.tar.gz drwho@192.168.1.25:/home/drwho/
 ssh drwho@192.168.1.25
 
 # Create project directory
-mkdir -p /opt/projects/task-management-webui
-cd /opt/projects/task-management-webui
+mkdir -p /opt/projects/ProjectHub-Mcp
+cd /opt/projects/ProjectHub-Mcp
 
 # Extract files
-tar -xzf ~/task-management-webui.tar.gz
+tar -xzf ~/ProjectHub-Mcp.tar.gz
 
 # Update backend environment
 cat > backend/.env << EOF
@@ -105,7 +105,7 @@ version: '3.8'
 
 services:
   backend:
-    container_name: task-management-backend
+    container_name: projecthub-mcp-backend
     build: ./backend
     ports:
       - "3001:3001"
@@ -119,7 +119,7 @@ services:
       - "host.docker.internal:192.168.1.25"
 
   frontend:
-    container_name: task-management-frontend
+    container_name: projecthub-mcp-frontend
     build: ./frontend
     ports:
       - "5173:5173"
@@ -148,7 +148,7 @@ docker-compose up -d --build
 docker-compose logs -f
 
 # Verify containers are running
-docker ps | grep task-management
+docker ps | grep projecthub-mcp
 ```
 
 ### Step 6: Access the Application
@@ -174,8 +174,8 @@ Update the claude.json on your local machine to use the remote task management U
 
 ### Viewing Logs
 ```bash
-docker logs task-management-backend
-docker logs task-management-frontend
+docker logs projecthub-mcp-backend
+docker logs projecthub-mcp-frontend
 ```
 
 ### Updating the Application

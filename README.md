@@ -1,4 +1,15 @@
-# Task Management WebUI
+# 🚀 ProjectHub-Mcp
+
+[![CI/CD Pipeline](https://github.com/username/ProjectHub-Mcp/workflows/CI/CD%20Pipeline/badge.svg)](https://github.com/username/ProjectHub-Mcp/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-18.0+-61DAFB.svg)](https://reactjs.org/)
+[![Docker](https://img.shields.io/badge/Docker-Supported-2496ED.svg)](https://www.docker.com/)
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Support-orange.svg)](https://buymeacoffee.com/anubissbe)
+
+> A comprehensive, enterprise-grade project management hub with MCP integration, featuring advanced time tracking, workflow templates, dependency visualization, team collaboration, and analytics dashboard.
+
+## ⭐ Star this repository if you find it helpful!
 
 <div align="center">
 
@@ -94,6 +105,9 @@ docker compose up -d
 For local development without Docker:
 
 ```bash
+# Navigate to project directory
+cd /opt/projects/projects/ProjectHub-Mcp
+
 # Install dependencies
 cd frontend && npm install
 cd ../backend && npm install
@@ -281,7 +295,65 @@ GET    /api/projects/:id/time-summary  # Project time summary
 ```
 GET    /api/projects/:id/analytics     # Get project analytics
 GET    /api/projects/:id/export        # Export project data
+<<<<<<< HEAD
 POST   /api/export/tasks               # Export filtered tasks
+=======
+GET    /api/tasks/:id/time-tracking    # Get time tracking data
+```
+
+## 🗄️ Database Schema
+
+The application uses the `project_management` schema with these tables:
+
+### Core Tables
+- **projects**: Project information and metadata
+- **tasks**: Task details with hierarchical structure
+- **task_dependencies**: Task relationship mapping
+- **task_history**: Comprehensive change tracking
+
+### Collaboration Tables
+- **task_comments**: Threaded comment system
+- **task_attachments**: File attachment metadata
+- **activity_entries**: Activity feed and audit trail
+- **task_mentions**: @mention tracking
+
+### Analytics Tables
+- **time_tracking**: Detailed time logging
+- **task_insights**: Performance analytics
+- **project_stats**: Aggregated project metrics
+
+## 🚀 Deployment
+
+### Production Deployment
+The application is deployed on a remote server with Docker Compose:
+
+```bash
+# Deploy to remote server
+./scripts/deploy-projecthub-mcp.sh
+
+# Sync database
+./scripts/sync-postgres-to-remote.sh
+
+# View remote logs
+ssh drwho@192.168.1.25
+cd ~/projects/ProjectHub-Mcp
+docker compose logs -f
+```
+
+### Environment Variables
+
+#### Backend (.env)
+```
+PORT=3001
+DATABASE_URL=postgresql://user:password@localhost:5432/mcp_learning
+CORS_ORIGIN=http://localhost:5173
+NODE_ENV=production
+```
+
+#### Frontend (.env)
+```
+VITE_API_URL=http://localhost:3001/api
+VITE_APP_TITLE=ProjectHub-Mcp
 ```
 
 ## 🧪 Testing
@@ -449,7 +521,12 @@ If you find this project helpful, please consider supporting its development:
 - Email: support@taskmanagement.example.com
 - Follow [@anubissbe](https://github.com/anubissbe) for updates
 
+<<<<<<< HEAD
 ## 🏆 Performance & Quality
+=======
+![GitHub stars](https://img.shields.io/github/stars/username/ProjectHub-Mcp?style=social)
+![GitHub forks](https://img.shields.io/github/forks/username/ProjectHub-Mcp?style=social)
+![GitHub watchers](https://img.shields.io/github/watchers/username/ProjectHub-Mcp?style=social)
 
 <div align="center">
 
@@ -480,6 +557,7 @@ If you find this project helpful, please consider supporting its development:
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/anubissbe)
 [![Discord](https://img.shields.io/badge/Discord-Join%20Community-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/anubissbe)
 
+<<<<<<< HEAD
 ### 📊 Repository Stats
 
 ![GitHub repo size](https://img.shields.io/github/repo-size/anubissbe/task-management-webui?style=for-the-badge&logo=github)
@@ -498,5 +576,7 @@ If you find this project helpful, please consider supporting its development:
 **Made with ❤️ and ☕ by [@anubissbe](https://github.com/anubissbe)**
 
 *If this project helped you, please consider ⭐ starring the repository and ☕ [buying me a coffee](https://www.buymeacoffee.com/anubissbe)!*
+=======
+[⭐ Star this repository](https://github.com/username/ProjectHub-Mcp) • [🐛 Report Bug](https://github.com/username/ProjectHub-Mcp/issues) • [✨ Request Feature](https://github.com/username/ProjectHub-Mcp/issues) • [☕ Buy me a coffee](https://buymeacoffee.com/anubissbe)
 
 </div>

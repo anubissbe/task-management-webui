@@ -1,11 +1,11 @@
-# Project: Task Management Web UI
+# Project: ProjectHub-Mcp
 
 ## Overview
 ✅ **COMPLETED** - Advanced task management web interface with enterprise-level features including time tracking, workflow templates, and comprehensive analytics.
 
 ## Environment Setup
 ```bash
-cd /opt/projects/projects/task-management-webui
+cd /opt/projects/projects/ProjectHub-Mcp
 
 # Production access (deployed)
 # Frontend: http://192.168.1.25:5173
@@ -162,14 +162,14 @@ Backend (Express.js + TypeScript)
 ### Maintenance Commands
 ```bash
 # Deploy updates
-./scripts/deploy-task-management-ui.sh
+./scripts/deploy-projecthub-mcp.sh
 
 # Sync database
 ./scripts/sync-postgres-to-remote.sh
 
 # View logs
 ssh drwho@192.168.1.25
-cd ~/projects/task-management-webui
+cd ~/projects/ProjectHub-Mcp
 docker compose logs -f
 ```
 
