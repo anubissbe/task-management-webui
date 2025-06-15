@@ -202,14 +202,14 @@ jobs:
         fetch-depth: 0
         
     - name: 🔍 SonarCloud Scan
-      if: ${{ secrets.SONAR_TOKEN != '' }}
+      if: ${{ secrets.SONAR_TOKEN }}
       uses: SonarSource/sonarcloud-github-action@master
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         
     - name: ⚠️ SonarCloud Skipped
-      if: ${{ secrets.SONAR_TOKEN == '' }}
+      if: ${{ !secrets.SONAR_TOKEN }}
       run: echo "SonarCloud scan skipped - SONAR_TOKEN not configured"
         
     - name: 📊 CodeQL Analysis
