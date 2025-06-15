@@ -168,7 +168,7 @@ jobs:
         
     - name: 🐳 Start services
       run: |
-        docker compose up -d --wait
+        docker compose -f docker-compose.ci.yml up -d --wait
         sleep 30
         
     - name: 🧪 Install E2E test dependencies
@@ -188,7 +188,7 @@ jobs:
         
     - name: 🛑 Stop services
       if: always()
-      run: docker compose down
+      run: docker compose -f docker-compose.ci.yml down
 
   # Code Quality
   code-quality:
