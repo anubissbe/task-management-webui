@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Task, TaskComment, TaskAttachment, TaskDependency, ActivityEntry } from '../types';
+import { Task, TaskComment, TaskAttachment, TaskDependency, ActivityEntry, Project } from '../types';
 import { TaskComments } from './TaskComments';
 import { FileAttachments } from './FileAttachments';
 import { ActivityFeed } from './ActivityFeed';
