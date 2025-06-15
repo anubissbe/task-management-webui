@@ -1,0 +1,35 @@
+<svg width="800" height="200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#000000;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#1a1a1a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#000000;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f3f4f6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="200" rx="16" fill="url(#bgGradient)" stroke="#374151" stroke-width="2"/>
+  
+  <!-- Main title -->
+  <text x="80" y="110" font-family="Arial, sans-serif" font-size="56" font-weight="bold" fill="url(#textGradient)">Project</text>
+  <text x="340" y="110" font-family="Arial, sans-serif" font-size="56" font-weight="bold" fill="#f97316">hub</text>
+  
+  <!-- Subtitle -->
+  <text x="80" y="145" font-family="Arial, sans-serif" font-size="18" fill="#9ca3af">MCP Enhanced Project Management Workspace</text>
+  
+  <!-- Decorative elements -->
+  <circle cx="40" cy="100" r="12" fill="#f97316" opacity="0.8"/>
+  <circle cx="760" cy="100" r="12" fill="#f97316" opacity="0.8"/>
+  
+  <!-- Connection lines -->
+  <line x1="52" y1="100" x2="68" y2="100" stroke="#374151" stroke-width="2"/>
+  <line x1="732" y1="100" x2="748" y2="100" stroke="#374151" stroke-width="2"/>
+  
+  <!-- Tech stack icons representation -->
+  <rect x="580" y="40" width="160" height="30" rx="4" fill="#1f2937" opacity="0.6"/>
+  <text x="590" y="58" font-family="Arial, sans-serif" font-size="12" fill="#6b7280">React • TypeScript • Docker</text>
+</svg>
