@@ -61,19 +61,6 @@ export function Board() {
 
   const activeProjectId = projectIdFromUrl || selectedProjectId;
 
-  useEffect(() => {
-    fetchProjects();
-  }, []);
-
-  useEffect(() => {
-    if (activeProjectId) {
-      fetchProjectAndTasks();
-    } else if (projects.length > 0 && !projectIdFromUrl) {
-      // Auto-select first project if none selected
-      setSelectedProjectId(projects[0].id);
-    }
-  }, [activeProjectId, projects, projectIdFromUrl, fetchProjectAndTasks, setSelectedProjectId]);
-
   const fetchProjects = async () => {
     try {
       const projectsData = await projectService.getAllProjects();
@@ -121,6 +108,19 @@ export function Board() {
       setLoading(false);
     }
   }, [activeProjectId]);
+
+  useEffect(() => {
+    fetchProjects();
+  }, []);
+
+  useEffect(() => {
+    if (activeProjectId) {
+      fetchProjectAndTasks();
+    } else if (projects.length > 0 && !projectIdFromUrl) {
+      // Auto-select first project if none selected
+      setSelectedProjectId(projects[0].id);
+    }
+  }, [activeProjectId, projects, projectIdFromUrl, fetchProjectAndTasks, setSelectedProjectId]);
 
   const updateTaskStatus = async (taskId: string, newStatus: string) => {
     try {

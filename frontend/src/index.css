@@ -1,9 +1,9 @@
+/* Import dark mode overrides */
+@import './dark-mode-overrides.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Import dark mode overrides */
-@import './dark-mode-overrides.css';
 
 /* Preemptive fixes for dynamically generated styles */
 @layer base {
