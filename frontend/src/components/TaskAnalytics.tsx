@@ -3,7 +3,7 @@ import { Task, Project } from '../types';
 
 interface TaskAnalyticsProps {
   tasks: Task[];
-  project: Project;
+  project?: Project;
 }
 
 interface Analytics {
@@ -27,7 +27,7 @@ interface Analytics {
   overdueEstimates: Task[];
 }
 
-export function TaskAnalytics({ tasks, project: _project }: TaskAnalyticsProps) {
+export function TaskAnalytics({ tasks }: TaskAnalyticsProps) {
   const analytics: Analytics = useMemo(() => {
     const completed = tasks.filter(t => t.status === 'completed');
     const blocked = tasks.filter(t => t.status === 'blocked');

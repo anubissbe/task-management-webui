@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import { TaskAttachment } from '../types';
 
 interface FileAttachmentsProps {
-  taskId: string;
+  taskId?: string;
   attachments: TaskAttachment[];
   onFileUpload: (file: File) => Promise<void>;
   onFileDelete: (attachmentId: string) => Promise<void>;
@@ -24,7 +24,6 @@ const DEFAULT_ALLOWED_TYPES = [
 ];
 
 export function FileAttachments({
-  taskId,
   attachments,
   onFileUpload,
   onFileDelete,
@@ -119,8 +118,9 @@ export function FileAttachments({
         // Remove progress after delay
         setTimeout(() => {
           setUploadProgress(prev => {
-            const { [progressKey]: _, ...rest } = prev;
-            return rest;
+            const newProgress = { ...prev };
+            delete newProgress[progressKey];
+            return newProgress;
           });
         }, 1000);
         

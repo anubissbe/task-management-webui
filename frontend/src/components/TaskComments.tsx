@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { TaskComment, Task } from '../types';
 
 interface TaskCommentsProps {
-  task: Task;
+  task?: Task;
   comments: TaskComment[];
   onCommentAdd: (content: string, parentId?: string) => void;
   onCommentUpdate: (commentId: string, content: string) => void;
@@ -26,7 +26,6 @@ const AVAILABLE_USERS: MentionUser[] = [
 ];
 
 export function TaskComments({ 
-  task: _task, 
   comments, 
   onCommentAdd, 
   onCommentUpdate, 

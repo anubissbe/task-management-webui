@@ -9,8 +9,8 @@ interface TaskDetailModalProps {
   task: Task;
   onClose: () => void;
   onTaskUpdate: (taskId: string, updates: Partial<Task>) => Promise<void>;
-  onDependencyAdd: (taskId: string, dependsOnTaskId: string) => Promise<void>;
-  onDependencyRemove: (taskId: string, dependsOnTaskId: string) => Promise<void>;
+  onDependencyAdd?: (taskId: string, dependsOnTaskId: string) => Promise<void>;
+  onDependencyRemove?: (taskId: string, dependsOnTaskId: string) => Promise<void>;
   // Mock data - in real app these would come from API
   comments?: TaskComment[];
   attachments?: TaskAttachment[];
@@ -24,12 +24,9 @@ export function TaskDetailModal({
   task, 
   onClose, 
   onTaskUpdate,
-  onDependencyAdd: _onDependencyAdd,
-  onDependencyRemove: _onDependencyRemove,
-  comments: _comments = [],
-  attachments: _attachments = [],
+  onDependencyAdd,
+  onDependencyRemove,
   dependencies = [],
-  activities: _activities = [],
   availableTasks = [],
   currentUser 
 }: TaskDetailModalProps) {
@@ -343,7 +340,7 @@ export function TaskDetailModal({
                     {isEditing ? (
                       <select
                         value={editData.priority}
-                        onChange={(e) => setEditData(prev => ({ ...prev, priority: e.target.value as any }))}
+                        onChange={(e) => setEditData(prev => ({ ...prev, priority: e.target.value as Task['priority'] }))}
                         className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
                       >
                         <option value="low">Low</option>
@@ -474,7 +471,7 @@ export function TaskDetailModal({
               <ActivityFeed
                 activities={mockActivities}
                 tasks={[task]}
-                project={{ id: task.project_id, name: 'Current Project' } as any}
+                project={{ id: task.project_id, name: 'Current Project' } as Project}
                 currentUser={currentUser}
                 showFilters={false}
               />
@@ -492,7 +489,14 @@ export function TaskDetailModal({
                 {/* Add Dependency */}
                 <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                   <h5 className="font-medium text-gray-900 dark:text-white mb-2">Add Dependency</h5>
-                  <select className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white">
+                  <select 
+                    onChange={(e) => {
+                      if (e.target.value && onDependencyAdd) {
+                        onDependencyAdd(task.id, e.target.value);
+                        e.target.value = '';
+                      }
+                    }}
+                    className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white">
                     <option value="">Select a task this depends on...</option>
                     {availableTasks.filter(t => t.id !== task.id).map(t => (
                       <option key={t.id} value={t.id}>{t.name}</option>
@@ -512,7 +516,7 @@ export function TaskDetailModal({
                       <div key={dep.id} className="flex items-center justify-between p-3 bg-white dark:bg-gray-600 rounded border">
                         <span>Depends on: {dep.depends_on_task_id}</span>
                         <button
-                          onClick={() => _onDependencyRemove(task.id, dep.depends_on_task_id)}
+                          onClick={() => onDependencyRemove?.(task.id, dep.depends_on_task_id)}
                           className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
                         >
                           Remove

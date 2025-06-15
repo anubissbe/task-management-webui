@@ -19,7 +19,10 @@ interface ExportOptions {
   priorityFilter: string[];
 }
 
-export function ExportReports({ project, tasks, activities: _activities = [], onClose }: ExportReportsProps) {
+export function ExportReports({ project, tasks, activities = [], onClose }: ExportReportsProps) {
+  // Activities will be used for activity reports in future updates
+  console.log('Activities count:', activities.length);
+  
   const [options, setOptions] = useState<ExportOptions>({
     format: 'csv',
     includeSubtasks: true,
@@ -364,7 +367,7 @@ export function ExportReports({ project, tasks, activities: _activities = [], on
                 ].map((format) => (
                   <button
                     key={format.value}
-                    onClick={() => setOptions(prev => ({ ...prev, format: format.value as any }))}
+                    onClick={() => setOptions(prev => ({ ...prev, format: format.value as 'csv' | 'json' | 'pdf' }))}
                     className={`p-3 border rounded-lg text-left transition-colors ${
                       options.format === format.value
                         ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300'

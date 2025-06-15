@@ -3,6 +3,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { io, Socket } from 'socket.io-client';
 import { useProjectStore } from '../store/projectStore';
 import toast from 'react-hot-toast';
+import { Task } from '../types';
 
 let socket: Socket | null = null;
 
@@ -128,13 +129,13 @@ export const useRealtimeUpdates = (projectId?: string) => {
   }, [projectId, queryClient, currentProject, updateTask, addTask, deleteTask]);
 
   // Emit events
-  const emitTaskUpdate = (taskId: string, updates: any) => {
+  const emitTaskUpdate = (taskId: string, updates: Partial<Task>) => {
     if (socket && projectId) {
       socket.emit('update-task', { projectId, taskId, updates });
     }
   };
 
-  const emitTaskCreate = (task: any) => {
+  const emitTaskCreate = (task: Task) => {
     if (socket && projectId) {
       socket.emit('create-task', { projectId, task });
     }
@@ -146,7 +147,7 @@ export const useRealtimeUpdates = (projectId?: string) => {
     }
   };
 
-  const emitUserActivity = (activity: string, data?: any) => {
+  const emitUserActivity = (activity: string, data?: Record<string, unknown>) => {
     if (socket && projectId) {
       socket.emit('user-activity', { projectId, activity, ...data });
     }

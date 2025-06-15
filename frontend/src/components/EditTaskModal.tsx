@@ -50,8 +50,8 @@ export function EditTaskModal({ task, onClose, onTaskUpdated }: EditTaskModalPro
       const updatedTask = await taskService.updateTask(task.id, updateData);
       onTaskUpdated(updatedTask);
       onClose();
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to update task');
+    } catch (err) {
+      setError((err as Error).message || 'Failed to update task');
     } finally {
       setLoading(false);
     }
@@ -67,8 +67,8 @@ export function EditTaskModal({ task, onClose, onTaskUpdated }: EditTaskModalPro
       await taskService.deleteTask(task.id);
       onClose();
       window.location.reload(); // Simple refresh to update the board
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to delete task');
+    } catch (err) {
+      setError((err as Error).message || 'Failed to delete task');
     } finally {
       setLoading(false);
     }
