@@ -5,7 +5,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile.dev
-    container_name: task-management-backend
+    container_name: projecthub-mcp-backend
     ports:
       - "3001:3001"
     environment:
@@ -17,7 +17,7 @@ services:
       - ./backend:/app
       - /app/node_modules
     networks:
-      - task-management-network
+      - projecthub-mcp-network
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
@@ -27,7 +27,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile.dev
-    container_name: task-management-frontend
+    container_name: projecthub-mcp-frontend
     ports:
       - "5173:5173"
     environment:
@@ -37,9 +37,9 @@ services:
       - ./frontend:/app
       - /app/node_modules
     networks:
-      - task-management-network
+      - projecthub-mcp-network
 
 networks:
-  task-management-network:
+  projecthub-mcp-network:
     external: true
-    name: project-tasks-webui_task-management-network
+    name: projecthub-mcp_network

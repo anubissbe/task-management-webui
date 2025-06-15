@@ -15,9 +15,17 @@ export const Layout: React.FC = () => {
           <div className="flex justify-between h-16">
             <div className="flex">
               <div className="flex-shrink-0 flex items-center">
-                <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-                  Task Management
-                </h1>
+                <div className="flex items-center space-x-3">
+                  <div className="bg-black px-3 py-1 rounded-lg flex items-center space-x-1">
+                    <span className="text-white font-bold text-lg">Project</span>
+                    <span className="text-orange-500 font-bold text-lg">hub</span>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      MCP Enhanced Workspace
+                    </p>
+                  </div>
+                </div>
               </div>
               <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
                 <Link
@@ -65,6 +73,32 @@ export const Layout: React.FC = () => {
       <main className="flex-1 max-w-7xl mx-auto w-full overflow-auto text-gray-900 dark:text-gray-100">
         <Outlet />
       </main>
+      
+      <footer className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-auto">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2">
+                <div className="bg-black px-2 py-1 rounded flex items-center space-x-1">
+                  <span className="text-white font-bold text-xs">Project</span>
+                  <span className="text-orange-500 font-bold text-xs">hub</span>
+                </div>
+              </div>
+              <div className="hidden sm:flex items-center space-x-2">
+                <span className="inline-flex items-center px-2 py-1 text-xs font-medium bg-brand-100 text-brand-800 dark:bg-brand-900 dark:text-brand-200 rounded-full">
+                  🔗 MCP Enhanced
+                </span>
+                <span className="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 rounded-full">
+                  ✅ Production Ready
+                </span>
+              </div>
+            </div>
+            <div className="text-xs text-gray-500 dark:text-gray-400">
+              Powered by MCP Protocol
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };

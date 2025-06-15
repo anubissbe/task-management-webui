@@ -1,10 +1,10 @@
-# Project: Task Management Web UI
+# Project: ProjectHub-Mcp
 
 ## Current Status
 - Last worked on: 2025-06-13
 - Current task: ✅ COMPLETED - Advanced feature implementation
 - Branch: main
-- Deployment: ✅ Live on remote server (192.168.1.25:5173)
+- Deployment: ✅ Live on Synology NAS (192.168.1.24:5173) with new ProjectHub-Mcp branding
 
 ## 🚀 Major Features Completed (June 13, 2025)
 

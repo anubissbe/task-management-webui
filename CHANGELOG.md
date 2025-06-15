@@ -1,9 +1,18 @@
 # Changelog
 
-All notable changes to the Task Management Web UI project will be documented in this file.
+All notable changes to ProjectHub-Mcp will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [4.0.0] - 2025-06-15
+
+### 🎨 Major Rebranding
+- **BREAKING**: Renamed project from "Task Management Web UI" to "ProjectHub-Mcp"
+- **Added** new black and orange logo design inspired by modern project management platforms
+- **Updated** all branding elements including favicon, meta tags, and visual identity
+- **Enhanced** focus on MCP (Model Context Protocol) integration
+- **Improved** project management capabilities with MCP server integration
 
 ## [3.1.0] - 2025-06-15
 
