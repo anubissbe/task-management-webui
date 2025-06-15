@@ -1,22 +1,26 @@
-# 🚀 ProjectHub-Mcp
+<div align="center">
 
-[![CI/CD Pipeline](https://github.com/username/ProjectHub-Mcp/workflows/CI/CD%20Pipeline/badge.svg)](https://github.com/username/ProjectHub-Mcp/actions)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
-[![React](https://img.shields.io/badge/React-18.0+-61DAFB.svg)](https://reactjs.org/)
-[![Docker](https://img.shields.io/badge/Docker-Supported-2496ED.svg)](https://www.docker.com/)
-[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Support-orange.svg)](https://buymeacoffee.com/anubissbe)
+![ProjectHub-Mcp Banner](docs/banner.svg)
 
-> A comprehensive, enterprise-grade project management hub with MCP integration, featuring advanced time tracking, workflow templates, dependency visualization, team collaboration, and analytics dashboard.
+[![ProjectHub-Mcp](https://img.shields.io/badge/ProjectHub-Mcp-000000?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiByeD0iNCIgZmlsbD0iIzAwMDAwMCIvPgo8dGV4dCB4PSIyIiB5PSIxNiIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjgiIGZpbGw9IndoaXRlIj5QPC90ZXh0Pgo8dGV4dCB4PSIxNCIgeT0iMTYiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI4IiBmaWxsPSIjZjk3MzE2Ij5oPC90ZXh0Pgo8L3N2Zz4K&logoColor=white)](https://github.com/anubissbe/ProjectHub-Mcp)
+[![License: MIT](https://img.shields.io/badge/License-MIT-f97316?style=for-the-badge)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-19+-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://reactjs.org/)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
+[![MCP Enhanced](https://img.shields.io/badge/MCP-Enhanced-f97316?style=for-the-badge)](https://docs.anthropic.com/en/docs/build-with-claude/mcp)
+
+> **A comprehensive, enterprise-grade project management hub with MCP integration, featuring advanced time tracking, workflow templates, dependency visualization, team collaboration, and analytics dashboard.**
 
 ## ⭐ Star this repository if you find it helpful!
 
+</div>
+
 <div align="center">
 
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/anubissbe/task-management-webui?style=for-the-badge&logo=github&color=blue)](https://github.com/anubissbe/task-management-webui/releases)
-[![GitHub stars](https://img.shields.io/github/stars/anubissbe/task-management-webui?style=for-the-badge&logo=github&color=yellow)](https://github.com/anubissbe/task-management-webui/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/anubissbe/task-management-webui?style=for-the-badge&logo=github&color=green)](https://github.com/anubissbe/task-management-webui/network)
-[![GitHub license](https://img.shields.io/github/license/anubissbe/task-management-webui?style=for-the-badge&logo=github&color=orange)](https://github.com/anubissbe/task-management-webui/blob/main/LICENSE)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/anubissbe/ProjectHub-Mcp?style=for-the-badge&logo=github&color=blue)](https://github.com/anubissbe/ProjectHub-Mcp/releases)
+[![GitHub stars](https://img.shields.io/github/stars/anubissbe/ProjectHub-Mcp?style=for-the-badge&logo=github&color=yellow)](https://github.com/anubissbe/ProjectHub-Mcp/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/anubissbe/ProjectHub-Mcp?style=for-the-badge&logo=github&color=green)](https://github.com/anubissbe/ProjectHub-Mcp/network)
+[![GitHub license](https://img.shields.io/github/license/anubissbe/ProjectHub-Mcp?style=for-the-badge&logo=github&color=orange)](https://github.com/anubissbe/ProjectHub-Mcp/blob/main/LICENSE)
 
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://hub.docker.com/)
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://reactjs.org/)
@@ -38,9 +42,15 @@
 
 ![Task Management WebUI](docs/images/homepage.png)
 
+<div align="center">
+
+![ProjectHub-Mcp Logo](docs/logo.svg)
+
+</div>
+
 ## 🌟 Features
 
-### Core Features
+### 🚀 Core Features
 - **📊 Multiple View Modes**: Kanban Board, List, Calendar, and Timeline/Gantt views
 - **🔄 Real-time Updates**: WebSocket-based live synchronization across users
 - **🌓 Dark Mode**: Full dark mode support with excellent contrast
@@ -76,7 +86,7 @@
 Download and run the latest release:
 ```bash
 # Download and extract the latest release
-curl -L https://github.com/anubissbe/task-management-webui/releases/download/v1.0.0/task-management-webui-v1.0.0-full.tar.gz | tar -xz
+curl -L https://github.com/anubissbe/ProjectHub-Mcp/releases/download/v1.0.0/ProjectHub-Mcp-v4.0.0-full.tar.gz | tar -xz
 
 # Start the application
 docker compose up -d
@@ -86,8 +96,8 @@ docker compose up -d
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/anubissbe/task-management-webui.git
-cd task-management-webui
+git clone https://github.com/anubissbe/ProjectHub-Mcp.git
+cd ProjectHub-Mcp
 ```
 
 2. Start the application:
@@ -169,7 +179,7 @@ npm run dev
 ### Project Structure
 
 ```
-task-management-webui/
+ProjectHub-Mcp/
 ├── frontend/                    # React frontend application
 │   ├── src/
 │   │   ├── components/         # Reusable UI components
@@ -515,7 +525,7 @@ If you find this project helpful, please consider supporting its development:
 
 ## 📞 Get Help & Support
 
-- Create an [issue](https://github.com/anubissbe/task-management-webui/issues) for bug reports
+- Create an [issue](https://github.com/anubissbe/ProjectHub-Mcp/issues) for bug reports
 - Check the [FAQ](docs/FAQ.md) for common questions  
 - Join our [Discord community](https://discord.gg/anubissbe)
 - Email: support@taskmanagement.example.com
@@ -568,8 +578,8 @@ If you find this project helpful, please consider supporting its development:
 
 [![📚 Documentation](https://img.shields.io/badge/📚-Documentation-blue?style=for-the-badge)](docs/)
 [![🚀 Live Demo](https://img.shields.io/badge/🚀-Live%20Demo-green?style=for-the-badge)](http://192.168.1.25:5173)
-[![🐛 Report Bug](https://img.shields.io/badge/🐛-Report%20Bug-red?style=for-the-badge)](https://github.com/anubissbe/task-management-webui/issues)
-[![💡 Request Feature](https://img.shields.io/badge/💡-Request%20Feature-yellow?style=for-the-badge)](https://github.com/anubissbe/task-management-webui/issues)
+[![🐛 Report Bug](https://img.shields.io/badge/🐛-Report%20Bug-red?style=for-the-badge)](https://github.com/anubissbe/ProjectHub-Mcp/issues)
+[![💡 Request Feature](https://img.shields.io/badge/💡-Request%20Feature-yellow?style=for-the-badge)](https://github.com/anubissbe/ProjectHub-Mcp/issues)
 
 ---
 
