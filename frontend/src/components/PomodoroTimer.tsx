@@ -72,13 +72,6 @@ export function PomodoroTimer({ task, onTimeUpdate, onComplete }: PomodoroTimerP
     };
   }, [timer.isRunning, timer.timeLeft]);
 
-  // Handle timer completion
-  useEffect(() => {
-    if (timer.isRunning && timer.timeLeft === 0) {
-      handleTimerComplete();
-    }
-  }, [timer.timeLeft, timer.isRunning, handleTimerComplete]);
-
   const playNotificationSound = useCallback(() => {
     if (audioEnabled && audioRef.current) {
       // Create a simple beep sound using Web Audio API
@@ -153,6 +146,13 @@ export function PomodoroTimer({ task, onTimeUpdate, onComplete }: PomodoroTimerP
 
     onComplete?.();
   }, [timer.mode, timer.pomodoroCount, task, onTimeUpdate, onComplete, playNotificationSound]);
+
+  // Handle timer completion
+  useEffect(() => {
+    if (timer.isRunning && timer.timeLeft === 0) {
+      handleTimerComplete();
+    }
+  }, [timer.timeLeft, timer.isRunning, handleTimerComplete]);
 
   const startTimer = () => {
     // Request notification permission

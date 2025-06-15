@@ -315,11 +315,11 @@ export function ActivityFeed({
                           </div>
                           
                           {/* Activity Details */}
-                          {activity.details.comment && (
+                          {activity.details.comment && typeof activity.details.comment === 'string' ? (
                             <div className="mt-1 p-2 bg-gray-100 dark:bg-gray-600 rounded text-sm text-gray-700 dark:text-gray-300">
                               "{activity.details.comment}"
                             </div>
-                          )}
+                          ) : null}
                           
                           <div className="flex items-center gap-4 mt-1">
                             <span className="text-xs text-gray-500 dark:text-gray-400">
