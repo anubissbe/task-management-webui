@@ -14,6 +14,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Enhanced** focus on MCP (Model Context Protocol) integration
 - **Improved** project management capabilities with MCP server integration
 
+### 🎯 GitHub Visual Branding
+- **Added** custom ProjectHub-Mcp banner SVG for README header
+- **Created** branded logo SVG with black/orange color scheme
+- **Added** GitHub social preview image for better sharing
+- **Updated** all repository URLs and GitHub badge references
+- **Enhanced** README with custom branded badges including MCP Enhanced badge
+- **Fixed** all documentation references to use new repository name
+
 ## [3.1.0] - 2025-06-15
 
 ### 🚀 Features Added
