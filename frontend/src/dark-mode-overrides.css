@@ -38,8 +38,33 @@
 }
 
 .dark .bg-blue-100 {
-  background-color: rgb(29 78 216 / 0.2) !important;
-  color: rgb(147 197 253) !important; /* text-blue-300 */
+  background-color: rgb(255 101 0 / 0.2) !important;
+  color: rgb(255 186 116) !important; /* text-orange-300 */
+}
+
+/* Override blue colors to use orange theme */
+.bg-blue-100 {
+  background-color: rgb(255 237 213) !important; /* bg-orange-100 */
+  color: rgb(234 88 12) !important; /* text-orange-600 */
+}
+
+.text-blue-800 {
+  color: rgb(234 88 12) !important; /* text-orange-600 */
+}
+
+/* Force completed status to use orange */
+[class*="completed"] .bg-blue-100,
+.bg-blue-100:contains("completed") {
+  background-color: rgb(255 237 213) !important;
+  color: rgb(234 88 12) !important;
+}
+
+.dark .bg-blue-900 {
+  background-color: rgb(255 101 0 / 0.3) !important;
+}
+
+.dark .text-blue-200 {
+  color: rgb(255 186 116) !important; /* text-orange-300 */
 }
 
 .dark .bg-green-100 {
@@ -112,8 +137,8 @@
 }
 
 .dark select:focus {
-  border-color: rgb(99 102 241); /* border-indigo-500 */
-  box-shadow: 0 0 0 3px rgb(99 102 241 / 0.1);
+  border-color: rgb(255 101 0); /* border-orange-500 */
+  box-shadow: 0 0 0 3px rgb(255 101 0 / 0.1);
 }
 
 .dark input::placeholder,
@@ -123,17 +148,31 @@
 
 /* Links */
 .dark a:not([class*="text-"]) {
-  color: rgb(96 165 250); /* text-blue-400 */
+  color: rgb(255 101 0); /* text-orange-500 */
 }
 
 .dark a:not([class*="text-"]):hover {
-  color: rgb(147 197 253); /* text-blue-300 */
+  color: rgb(255 186 116); /* text-orange-300 */
 }
 
 /* Card and modal backgrounds */
 .dark .bg-white {
   background-color: rgb(31 41 55); /* bg-gray-800 */
   color: rgb(229 231 235); /* text-gray-200 */
+}
+
+/* Table specific dark mode overrides */
+.dark table thead {
+  background: linear-gradient(90deg, rgb(10, 10, 10) 0%, rgb(255, 101, 0, 0.2) 50%, rgb(10, 10, 10) 100%) !important;
+}
+
+.dark table tbody {
+  background: rgb(10, 10, 10) !important;
+}
+
+/* Override any gradient classes on table */
+.dark .bg-gradient-to-r {
+  background: linear-gradient(90deg, rgb(10, 10, 10) 0%, rgb(255, 101, 0, 0.2) 50%, rgb(10, 10, 10) 100%) !important;
 }
 
 /* Borders */

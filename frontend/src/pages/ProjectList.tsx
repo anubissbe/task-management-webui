@@ -60,15 +60,15 @@ export const ProjectList: React.FC = () => {
   const getStatusColor = (status: Project['status']) => {
     switch (status) {
       case 'planning':
-        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
+        return 'bg-orange-50 text-orange-700 dark:bg-orange-950/30 dark:text-orange-300 border border-orange-200 dark:border-orange-800';
       case 'active':
-        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
+        return 'bg-green-50 text-green-700 dark:bg-green-950/30 dark:text-green-300 border border-green-200 dark:border-green-800';
       case 'paused':
-        return 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200';
+        return 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-200 border border-orange-300 dark:border-orange-700';
       case 'completed':
-        return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
+        return 'bg-orange-100 text-orange-900 dark:bg-orange-950/50 dark:text-orange-200 border border-orange-300 dark:border-orange-800';
       case 'cancelled':
-        return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
+        return 'bg-red-50 text-red-700 dark:bg-red-950/30 dark:text-red-300 border border-red-200 dark:border-red-800';
       default:
         return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
     }
@@ -154,25 +154,25 @@ export const ProjectList: React.FC = () => {
         </div>
       </div>
 
-      <div className="mt-8 overflow-hidden shadow-2xl shadow-orange-500/10 dark:shadow-orange-500/30 ring-2 ring-orange-500/30 dark:ring-orange-500/50 md:rounded-xl overflow-x-auto dark:bg-gradient-to-br dark:from-gray-950 dark:via-black dark:to-gray-950">
+      <div className="mt-8 overflow-hidden shadow-2xl shadow-orange-500/10 dark:shadow-orange-500/30 ring-2 ring-orange-500/30 dark:ring-orange-500/50 md:rounded-xl overflow-x-auto dark:bg-gradient-to-br dark:from-black dark:via-orange-950/10 dark:to-black">
         <table className="min-w-full divide-y divide-orange-500/20">
-          <thead className="bg-gradient-to-r from-gray-900 via-black to-gray-900">
+          <thead className="bg-gradient-to-r from-orange-50 via-orange-100 to-orange-50 dark:from-black dark:via-orange-950/20 dark:to-black">
             <tr>
-              <th className="px-6 py-4 text-left text-sm font-black text-orange-400 uppercase tracking-wider w-1/2">
+              <th className="px-6 py-4 text-left text-sm font-black text-orange-600 dark:text-orange-400 uppercase tracking-wider w-1/2">
                 Project Name
               </th>
-              <th className="px-6 py-4 text-left text-sm font-black text-orange-400 uppercase tracking-wider w-24">
+              <th className="px-6 py-4 text-left text-sm font-black text-orange-600 dark:text-orange-400 uppercase tracking-wider w-24">
                 Status
               </th>
-              <th className="px-6 py-4 text-left text-sm font-black text-orange-400 uppercase tracking-wider w-32">
+              <th className="px-6 py-4 text-left text-sm font-black text-orange-600 dark:text-orange-400 uppercase tracking-wider w-32">
                 Created
               </th>
-              <th className="relative px-6 py-4 w-32 text-sm font-black text-orange-400 uppercase tracking-wider">
+              <th className="relative px-6 py-4 w-32 text-sm font-black text-orange-600 dark:text-orange-400 uppercase tracking-wider">
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white dark:bg-gradient-to-b dark:from-black dark:via-gray-950 dark:to-black divide-y divide-gray-200 dark:divide-orange-500/20">
+          <tbody className="bg-white dark:bg-gradient-to-b dark:from-black dark:via-orange-950/5 dark:to-black divide-y divide-gray-200 dark:divide-orange-500/20">
             {projects?.length === 0 ? (
               <tr>
                 <td colSpan={4} className="px-6 py-16 text-center">

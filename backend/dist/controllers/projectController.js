@@ -4,6 +4,11 @@ exports.ProjectController = void 0;
 const projectService_1 = require("../services/projectService");
 const zod_1 = require("zod");
 const projectService = new projectService_1.ProjectService();
+// Emergency direct database connection (for future use)
+// const directDbPool = new Pool({
+//   connectionString: process.env.DATABASE_URL,
+//   ssl: false
+// });
 // Validation schemas
 const createProjectSchema = zod_1.z.object({
     name: zod_1.z.string().min(1).max(255),
@@ -22,6 +27,7 @@ class ProjectController {
     async getAllProjects(_req, res) {
         try {
             const projects = await projectService.getAllProjects();
+            console.log(`Retrieved ${projects.length} projects from database`);
             res.json(projects);
         }
         catch (error) {
@@ -37,6 +43,7 @@ class ProjectController {
                 res.status(404).json({ error: 'Project not found' });
                 return;
             }
+            console.log('Retrieved project from database:', project.name);
             res.json(project);
         }
         catch (error) {
