@@ -35,7 +35,7 @@ services:
       - DB_PASSWORD=${DB_PASSWORD:-projecthub123}
       - DB_NAME=${DB_NAME:-projecthub_mcp}
       - JWT_SECRET=${JWT_SECRET:-your-secret-key-here}
-      - CORS_ORIGIN=${CORS_ORIGIN:-http://localhost:5173}
+      - CORS_ORIGIN=${CORS_ORIGIN:-http://localhost:5173,http://192.168.1.24:5173}
       - LOG_LEVEL=${LOG_LEVEL:-info}
     depends_on:
       postgres:
