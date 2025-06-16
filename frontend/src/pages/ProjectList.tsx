@@ -101,68 +101,74 @@ export const ProjectList: React.FC = () => {
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center py-12">
-        <div className="w-20 h-20 bg-gradient-to-br from-red-600 to-orange-600 rounded-lg flex items-center justify-center mb-4 border-2 border-orange-500/50">
-          <span className="text-white font-bold text-2xl">⚠️</span>
+      <div className="flex flex-col items-center justify-center py-24 animate-fade-in">
+        <div className="w-24 h-24 bg-gradient-to-br from-red-600 to-orange-600 rounded-2xl flex items-center justify-center mb-6 border-4 border-orange-500/60 shadow-2xl shadow-red-500/30 animate-pulse">
+          <span className="text-white text-4xl">⚠️</span>
         </div>
-        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-          Unable to load projects
+        <h3 className="text-3xl font-black text-transparent bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text mb-3">
+          CONNECTION ERROR
         </h3>
-        <p className="text-center text-gray-600 dark:text-gray-400 mb-2">
-          There was an issue connecting to ProjectHub-Mcp
+        <p className="text-center text-gray-600 dark:text-gray-400 font-semibold mb-2">
+          Unable to connect to ProjectHub-MCP
         </p>
-        <p className="text-center text-orange-500 dark:text-orange-400 text-sm">
-          MCP server may be unavailable
+        <p className="text-center text-orange-500 font-bold uppercase tracking-wider text-sm animate-pulse-slow">
+          MCP Protocol Unavailable
         </p>
+        <button 
+          onClick={() => window.location.reload()} 
+          className="mt-8 px-8 py-4 bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-500 hover:to-orange-400 text-white font-black rounded-xl transition-all transform hover:scale-110 shadow-2xl shadow-orange-500/40 uppercase tracking-wider text-lg"
+        >
+          Retry Connection
+        </button>
       </div>
     );
   }
 
   return (
     <div className="px-4 sm:px-0">
-      <div className="bg-gradient-to-r from-black/5 to-orange-500/10 dark:from-black/20 dark:to-orange-500/20 rounded-lg p-6 mb-6 border border-orange-500/20">
+      <div className="bg-gradient-to-r from-black via-gray-900 to-black rounded-2xl p-8 mb-8 border-2 border-orange-500/50 shadow-2xl shadow-orange-500/20">
         <div className="sm:flex sm:items-center">
           <div className="sm:flex-auto">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-black to-gray-700 rounded-lg flex items-center justify-center border border-orange-500/30">
-                <span className="text-orange-500 font-bold text-lg">📁</span>
+            <div className="flex items-center space-x-4">
+              <div className="w-16 h-16 bg-gradient-to-br from-orange-600 to-orange-800 rounded-2xl flex items-center justify-center border-2 border-orange-400/50 shadow-xl shadow-orange-500/40 animate-glow">
+                <span className="text-white text-3xl">📁</span>
               </div>
               <div>
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-orange-600 dark:from-white dark:to-orange-400 bg-clip-text text-transparent">
-                  Projects
+                <h1 className="text-5xl font-black bg-gradient-to-r from-white via-orange-200 to-orange-500 bg-clip-text text-transparent animate-fade-in">
+                  PROJECTS
                 </h1>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
-                  Manage your projects in the MCP-enhanced workspace
+                <p className="text-base font-semibold text-orange-300 uppercase tracking-wider">
+                  MCP-Enhanced Workspace Management
                 </p>
               </div>
             </div>
           </div>
-          <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+          <div className="mt-6 sm:mt-0 sm:ml-16 sm:flex-none">
             <Link
               to="/projects/new"
-              className="inline-flex items-center justify-center rounded-lg border border-orange-500/30 bg-gradient-to-r from-orange-600 to-orange-500 px-6 py-3 text-sm font-bold text-white shadow-lg hover:from-orange-700 hover:to-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-all duration-200 transform hover:scale-105"
+              className="inline-flex items-center justify-center rounded-xl border-2 border-orange-500/50 bg-gradient-to-r from-orange-600 to-orange-500 px-8 py-4 text-lg font-black text-white shadow-2xl shadow-orange-500/40 hover:from-orange-500 hover:to-orange-400 hover:border-orange-400 focus:outline-none focus:ring-4 focus:ring-orange-500/50 transition-all duration-300 transform hover:scale-110 uppercase tracking-wider"
             >
-              ➕ Add Project
+              <span className="text-2xl mr-3">➕</span> Create Project
             </Link>
           </div>
         </div>
       </div>
 
-      <div className="mt-8 overflow-hidden shadow ring-1 ring-black ring-opacity-5 dark:ring-gray-700 md:rounded-lg overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-300 dark:divide-gray-700">
-          <thead className="bg-gray-50 dark:bg-gray-800">
+      <div className="mt-8 overflow-hidden shadow-2xl shadow-orange-500/10 ring-2 ring-orange-500/30 md:rounded-xl overflow-x-auto">
+        <table className="min-w-full divide-y divide-orange-500/20">
+          <thead className="bg-gradient-to-r from-gray-900 via-black to-gray-900">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-1/2">
-                Name
+              <th className="px-6 py-4 text-left text-sm font-black text-orange-400 uppercase tracking-wider w-1/2">
+                Project Name
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-24">
+              <th className="px-6 py-4 text-left text-sm font-black text-orange-400 uppercase tracking-wider w-24">
                 Status
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-32">
+              <th className="px-6 py-4 text-left text-sm font-black text-orange-400 uppercase tracking-wider w-32">
                 Created
               </th>
-              <th className="relative px-6 py-3 w-32">
-                <span className="sr-only">Actions</span>
+              <th className="relative px-6 py-4 w-32 text-sm font-black text-orange-400 uppercase tracking-wider">
+                Actions
               </th>
             </tr>
           </thead>
@@ -171,16 +177,16 @@ export const ProjectList: React.FC = () => {
               <tr>
                 <td colSpan={4} className="px-6 py-16 text-center">
                   <div className="flex flex-col items-center">
-                    <div className="w-20 h-20 bg-gradient-to-br from-black to-gray-700 rounded-xl flex items-center justify-center mb-6 border border-orange-500/30">
-                      <span className="text-orange-500 text-3xl">📂</span>
+                    <div className="w-32 h-32 bg-gradient-to-br from-black via-gray-900 to-black rounded-2xl flex items-center justify-center mb-8 border-4 border-orange-500/50 shadow-2xl shadow-orange-500/30 animate-pulse-slow">
+                      <span className="text-orange-500 text-6xl">📂</span>
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No projects yet</h3>
-                    <p className="text-gray-500 dark:text-gray-400 mb-4">Get started by creating your first MCP-enhanced project</p>
+                    <h3 className="text-3xl font-black bg-gradient-to-r from-gray-600 to-orange-600 bg-clip-text text-transparent mb-4">NO PROJECTS YET</h3>
+                    <p className="text-gray-500 dark:text-gray-400 font-semibold mb-6 text-lg">Launch your first MCP-enhanced project</p>
                     <Link
                       to="/projects/new"
-                      className="inline-flex items-center px-6 py-3 rounded-lg bg-gradient-to-r from-orange-600 to-orange-500 text-white font-bold hover:from-orange-700 hover:to-orange-600 transition-all duration-200 transform hover:scale-105 shadow-lg"
+                      className="inline-flex items-center px-8 py-4 rounded-xl bg-gradient-to-r from-orange-600 to-orange-500 text-white font-black text-lg hover:from-orange-500 hover:to-orange-400 transition-all duration-300 transform hover:scale-110 shadow-2xl shadow-orange-500/40 uppercase tracking-wider"
                     >
-                      ➕ Create First Project
+                      <span className="text-2xl mr-3">➕</span> Create First Project
                     </Link>
                   </div>
                 </td>

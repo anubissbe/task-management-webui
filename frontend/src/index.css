@@ -142,6 +142,188 @@ input, textarea, select {
   100% { opacity: 1; transform: translateY(0); }
 }
 
+/* ==================== PROJECTHUB-MCP CUSTOM BRANDING ==================== */
+@layer base {
+  :root {
+    --projecthub-orange: #f97316;
+    --projecthub-orange-dark: #ea580c;
+    --projecthub-orange-light: #fb923c;
+    --projecthub-black: #000000;
+    --projecthub-gray-dark: #0a0a0a;
+    --projecthub-gray: #1a1a1a;
+    --projecthub-gray-light: #2a2a2a;
+  }
+
+  /* Override default body background */
+  body {
+    @apply bg-gray-50 dark:bg-black;
+    background-image: 
+      radial-gradient(circle at 20% 50%, rgba(249, 115, 22, 0.05) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(249, 115, 22, 0.03) 0%, transparent 50%);
+  }
+}
+
+@layer components {
+  /* ProjectHub Header Gradient */
+  .projecthub-header {
+    background: linear-gradient(90deg, #000000 0%, #1a1a1a 50%, #000000 100%);
+    border-bottom: 3px solid #f97316;
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.2);
+  }
+
+  /* ProjectHub Logo Styling */
+  .projecthub-logo {
+    background: linear-gradient(135deg, #000000 0%, #2a2a2a 100%);
+    border: 2px solid rgba(249, 115, 22, 0.5);
+    box-shadow: 
+      0 0 20px rgba(249, 115, 22, 0.3),
+      inset 0 0 10px rgba(249, 115, 22, 0.1);
+  }
+
+  /* Primary Button Styling */
+  .projecthub-btn-primary {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    border: 1px solid rgba(249, 115, 22, 0.3);
+    box-shadow: 
+      0 4px 15px rgba(249, 115, 22, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+  }
+
+  .projecthub-btn-primary:hover {
+    background: linear-gradient(135deg, #fb923c 0%, #f97316 100%);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 
+      0 6px 20px rgba(249, 115, 22, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+
+  /* Navigation Link Styling */
+  .projecthub-nav-link {
+    position: relative;
+    transition: all 0.3s ease;
+  }
+
+  .projecthub-nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #f97316, transparent);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+  }
+
+  .projecthub-nav-link:hover::after,
+  .projecthub-nav-link.active::after {
+    transform: scaleX(1);
+  }
+
+  /* Card Styling with Gradient Border */
+  .projecthub-card {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.05) 0%, rgba(249, 115, 22, 0.05) 100%);
+    border: 1px solid rgba(249, 115, 22, 0.2);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .projecthub-card::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(135deg, #f97316, #ea580c, #f97316);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: inherit;
+  }
+
+  .projecthub-card:hover::before {
+    opacity: 0.3;
+  }
+
+  /* Loading Spinner with Branding */
+  .projecthub-spinner {
+    border: 4px solid rgba(249, 115, 22, 0.1);
+    border-top-color: #f97316;
+    border-right-color: #f97316;
+  }
+
+  /* Text Gradient Effect */
+  .projecthub-text-gradient {
+    background: linear-gradient(135deg, #000000 0%, #f97316 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Badge Styling */
+  .projecthub-badge {
+    background: rgba(249, 115, 22, 0.1);
+    border: 1px solid rgba(249, 115, 22, 0.3);
+    color: #f97316;
+  }
+
+  /* Dark Mode Specific Styles */
+  .dark .projecthub-card {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(249, 115, 22, 0.1) 100%);
+    border-color: rgba(249, 115, 22, 0.3);
+  }
+
+  .dark body {
+    background-image: 
+      radial-gradient(circle at 20% 50%, rgba(249, 115, 22, 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(249, 115, 22, 0.05) 0%, transparent 50%);
+  }
+}
+
+/* Animation Classes */
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(249, 115, 22, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(249, 115, 22, 0.8);
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 3s ease-in-out infinite;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out;
+}
+
+.animate-glow {
+  animation: glow 2s ease-in-out infinite;
+}
+
 /* Override problematic third-party animations that trigger layout */
 @keyframes go651618207 {
   0% { opacity: 0; transform: scale(0.95); }

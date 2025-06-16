@@ -9,23 +9,29 @@ export const Layout: React.FC = () => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
-      <nav className="bg-gradient-to-r from-black via-gray-900 to-black border-b-2 border-orange-500 sticky top-0 z-50 shadow-lg">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-50 via-orange-50/5 to-gray-50 dark:from-black dark:via-orange-950/10 dark:to-gray-950">
+      <nav className="projecthub-header sticky top-0 z-50 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
+          <div className="flex justify-between h-24">
             <div className="flex">
               <div className="flex-shrink-0 flex items-center">
-                <div className="flex items-center space-x-3">
-                  <div className="bg-gradient-to-r from-black to-gray-800 px-4 py-2 rounded-lg flex items-center space-x-1 border border-orange-500/30 shadow-md">
-                    <span className="text-white font-bold text-xl tracking-wide">Project</span>
-                    <span className="text-orange-500 font-bold text-xl tracking-wide">hub</span>
+                <div className="flex items-center space-x-4">
+                  <div className="projecthub-logo px-6 py-4 rounded-2xl flex items-center space-x-3 transform hover:scale-110 transition-all duration-300 cursor-pointer group">
+                    <div className="flex items-center space-x-1">
+                      <span className="text-white font-black text-3xl tracking-tight drop-shadow-lg group-hover:text-gray-100 transition-colors">Project</span>
+                      <span className="text-orange-500 font-black text-3xl tracking-tight drop-shadow-lg animate-pulse-slow">Hub</span>
+                    </div>
+                    <div className="hidden lg:flex items-center">
+                      <span className="text-orange-400 text-2xl font-bold">—</span>
+                      <span className="text-gray-300 font-semibold text-lg ml-2">MCP</span>
+                    </div>
                   </div>
-                  <div className="hidden md:block">
-                    <p className="text-xs text-orange-300 font-medium">
-                      MCP Enhanced Workspace
+                  <div className="hidden md:block ml-4">
+                    <p className="text-sm text-orange-400 font-bold tracking-wide uppercase animate-fade-in">
+                      MCP Enhanced
                     </p>
-                    <p className="text-xs text-gray-400">
-                      Project Management Evolved
+                    <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+                      Next-Gen Project Management
                     </p>
                   </div>
                 </div>
@@ -34,35 +40,38 @@ export const Layout: React.FC = () => {
                 <Link
                   to="/"
                   className={clsx(
-                    'inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-all duration-200',
+                    'projecthub-nav-link inline-flex items-center px-4 py-2 rounded-lg text-sm font-bold transition-all duration-300 transform hover:scale-105',
                     isActive('/')
-                      ? 'border-orange-500 text-white shadow-sm'
-                      : 'border-transparent text-gray-300 hover:text-orange-300 hover:border-orange-400'
+                      ? 'bg-orange-500/20 text-orange-400 border border-orange-500/50 shadow-lg shadow-orange-500/20'
+                      : 'text-gray-300 hover:text-orange-400 hover:bg-orange-500/10 hover:border-orange-500/30 border border-transparent'
                   )}
                 >
-                  📁 Projects
+                  <span className="text-lg mr-2">📁</span>
+                  <span className="uppercase tracking-wider">Projects</span>
                 </Link>
                 <Link
                   to="/board"
                   className={clsx(
-                    'inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-all duration-200',
+                    'projecthub-nav-link inline-flex items-center px-4 py-2 rounded-lg text-sm font-bold transition-all duration-300 transform hover:scale-105',
                     isActive('/board')
-                      ? 'border-orange-500 text-white shadow-sm'
-                      : 'border-transparent text-gray-300 hover:text-orange-300 hover:border-orange-400'
+                      ? 'bg-orange-500/20 text-orange-400 border border-orange-500/50 shadow-lg shadow-orange-500/20'
+                      : 'text-gray-300 hover:text-orange-400 hover:bg-orange-500/10 hover:border-orange-500/30 border border-transparent'
                   )}
                 >
-                  📋 Board
+                  <span className="text-lg mr-2">📋</span>
+                  <span className="uppercase tracking-wider">Board</span>
                 </Link>
                 <Link
                   to="/analytics"
                   className={clsx(
-                    'inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-all duration-200',
+                    'projecthub-nav-link inline-flex items-center px-4 py-2 rounded-lg text-sm font-bold transition-all duration-300 transform hover:scale-105',
                     isActive('/analytics')
-                      ? 'border-orange-500 text-white shadow-sm'
-                      : 'border-transparent text-gray-300 hover:text-orange-300 hover:border-orange-400'
+                      ? 'bg-orange-500/20 text-orange-400 border border-orange-500/50 shadow-lg shadow-orange-500/20'
+                      : 'text-gray-300 hover:text-orange-400 hover:bg-orange-500/10 hover:border-orange-500/30 border border-transparent'
                   )}
                 >
-                  📊 Analytics
+                  <span className="text-lg mr-2">📊</span>
+                  <span className="uppercase tracking-wider">Analytics</span>
                 </Link>
               </div>
             </div>
@@ -77,26 +86,27 @@ export const Layout: React.FC = () => {
         <Outlet />
       </main>
       
-      <footer className="bg-gradient-to-r from-gray-900 via-black to-gray-900 border-t-2 border-orange-500/50 mt-auto">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <footer className="bg-gradient-to-r from-black via-gray-900 to-black border-t-4 border-orange-500/70 mt-auto shadow-2xl shadow-orange-500/20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
-                <div className="bg-gradient-to-r from-black to-gray-800 px-3 py-1 rounded-lg flex items-center space-x-1 border border-orange-500/30">
-                  <span className="text-white font-bold text-sm">Project</span>
-                  <span className="text-orange-500 font-bold text-sm">hub</span>
+                <div className="bg-gradient-to-r from-orange-950/50 to-black px-4 py-2 rounded-xl flex items-center space-x-2 border-2 border-orange-500/50 shadow-lg shadow-orange-500/20">
+                  <span className="text-white font-black text-base">Project</span>
+                  <span className="text-orange-500 font-black text-base">Hub</span>
+                  <span className="text-orange-400/70 font-bold text-sm">MCP</span>
                 </div>
               </div>
               <div className="hidden sm:flex items-center space-x-2">
-                <span className="inline-flex items-center px-3 py-1 text-xs font-medium bg-orange-500/20 text-orange-300 border border-orange-500/30 rounded-full">
-                  🔗 MCP Enhanced
+                <span className="inline-flex items-center px-4 py-2 text-xs font-bold bg-gradient-to-r from-orange-500/30 to-orange-600/20 text-orange-300 border border-orange-500/50 rounded-full shadow-md transform hover:scale-105 transition-all">
+                  🔗 MCP ENHANCED
                 </span>
-                <span className="inline-flex items-center px-3 py-1 text-xs font-medium bg-green-500/20 text-green-300 border border-green-500/30 rounded-full">
-                  ✅ Production Ready
+                <span className="inline-flex items-center px-4 py-2 text-xs font-bold bg-gradient-to-r from-green-500/30 to-green-600/20 text-green-300 border border-green-500/50 rounded-full shadow-md transform hover:scale-105 transition-all">
+                  ✅ PRODUCTION
                 </span>
               </div>
             </div>
-            <div className="text-xs text-orange-300 font-medium">
+            <div className="text-sm text-orange-400 font-bold uppercase tracking-wider animate-pulse-slow">
               Powered by MCP Protocol ⚡
             </div>
           </div>

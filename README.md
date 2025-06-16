@@ -81,15 +81,55 @@
 - Node.js 18+ (for local development)
 - PostgreSQL (handled by Docker)
 
-### Quick Installation (Recommended)
+### 🎯 Quick Installation with Pre-built Containers (Recommended)
 
-Download and run the latest release:
+The fastest way to get started is using our pre-built containers with the dramatically branded UI:
+
 ```bash
-# Download and extract the latest release
-curl -L https://github.com/anubissbe/ProjectHub-Mcp/releases/download/v1.0.0/ProjectHub-Mcp-v4.0.0-full.tar.gz | tar -xz
+# 1. Create a directory for your installation
+mkdir projecthub-mcp && cd projecthub-mcp
 
-# Start the application
+# 2. Download the production docker-compose file
+curl -L https://raw.githubusercontent.com/anubissbe/ProjectHub-Mcp/main/docker-compose.prod.yml -o docker-compose.yml
+
+# 3. Create an .env file with your settings
+cat > .env << EOF
+DB_USER=projecthub
+DB_PASSWORD=your-secure-password
+DB_NAME=projecthub_mcp
+JWT_SECRET=your-jwt-secret
+CORS_ORIGIN=http://localhost:5173
+VITE_API_URL=http://localhost:3001/api
+EOF
+
+# 4. Pull and start the containers
+docker compose pull
 docker compose up -d
+```
+
+🎨 **The frontend includes dramatic black/orange branding with:**
+- Gradient backgrounds and glowing effects
+- Animated logo and navigation
+- Enhanced shadows and borders
+- Modern, fancy UI matching the ProjectHub-MCP aesthetic
+
+Visit http://localhost:5173 to see your branded ProjectHub-MCP instance!
+
+### Using on Synology NAS
+
+```bash
+# SSH to your Synology
+ssh admin@your-nas-ip
+
+# Navigate to docker directory
+cd /volume1/docker
+
+# Download and setup
+mkdir projecthub-mcp && cd projecthub-mcp
+wget https://raw.githubusercontent.com/anubissbe/ProjectHub-Mcp/main/docker-compose.prod.yml -O docker-compose.yml
+
+# Start the containers
+docker-compose up -d
 ```
 
 ### Development Installation
@@ -127,6 +167,24 @@ cp .env.example .env
 
 # Start development servers
 npm run dev
+```
+
+## 🐳 Docker Container Images
+
+Pre-built container images are available on GitHub Container Registry:
+
+- **Frontend (with dramatic branding)**: `ghcr.io/anubissbe/projecthub-mcp-frontend:branded`
+- **Backend**: `ghcr.io/anubissbe/projecthub-mcp-backend:latest`
+
+These images are automatically built and published via GitHub Actions whenever changes are pushed to the main branch.
+
+### Manual Container Updates
+
+To manually pull the latest images:
+```bash
+docker pull ghcr.io/anubissbe/projecthub-mcp-frontend:branded
+docker pull ghcr.io/anubissbe/projecthub-mcp-backend:latest
+docker compose restart
 ```
 
 ## 📸 Screenshots
