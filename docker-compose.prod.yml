@@ -1,97 +1,63 @@
 version: '3.8'
 
 services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: projecthub-mcp-postgres
+    environment:
+      POSTGRES_USER: ${DB_USER:-projecthub}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-projecthub123}
+      POSTGRES_DB: ${DB_NAME:-projecthub_mcp}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - projecthub-mcp-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-projecthub}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: task-management-backend-prod
+    image: ghcr.io/anubissbe/projecthub-mcp-backend:latest
+    container_name: projecthub-mcp-backend
     ports:
       - "3001:3001"
     environment:
       - NODE_ENV=production
       - PORT=3001
-      - DATABASE_URL=${DATABASE_URL:-postgresql://mcp_user:mcp_secure_password_2024@postgres:5432/mcp_learning}
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=${DB_USER:-projecthub}
+      - DB_PASSWORD=${DB_PASSWORD:-projecthub123}
+      - DB_NAME=${DB_NAME:-projecthub_mcp}
+      - JWT_SECRET=${JWT_SECRET:-your-secret-key-here}
       - CORS_ORIGIN=${CORS_ORIGIN:-http://localhost:5173}
-    volumes:
-      - ./logs:/app/logs
-    networks:
-      - task-management-network
+      - LOG_LEVEL=${LOG_LEVEL:-info}
     depends_on:
       postgres:
         condition: service_healthy
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3001/api/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+    networks:
+      - projecthub-mcp-network
 
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: task-management-frontend-prod
+    image: ghcr.io/anubissbe/projecthub-mcp-frontend:branded
+    container_name: projecthub-mcp-frontend
     ports:
       - "5173:5173"
     environment:
       - VITE_API_URL=${VITE_API_URL:-http://localhost:3001/api}
-      - VITE_WS_URL=${VITE_WS_URL:-ws://localhost:3001}
-    networks:
-      - task-management-network
+      - VITE_WS_URL=${VITE_WS_URL:-http://localhost:3001}
     depends_on:
       - backend
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5173"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-  postgres:
-    image: postgres:17
-    container_name: task-management-postgres-prod
-    environment:
-      - POSTGRES_USER=${POSTGRES_USER:-mcp_user}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-mcp_secure_password_2024}
-      - POSTGRES_DB=${POSTGRES_DB:-mcp_learning}
-    volumes:
-      - postgres_data_prod:/var/lib/postgresql/data
-      - ./infrastructure/postgres/init-postgres:/docker-entrypoint-initdb.d
     networks:
-      - task-management-network
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-mcp_user} -d ${POSTGRES_DB:-mcp_learning}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  nginx:
-    image: nginx:alpine
-    container_name: task-management-nginx-prod
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./ssl:/etc/nginx/ssl:ro
-    networks:
-      - task-management-network
-    depends_on:
-      - frontend
-      - backend
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "nginx", "-t"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-volumes:
-  postgres_data_prod:
-    driver: local
+      - projecthub-mcp-network
 
 networks:
-  task-management-network:
+  projecthub-mcp-network:
     driver: bridge
+
+volumes:
+  postgres_data:
