@@ -79,9 +79,31 @@
 ### Prerequisites
 - Docker and Docker Compose
 - Node.js 18+ (for local development)
-- PostgreSQL (handled by Docker)
+- PostgreSQL (handled by Docker or installer)
 
-### 🎯 Quick Installation with Pre-built Containers (Recommended)
+### 🎯 Automatic Installation (Recommended)
+
+The easiest way to get started is using our automatic installer scripts:
+
+#### Linux/Mac:
+```bash
+curl -sSL https://raw.githubusercontent.com/anubissbe/ProjectHub-Mcp/main/install.sh | bash
+```
+
+#### Windows (PowerShell as Administrator):
+```powershell
+Invoke-WebRequest -Uri https://raw.githubusercontent.com/anubissbe/ProjectHub-Mcp/main/install.ps1 -OutFile install.ps1
+.\install.ps1
+```
+
+**The installer will:**
+- ✅ Check for Docker and Docker Compose
+- ✅ Install PostgreSQL if not present
+- ✅ Set up the database schema
+- ✅ Pull and configure the latest containers
+- ✅ Start all services automatically
+
+### 🐳 Using Pre-built Containers
 
 The fastest way to get started is using our pre-built containers with the dramatically branded UI:
 
