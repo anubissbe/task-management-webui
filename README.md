@@ -1,233 +1,101 @@
 <div align="center">
 
-![ProjectHub-Mcp Banner](docs/banner.svg)
+# ProjectHub-Mcp
 
-[![ProjectHub-Mcp](https://img.shields.io/badge/ProjectHub-Mcp-000000?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiByeD0iNCIgZmlsbD0iIzAwMDAwMCIvPgo8dGV4dCB4PSIyIiB5PSIxNiIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjgiIGZpbGw9IndoaXRlIj5QPC90ZXh0Pgo8dGV4dCB4PSIxNCIgeT0iMTYiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI4IiBmaWxsPSIjZjk3MzE2Ij5oPC90ZXh0Pgo8L3N2Zz4K&logoColor=white)](https://github.com/anubissbe/ProjectHub-Mcp)
-[![License: MIT](https://img.shields.io/badge/License-MIT-f97316?style=for-the-badge)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-ff6500?style=for-the-badge)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-19+-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://reactjs.org/)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
-[![MCP Enhanced](https://img.shields.io/badge/MCP-Enhanced-f97316?style=for-the-badge)](https://docs.anthropic.com/en/docs/build-with-claude/mcp)
+[![MCP Enhanced](https://img.shields.io/badge/MCP-Enhanced-ff6500?style=for-the-badge)](https://docs.anthropic.com/en/docs/build-with-claude/mcp)
 
-> **A comprehensive, enterprise-grade project management hub with MCP integration, featuring advanced time tracking, workflow templates, dependency visualization, team collaboration, and analytics dashboard.**
+> **A modern, enterprise-grade project management hub with MCP (Model Context Protocol) integration, featuring advanced task tracking, workflow templates, team collaboration, and comprehensive analytics.**
 
 ## ⭐ Star this repository if you find it helpful!
 
 </div>
 
-<div align="center">
-
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/anubissbe/ProjectHub-Mcp?style=for-the-badge&logo=github&color=blue)](https://github.com/anubissbe/ProjectHub-Mcp/releases)
-[![GitHub stars](https://img.shields.io/github/stars/anubissbe/ProjectHub-Mcp?style=for-the-badge&logo=github&color=yellow)](https://github.com/anubissbe/ProjectHub-Mcp/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/anubissbe/ProjectHub-Mcp?style=for-the-badge&logo=github&color=green)](https://github.com/anubissbe/ProjectHub-Mcp/network)
-[![GitHub license](https://img.shields.io/github/license/anubissbe/ProjectHub-Mcp?style=for-the-badge&logo=github&color=orange)](https://github.com/anubissbe/ProjectHub-Mcp/blob/main/LICENSE)
-
-[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://hub.docker.com/)
-[![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://reactjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Node.js](https://img.shields.io/badge/Node.js-18+-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791?style=for-the-badge&logo=postgresql&logoColor=white)](https://postgresql.org/)
-
-### ☕ Support the Project
-
-[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Support%20Development-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://www.buymeacoffee.com/anubissbe)
-[![GitHub Sponsors](https://img.shields.io/badge/GitHub%20Sponsors-Sponsor%20Me-EA4AAA?style=for-the-badge&logo=github-sponsors&logoColor=white)](https://github.com/sponsors/anubissbe)
-[![PayPal](https://img.shields.io/badge/PayPal-Donate-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://paypal.me/anubissbe)
-
 ---
-
-**A modern, full-featured task management application built with React, TypeScript, and Node.js. Features a beautiful UI with multiple views, real-time updates, and comprehensive project tracking capabilities.**
-
-</div>
-
-![Task Management WebUI](docs/images/homepage.png)
-
-<div align="center">
-
-![ProjectHub-Mcp Logo](docs/logo.svg)
-
-</div>
 
 ## 🌟 Features
 
 ### 🚀 Core Features
-- **📊 Multiple View Modes**: Kanban Board, List, Calendar, and Timeline/Gantt views
-- **🔄 Real-time Updates**: WebSocket-based live synchronization across users
-- **🌓 Dark Mode**: Full dark mode support with excellent contrast
+- **📊 Multiple View Modes**: Kanban Board, List View, Calendar, and Timeline views
+- **🔄 Real-time Updates**: Live synchronization across users
+- **🌓 Dark Mode**: Full dark mode support with consistent black/orange branding
 - **📱 Responsive Design**: Works seamlessly on desktop and mobile devices
 - **🔍 Advanced Filtering**: Filter by status, priority, assignee, and more
 - **📈 Analytics Dashboard**: Comprehensive project analytics and insights
 
-### Task Management
+### 🎯 Task Management
 - **Hierarchical Tasks**: Support for subtasks and task dependencies
 - **Drag & Drop**: Intuitive task reordering and status updates
 - **Bulk Operations**: Update multiple tasks at once
-- **Time Tracking**: Built-in Pomodoro timer and time logging
-- **Task Templates**: Reusable task templates for common workflows
+- **Time Tracking**: Built-in timer and time logging
+- **Task Templates**: Reusable templates for common workflows
 - **Export Options**: Export tasks to CSV, JSON, PDF, or Excel
-- **Project Completion**: Mark projects as completed when all tasks are done
+- **Project Completion**: Smart project completion tracking
 
-### Collaboration
+### 🤝 Collaboration
 - **Comments System**: Threaded comments with mentions
 - **File Attachments**: Attach files to tasks with preview support
 - **Activity Feed**: Track all changes and updates
 - **Task Dependencies**: Visual dependency graph
-- **Assignee Management**: Assign tasks to team members
+- **Team Management**: Assign tasks to team members
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 - Docker and Docker Compose
 - Node.js 18+ (for local development)
-- PostgreSQL (handled by Docker or installer)
 
-### 🎯 Automatic Installation (Recommended)
+### 🐳 Using Pre-built Containers (Recommended)
 
-The easiest way to get started is using our automatic installer scripts:
-
-#### Linux/Mac:
-```bash
-curl -sSL https://raw.githubusercontent.com/anubissbe/ProjectHub-Mcp/main/install.sh | bash
-```
-
-#### Windows (PowerShell as Administrator):
-```powershell
-Invoke-WebRequest -Uri https://raw.githubusercontent.com/anubissbe/ProjectHub-Mcp/main/install.ps1 -OutFile install.ps1
-.\install.ps1
-```
-
-**The installer will:**
-- ✅ Check for Docker and Docker Compose
-- ✅ Install PostgreSQL if not present
-- ✅ Set up the database schema
-- ✅ Pull and configure the latest containers
-- ✅ Start all services automatically
-
-### 🐳 Using Pre-built Containers
-
-The fastest way to get started is using our pre-built containers with the dramatically branded UI:
+The fastest way to get started is using our pre-built containers:
 
 ```bash
 # 1. Create a directory for your installation
 mkdir projecthub-mcp && cd projecthub-mcp
 
 # 2. Download the production docker-compose file
-curl -L https://raw.githubusercontent.com/anubissbe/ProjectHub-Mcp/main/docker-compose.prod.yml -o docker-compose.yml
+curl -L https://raw.githubusercontent.com/anubissbe/ProjectHub-Mcp/main/docker-compose.yml -o docker-compose.yml
 
-# 3. Create an .env file with your settings
-cat > .env << EOF
-DB_USER=projecthub
-DB_PASSWORD=your-secure-password
-DB_NAME=projecthub_mcp
-JWT_SECRET=your-jwt-secret
-CORS_ORIGIN=http://localhost:5173
-VITE_API_URL=http://localhost:3001/api
-EOF
-
-# 4. Pull and start the containers
-docker compose pull
+# 3. Start the containers
 docker compose up -d
 ```
 
-🎨 **The frontend includes dramatic black/orange branding with:**
-- Gradient backgrounds and glowing effects
-- Animated logo and navigation
-- Enhanced shadows and borders
-- Modern, fancy UI matching the ProjectHub-MCP aesthetic
+🎨 **The application features dramatic black/orange branding with:**
+- Modern gradient backgrounds and glowing effects
+- Animated navigation and interactive elements
+- Consistent dark mode throughout all pages
+- Professional ProjectHub-MCP aesthetic
 
-Visit http://localhost:5173 to see your branded ProjectHub-MCP instance!
-
-### Using on Synology NAS
-
-```bash
-# SSH to your Synology
-ssh admin@your-nas-ip
-
-# Navigate to docker directory
-cd /volume1/docker
-
-# Download and setup
-mkdir projecthub-mcp && cd projecthub-mcp
-wget https://raw.githubusercontent.com/anubissbe/ProjectHub-Mcp/main/docker-compose.prod.yml -O docker-compose.yml
-
-# Start the containers
-docker-compose up -d
-```
-
-### Development Installation
-
-1. Clone the repository:
-```bash
-git clone https://github.com/anubissbe/ProjectHub-Mcp.git
-cd ProjectHub-Mcp
-```
-
-2. Start the application:
-```bash
-docker compose up -d
-```
-
-3. Access the application:
-- Frontend: http://localhost:5173
-- Backend API: http://localhost:3001/api
-- Health Check: http://localhost:3001/api/health
+Visit **http://localhost:5173** to see your ProjectHub-MCP instance!
 
 ### Development Setup
 
-For local development without Docker:
+For local development:
 
 ```bash
-# Navigate to project directory
-cd /opt/projects/projects/ProjectHub-Mcp
+# Clone the repository
+git clone https://github.com/anubissbe/ProjectHub-Mcp.git
+cd ProjectHub-Mcp
 
-# Install dependencies
-cd frontend && npm install
-cd ../backend && npm install
+# Start development environment
+docker compose up -d
 
-# Set up environment variables
-cp .env.example .env
-
-# Start development servers
-npm run dev
+# Access the application
+# Frontend: http://localhost:5173
+# Backend API: http://localhost:3001/api
 ```
 
-## 🐳 Docker Container Images
+## 🐳 Container Images
 
 Pre-built container images are available on GitHub Container Registry:
 
-- **Frontend (with dramatic branding)**: `ghcr.io/anubissbe/projecthub-mcp-frontend:branded`
+- **Frontend**: `ghcr.io/anubissbe/projecthub-mcp-frontend:latest`
 - **Backend**: `ghcr.io/anubissbe/projecthub-mcp-backend:latest`
 
-These images are automatically built and published via GitHub Actions whenever changes are pushed to the main branch.
-
-### Manual Container Updates
-
-To manually pull the latest images:
-```bash
-docker pull ghcr.io/anubissbe/projecthub-mcp-frontend:branded
-docker pull ghcr.io/anubissbe/projecthub-mcp-backend:latest
-docker compose restart
-```
-
-## 📸 Screenshots
-
-### Project Dashboard & Tasks
-![Project Tasks](docs/images/project-tasks.png)
-
-### Analytics Dashboard
-![Analytics](docs/images/analytics.png)
-
-### Kanban Board View
-![Kanban Board](docs/images/kanban.png)
-
-### Board View with Drag & Drop
-![Board View](docs/images/board.png)
-
-### List View
-![List View](docs/images/list.png)
-
-### Calendar View
-![Calendar View](docs/images/calendar.png)
+Images are automatically built and published via GitHub Actions.
 
 ## 🏗️ Architecture
 
@@ -236,25 +104,21 @@ docker compose restart
 **Frontend:**
 - React 19 with TypeScript
 - Vite for blazing fast builds
-- Tailwind CSS for styling
+- Tailwind CSS for styling with custom orange/black theme
 - Zustand for state management
-- React Query for server state
+- React Router for navigation
 - Socket.io client for real-time updates
-- Recharts for data visualization
-- date-fns for date manipulation
 
 **Backend:**
-- Node.js with Express
-- TypeScript
-- PostgreSQL with pgvector
-- Socket.io for WebSockets
-- JWT authentication (ready)
-- Swagger/OpenAPI documentation
+- Node.js with Express and TypeScript
+- PostgreSQL with pgvector for advanced querying
+- Socket.io for WebSocket connections
+- RESTful API with comprehensive endpoints
 
 **Infrastructure:**
-- Docker & Docker Compose
-- GitHub Actions CI/CD ready
-- Automated testing with Jest & Playwright
+- Docker & Docker Compose for containerization
+- GitHub Actions for CI/CD
+- Automated testing and deployment
 
 ### Project Structure
 
@@ -263,75 +127,28 @@ ProjectHub-Mcp/
 ├── frontend/                    # React frontend application
 │   ├── src/
 │   │   ├── components/         # Reusable UI components
-│   │   │   ├── ActivityFeed.tsx
-│   │   │   ├── BulkTaskActions.tsx
-│   │   │   ├── CalendarView.tsx
-│   │   │   ├── CreateTaskModal.tsx
-│   │   │   ├── EditTaskModal.tsx
-│   │   │   ├── ExportReports.tsx
-│   │   │   ├── ExportTasks.tsx
-│   │   │   ├── FileAttachments.tsx
-│   │   │   ├── Layout.tsx
-│   │   │   ├── PomodoroTimer.tsx
-│   │   │   ├── SimpleDraggableTaskList.tsx
-│   │   │   ├── TaskAnalytics.tsx
-│   │   │   ├── TaskComments.tsx
-│   │   │   ├── TaskDependencyGraph.tsx
-│   │   │   ├── TaskDetailModal.tsx
-│   │   │   ├── TaskFilters.tsx
-│   │   │   ├── TaskTemplates.tsx
-│   │   │   ├── ThemeToggle.tsx
-│   │   │   ├── TimelineView.tsx
-│   │   │   └── TimeTrackingDashboard.tsx
 │   │   ├── pages/             # Page components
-│   │   │   ├── Board.tsx
-│   │   │   ├── BoardSelector.tsx
-│   │   │   ├── EnhancedAnalytics.tsx
-│   │   │   ├── ProjectDetail.tsx
-│   │   │   └── Projects.tsx
 │   │   ├── services/          # API services
-│   │   │   ├── api.ts
-│   │   │   ├── projectService.ts
-│   │   │   └── taskService.ts
 │   │   ├── store/             # State management
-│   │   │   ├── index.ts
-│   │   │   ├── projectStore.ts
-│   │   │   └── themeStore.ts
-│   │   ├── hooks/             # Custom React hooks
-│   │   │   └── useRealtimeUpdates.ts
-│   │   ├── types/             # TypeScript definitions
-│   │   │   └── index.ts
-│   │   └── utils/             # Utility functions
-│   └── public/                # Static assets
+│   │   └── types/             # TypeScript definitions
 ├── backend/                   # Node.js backend API
 │   ├── src/
 │   │   ├── routes/           # API endpoints
 │   │   ├── services/         # Business logic
 │   │   └── db.js            # Database connection
-│   └── tests/               # Backend tests
-├── docs/                     # Documentation
-│   ├── images/              # Screenshots and diagrams
-│   ├── api/                # API documentation
-│   ├── architecture/       # Architecture diagrams
-│   └── deployment/         # Deployment guides
-├── infrastructure/          # Infrastructure configs
-│   └── postgres/           # Database schemas
-└── tests/                  # E2E tests
-
+├── tests/                    # Test files and screenshots
+└── docker-compose.yml       # Container orchestration
 ```
 
 ## 🔧 Configuration
 
 ### Environment Variables
 
-Create a `.env` file in the root directory:
+The application uses environment variables for configuration:
 
 ```env
 # Database
-DATABASE_URL=postgresql://mcp_user:mcp_secure_password_2024@localhost:5432/mcp_learning
-POSTGRES_USER=mcp_user
-POSTGRES_PASSWORD=mcp_secure_password_2024
-POSTGRES_DB=mcp_learning
+DATABASE_URL=postgresql://user:password@localhost:5432/mcp_learning
 
 # Backend
 NODE_ENV=production
@@ -340,19 +157,13 @@ CORS_ORIGIN=http://localhost:5173
 
 # Frontend
 VITE_API_URL=http://localhost:3001/api
-VITE_WS_URL=ws://localhost:3001
 ```
-
-### Docker Compose Configuration
-
-The application uses Docker Compose for easy deployment:
-- **frontend**: React application (port 5173)
-- **backend**: Node.js API (port 3001)
-- **postgres**: PostgreSQL database with pgvector
 
 ## 📚 API Documentation
 
-### Projects
+### Core Endpoints
+
+**Projects:**
 ```
 GET    /api/projects              # List all projects
 GET    /api/projects/:id          # Get project details
@@ -362,93 +173,19 @@ DELETE /api/projects/:id          # Delete project
 GET    /api/projects/:id/stats    # Get project statistics
 ```
 
-### Tasks
+**Tasks:**
 ```
 GET    /api/projects/:projectId/tasks  # List tasks for project
 GET    /api/tasks/:id                  # Get task details
 POST   /api/tasks                      # Create new task
 PUT    /api/tasks/:id                  # Update task
-PATCH  /api/tasks/:id/status           # Update task status
 DELETE /api/tasks/:id                  # Delete task
-POST   /api/tasks/bulk                 # Create multiple tasks
 GET    /api/tasks/:id/subtasks         # Get subtasks
-```
-
-### Time Tracking
-```
-POST   /api/tasks/:id/time             # Log time entry
-GET    /api/tasks/:id/time-tracking    # Get time tracking data
-GET    /api/projects/:id/time-summary  # Project time summary
-```
-
-### Export & Analytics
-```
-GET    /api/projects/:id/analytics     # Get project analytics
-GET    /api/projects/:id/export        # Export project data
-<<<<<<< HEAD
-POST   /api/export/tasks               # Export filtered tasks
-=======
-GET    /api/tasks/:id/time-tracking    # Get time tracking data
-```
-
-## 🗄️ Database Schema
-
-The application uses the `project_management` schema with these tables:
-
-### Core Tables
-- **projects**: Project information and metadata
-- **tasks**: Task details with hierarchical structure
-- **task_dependencies**: Task relationship mapping
-- **task_history**: Comprehensive change tracking
-
-### Collaboration Tables
-- **task_comments**: Threaded comment system
-- **task_attachments**: File attachment metadata
-- **activity_entries**: Activity feed and audit trail
-- **task_mentions**: @mention tracking
-
-### Analytics Tables
-- **time_tracking**: Detailed time logging
-- **task_insights**: Performance analytics
-- **project_stats**: Aggregated project metrics
-
-## 🚀 Deployment
-
-### Production Deployment
-The application is deployed on a remote server with Docker Compose:
-
-```bash
-# Deploy to remote server
-./scripts/deploy-projecthub-mcp.sh
-
-# Sync database
-./scripts/sync-postgres-to-remote.sh
-
-# View remote logs
-ssh drwho@192.168.1.25
-cd ~/projects/ProjectHub-Mcp
-docker compose logs -f
-```
-
-### Environment Variables
-
-#### Backend (.env)
-```
-PORT=3001
-DATABASE_URL=postgresql://user:password@localhost:5432/mcp_learning
-CORS_ORIGIN=http://localhost:5173
-NODE_ENV=production
-```
-
-#### Frontend (.env)
-```
-VITE_API_URL=http://localhost:3001/api
-VITE_APP_TITLE=ProjectHub-Mcp
 ```
 
 ## 🧪 Testing
 
-### Running Tests
+The project includes comprehensive testing:
 
 ```bash
 # Frontend tests
@@ -457,53 +194,33 @@ cd frontend && npm test
 # Backend tests
 cd backend && npm test
 
-# E2E tests with Puppeteer
-cd tests && node ui-test.js
-
-# Test specific features
-node test-scrolling.js
-node test-dark-mode.js
+# Run all tests
+npm run test:all
 ```
 
-### Test Coverage
-
-The project maintains comprehensive test coverage:
-- Unit tests for business logic
+Test coverage includes:
+- Unit tests for components and services
 - Integration tests for API endpoints
 - E2E tests for critical user flows
-- Visual regression tests
 - Dark mode compatibility tests
-- Scrolling and interaction tests
 
-## 🚢 Deployment
+## 🚀 Deployment
 
-### Production Deployment with Docker
+### Production Deployment
 
-1. Build production images:
-```bash
-docker compose -f docker-compose.yml build
-```
+1. **GitHub Actions (Automated)**: 
+   - Push to main branch triggers automatic deployment
+   - Builds and pushes containers to GitHub Container Registry
+   - Deploys to configured servers
 
-2. Deploy to your server:
-```bash
-docker compose up -d
-```
-
-### Manual Deployment
-
-1. Build frontend:
-```bash
-cd frontend
-npm run build
-```
-
-2. Build backend:
-```bash
-cd backend
-npm run build
-```
-
-3. Serve with your preferred method (PM2, systemd, etc.)
+2. **Manual Deployment**:
+   ```bash
+   # Pull latest images
+   docker compose pull
+   
+   # Start services
+   docker compose up -d
+   ```
 
 ### Cloud Deployment
 
@@ -511,65 +228,57 @@ The application is ready for deployment on:
 - AWS ECS/Fargate
 - Google Cloud Run
 - Azure Container Instances
-- Heroku Container Registry
 - DigitalOcean App Platform
-- Vercel (frontend) + Railway (backend)
+- Any Docker-compatible platform
 
-## 🎨 Customization
+## 🎨 Theming & Customization
 
-### Theming
+### Dark Mode Branding
 
-The application supports full theming through Tailwind CSS:
+The application features a consistent dark theme with:
+- **Primary Colors**: Black (#0a0a0a) and Orange (#ff6500)
+- **Gradients**: Smooth transitions between dark and orange tones
+- **Typography**: High contrast for accessibility
+- **Interactive Elements**: Orange accents on hover/focus states
 
-1. Edit `tailwind.config.js` to modify color schemes
-2. Dark mode classes are automatically applied
-3. Custom CSS can be added in `src/index.css`
+### Customization
 
-### Adding New Features
-
-1. Create new component in `src/components/`
-2. Add routes in `src/App.tsx`
-3. Create corresponding API endpoints
-4. Update types in `src/types/index.ts`
-5. Add tests for new functionality
+1. **Colors**: Edit `tailwind.config.js` for color scheme changes
+2. **Components**: Modify components in `src/components/`
+3. **Layouts**: Update page layouts in `src/pages/`
+4. **Styles**: Add custom CSS in `src/index.css`
 
 ## 🤝 Contributing
 
-We welcome contributions! Please follow these guidelines:
-
-### Development Workflow
+We welcome contributions! Please follow these steps:
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Make your changes
-4. Add tests for new functionality
-5. Ensure all tests pass (`npm test`)
-6. Commit your changes (`git commit -m 'Add amazing feature'`)
-7. Push to the branch (`git push origin feature/amazing-feature`)
-8. Open a Pull Request
+3. Make your changes with proper testing
+4. Commit using conventional commit format
+5. Push to your branch
+6. Open a Pull Request
 
 ### Code Style
 
 - Use TypeScript for all new code
-- Follow ESLint configuration
-- Use Prettier for formatting
+- Follow ESLint and Prettier configurations
 - Write meaningful commit messages
-- Add JSDoc comments for complex functions
-- Maintain test coverage above 80%
+- Maintain test coverage
+- Document complex functionality
 
 ## 📋 Roadmap
 
-### Planned Features
+### Upcoming Features
 
+- [ ] Enhanced MCP integrations
 - [ ] User authentication and authorization
-- [ ] Team workspaces
-- [ ] Email notifications
+- [ ] Team workspaces and permissions
+- [ ] Advanced reporting and analytics
 - [ ] Mobile app (React Native)
-- [ ] Webhooks and integrations
-- [ ] Advanced reporting
-- [ ] AI-powered task suggestions
-- [ ] Voice commands
-- [ ] Offline mode
+- [ ] Email notifications
+- [ ] API webhooks
+- [ ] Offline mode support
 
 ## 📄 License
 
@@ -577,96 +286,28 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- Built with modern web technologies
-- Icons from Heroicons and Lucide
-- UI components inspired by Tailwind UI
+- Built with modern React and TypeScript
+- Styled with Tailwind CSS
 - Real-time features powered by Socket.io
-- Calendar components using date-fns
+- Database powered by PostgreSQL
+- Icons from Heroicons
 
-## ☕ Support This Project
+## 📞 Support
 
-If you find this project helpful, please consider supporting its development:
-
-<div align="center">
-
-[![Buy Me A Coffee](https://img.shields.io/badge/☕-Buy%20Me%20A%20Coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://www.buymeacoffee.com/anubissbe)
-[![GitHub Sponsors](https://img.shields.io/badge/💖-Sponsor%20on%20GitHub-EA4AAA?style=for-the-badge&logo=github-sponsors&logoColor=white)](https://github.com/sponsors/anubissbe)
-[![PayPal](https://img.shields.io/badge/💰-Donate%20via%20PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://paypal.me/anubissbe)
-
-### 🌟 Ways to Support
-- ⭐ Star this repository
-- 🐛 Report bugs and issues
-- 💡 Suggest new features
-- 🔄 Share with your network
-- ☕ Buy me a coffee
-- 💖 Become a sponsor
-
-</div>
-
-## 📞 Get Help & Support
-
-- Create an [issue](https://github.com/anubissbe/ProjectHub-Mcp/issues) for bug reports
-- Check the [FAQ](docs/FAQ.md) for common questions  
-- Join our [Discord community](https://discord.gg/anubissbe)
-- Email: support@taskmanagement.example.com
-- Follow [@anubissbe](https://github.com/anubissbe) for updates
-
-<<<<<<< HEAD
-## 🏆 Performance & Quality
-=======
-![GitHub stars](https://img.shields.io/github/stars/username/ProjectHub-Mcp?style=social)
-![GitHub forks](https://img.shields.io/github/forks/username/ProjectHub-Mcp?style=social)
-![GitHub watchers](https://img.shields.io/github/watchers/username/ProjectHub-Mcp?style=social)
-
-<div align="center">
-
-![Performance](https://img.shields.io/badge/Lighthouse%20Performance-95+-brightgreen?style=for-the-badge&logo=lighthouse&logoColor=white)
-![Accessibility](https://img.shields.io/badge/Accessibility-AA%20Compliant-blue?style=for-the-badge&logo=web-accessibility&logoColor=white)
-![Bundle Size](https://img.shields.io/badge/Bundle%20Size-<500KB-orange?style=for-the-badge&logo=webpack&logoColor=white)
-![Load Time](https://img.shields.io/badge/Load%20Time-<2s-green?style=for-the-badge&logo=speedtest&logoColor=white)
-
-</div>
-
-### Metrics
-- **🚀 Lighthouse Score**: 95+ (Performance, Accessibility, Best Practices)
-- **⚡ Load Time**: < 2s initial load
-- **📦 Bundle Size**: < 500KB gzipped
-- **🗄️ Database**: Optimized queries with indexing
-- **🔄 Real-time**: < 100ms latency for updates
-- **🎯 Test Coverage**: 80%+ code coverage
-- **🔒 Security**: OWASP compliant, XSS protection
+- 🐛 [Report Issues](https://github.com/anubissbe/ProjectHub-Mcp/issues)
+- 💡 [Request Features](https://github.com/anubissbe/ProjectHub-Mcp/issues)
+- 📚 [Documentation](docs/)
+- 💬 [Discussions](https://github.com/anubissbe/ProjectHub-Mcp/discussions)
 
 ---
 
 <div align="center">
-
-### 🤝 Connect & Contribute
-
-[![Follow on GitHub](https://img.shields.io/github/followers/anubissbe?label=Follow&style=social)](https://github.com/anubissbe)
-[![Twitter](https://img.shields.io/badge/Twitter-Follow-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/anubissbe)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/anubissbe)
-[![Discord](https://img.shields.io/badge/Discord-Join%20Community-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/anubissbe)
-
-<<<<<<< HEAD
-### 📊 Repository Stats
-
-![GitHub repo size](https://img.shields.io/github/repo-size/anubissbe/task-management-webui?style=for-the-badge&logo=github)
-![GitHub commit activity](https://img.shields.io/github/commit-activity/m/anubissbe/task-management-webui?style=for-the-badge&logo=github)
-![GitHub last commit](https://img.shields.io/github/last-commit/anubissbe/task-management-webui?style=for-the-badge&logo=github)
-
-### 🎯 Quick Links
-
-[![📚 Documentation](https://img.shields.io/badge/📚-Documentation-blue?style=for-the-badge)](docs/)
-[![🚀 Live Demo](https://img.shields.io/badge/🚀-Live%20Demo-green?style=for-the-badge)](http://192.168.1.25:5173)
-[![🐛 Report Bug](https://img.shields.io/badge/🐛-Report%20Bug-red?style=for-the-badge)](https://github.com/anubissbe/ProjectHub-Mcp/issues)
-[![💡 Request Feature](https://img.shields.io/badge/💡-Request%20Feature-yellow?style=for-the-badge)](https://github.com/anubissbe/ProjectHub-Mcp/issues)
-
----
 
 **Made with ❤️ and ☕ by [@anubissbe](https://github.com/anubissbe)**
 
-*If this project helped you, please consider ⭐ starring the repository and ☕ [buying me a coffee](https://www.buymeacoffee.com/anubissbe)!*
-=======
-[⭐ Star this repository](https://github.com/username/ProjectHub-Mcp) • [🐛 Report Bug](https://github.com/username/ProjectHub-Mcp/issues) • [✨ Request Feature](https://github.com/username/ProjectHub-Mcp/issues) • [☕ Buy me a coffee](https://buymeacoffee.com/anubissbe)
+[![GitHub stars](https://img.shields.io/github/stars/anubissbe/ProjectHub-Mcp?style=social)](https://github.com/anubissbe/ProjectHub-Mcp/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/anubissbe/ProjectHub-Mcp?style=social)](https://github.com/anubissbe/ProjectHub-Mcp/network)
+
+*If this project helped you, please consider ⭐ starring the repository!*
 
 </div>
