@@ -173,6 +173,16 @@ jobs:
       with:
         node-version: '22'
         
+    - name: 🧹 Clean up any leftover containers
+      run: |
+        echo "Cleaning up any containers using our ports..."
+        docker stop $(docker ps -q --filter "publish=3001" --filter "publish=5173") 2>/dev/null || true
+        docker rm $(docker ps -aq --filter "publish=3001" --filter "publish=5173") 2>/dev/null || true
+        docker stop $(docker ps -q --filter "name=task-management") 2>/dev/null || true
+        docker rm $(docker ps -aq --filter "name=task-management") 2>/dev/null || true
+        docker network rm $(docker network ls -q --filter "name=task-management") 2>/dev/null || true
+        echo "Port cleanup completed"
+        
     - name: 🐳 Start services
       run: |
         docker compose -f docker-compose.ci.yml up -d
