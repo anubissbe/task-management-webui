@@ -14,7 +14,7 @@ on:
 jobs:
   create-release:
     name: 🏷️ Create Release
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, docker, projecthub]
     permissions:
       contents: write
       packages: write

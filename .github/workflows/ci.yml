@@ -10,7 +10,7 @@ jobs:
   # Frontend Tests
   frontend-test:
     name: 🎨 Frontend Tests
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, docker, projecthub]
     defaults:
       run:
         working-directory: ./frontend
@@ -55,7 +55,7 @@ jobs:
   # Backend Tests
   backend-test:
     name: 🔧 Backend Tests
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, docker, projecthub]
     defaults:
       run:
         working-directory: ./backend
@@ -109,7 +109,7 @@ jobs:
   # Docker Build and Security
   docker-security:
     name: 🐳 Docker & Security
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, docker, projecthub]
     needs: [frontend-test, backend-test]
     
     steps:
@@ -156,7 +156,7 @@ jobs:
   # E2E Tests
   e2e-tests:
     name: 🧪 E2E Tests
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, docker, projecthub]
     needs: [frontend-test, backend-test]
     
     steps:
@@ -195,7 +195,7 @@ jobs:
   # Code Quality
   code-quality:
     name: 📊 Code Quality
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, docker, projecthub]
     
     steps:
     - name: 📦 Checkout code
@@ -233,7 +233,7 @@ jobs:
   # Deployment (only on main branch)
   deploy:
     name: 🚀 Deploy
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, docker, projecthub]
     needs: [frontend-test, backend-test, docker-security, e2e-tests]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     
