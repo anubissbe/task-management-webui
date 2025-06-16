@@ -6,7 +6,7 @@ on:
 
 jobs:
   stale:
-    runs-on: [self-hosted, docker, projecthub]
+    runs-on: [self-hosted, docker, git-runner]
     permissions:
       issues: write
       pull-requests: write

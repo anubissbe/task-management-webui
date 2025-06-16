@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   auto-merge-dependabot:
-    runs-on: [self-hosted, docker, projecthub]
+    runs-on: [self-hosted, docker, git-runner]
     if: github.actor == 'dependabot[bot]'
     
     steps:
@@ -30,7 +30,7 @@ jobs:
         merge-method: squash
         
   label-pr:
-    runs-on: [self-hosted, docker, projecthub]
+    runs-on: [self-hosted, docker, git-runner]
     permissions:
       contents: read
       pull-requests: write
