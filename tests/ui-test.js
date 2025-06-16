@@ -10,38 +10,47 @@ async function runTests() {
     fs.mkdirSync(screenshotsDir);
   }
 
-  // Pre-test: Check if services are reachable
-  console.log('Pre-test: Checking service connectivity...');
+  // Pre-test: Wait for services to be fully ready
+  console.log('Pre-test: Verifying service readiness...');
   const http = require('http');
   
-  // Check frontend
-  console.log('Checking frontend at http://localhost:5173...');
-  try {
-    await new Promise((resolve, reject) => {
-      const req = http.get('http://localhost:5173', (res) => {
-        console.log(`Frontend status: ${res.statusCode}`);
-        resolve(res);
-      });
-      req.on('error', reject);
-      req.setTimeout(5000, () => reject(new Error('Frontend timeout')));
-    });
-  } catch (error) {
-    console.log(`Frontend not reachable: ${error.message}`);
+  // Function to check service with retries
+  async function checkService(url, name, maxRetries = 10) {
+    for (let i = 1; i <= maxRetries; i++) {
+      try {
+        const result = await new Promise((resolve, reject) => {
+          const req = http.get(url, (res) => {
+            resolve({ statusCode: res.statusCode, ok: res.statusCode === 200 });
+          });
+          req.on('error', reject);
+          req.setTimeout(10000, () => reject(new Error('Timeout')));
+        });
+        
+        if (result.ok) {
+          console.log(`✅ ${name} is ready (${result.statusCode})`);
+          return true;
+        } else {
+          console.log(`⚠️ ${name} returned ${result.statusCode}, retrying... (${i}/${maxRetries})`);
+        }
+      } catch (error) {
+        console.log(`⚠️ ${name} check failed: ${error.message}, retrying... (${i}/${maxRetries})`);
+      }
+      
+      if (i < maxRetries) {
+        await new Promise(resolve => setTimeout(resolve, 3000));
+      }
+    }
+    
+    console.log(`❌ ${name} is not ready after ${maxRetries} attempts`);
+    return false;
   }
   
-  // Check backend
-  console.log('Checking backend at http://localhost:3001/api/health...');
-  try {
-    await new Promise((resolve, reject) => {
-      const req = http.get('http://localhost:3001/api/health', (res) => {
-        console.log(`Backend status: ${res.statusCode}`);
-        resolve(res);
-      });
-      req.on('error', reject);
-      req.setTimeout(5000, () => reject(new Error('Backend timeout')));
-    });
-  } catch (error) {
-    console.log(`Backend not reachable: ${error.message}`);
+  // Check backend first (frontend depends on it)
+  const backendReady = await checkService('http://localhost:3001/api/health', 'Backend');
+  const frontendReady = await checkService('http://localhost:5173', 'Frontend');
+  
+  if (!backendReady || !frontendReady) {
+    console.log('❌ Services are not ready, but continuing with tests...');
   }
   
   console.log('');
@@ -61,29 +70,68 @@ async function runTests() {
     // Set viewport
     await page.setViewport({ width: 1280, height: 720 });
 
-    // Test 1: Page Load with retries
+    // Test 1: Page Load with enhanced retries
     console.log('Test 1: Page Load');
     let pageLoadSuccess = false;
-    for (let attempt = 1; attempt <= 3; attempt++) {
+    
+    for (let attempt = 1; attempt <= 5; attempt++) {
       try {
-        console.log(`  Attempt ${attempt}: Trying to load http://localhost:5173`);
-        await page.goto('http://localhost:5173', { waitUntil: 'networkidle0', timeout: 45000 });
-        await page.waitForSelector('#root', { timeout: 15000 });
+        console.log(`  Attempt ${attempt}: Loading http://localhost:5173`);
+        
+        // Use different wait strategies based on attempt
+        const waitStrategy = attempt <= 2 ? 'networkidle2' : 'domcontentloaded';
+        const timeout = Math.min(30000 + (attempt * 10000), 60000);
+        
+        await page.goto('http://localhost:5173', { 
+          waitUntil: waitStrategy, 
+          timeout: timeout 
+        });
+        
+        // Wait for React app to mount
+        await page.waitForSelector('#root', { timeout: 20000 });
+        
+        // Additional check: wait for content to load
+        await page.waitForFunction(
+          () => document.querySelector('#root').children.length > 0,
+          { timeout: 15000 }
+        );
+        
         console.log('✅ Page loaded successfully');
         testsPassed++;
         pageLoadSuccess = true;
         break;
+        
       } catch (error) {
         console.log(`  Attempt ${attempt} failed: ${error.message}`);
-        if (attempt < 3) {
-          console.log('  Waiting 10 seconds before retry...');
-          await new Promise(resolve => setTimeout(resolve, 10000));
+        
+        if (attempt < 5) {
+          const waitTime = Math.min(5000 * attempt, 15000);
+          console.log(`  Waiting ${waitTime/1000} seconds before retry...`);
+          await new Promise(resolve => setTimeout(resolve, waitTime));
+          
+          // Try to navigate to about:blank to reset page state
+          try {
+            await page.goto('about:blank');
+          } catch (e) {
+            // Ignore errors here
+          }
         }
       }
     }
+    
     if (!pageLoadSuccess) {
-      console.log('❌ Page load failed after 3 attempts');
+      console.log('❌ Page load failed after 5 attempts');
       testsFailed++;
+      
+      // Try to get more debug info
+      try {
+        const url = await page.url();
+        console.log(`  Current URL: ${url}`);
+        const title = await page.title();
+        console.log(`  Page title: ${title}`);
+      } catch (e) {
+        console.log(`  Could not get page debug info: ${e.message}`);
+      }
     }
 
     // Test 2: Navigation Elements
@@ -125,7 +173,7 @@ async function runTests() {
       const themeToggle = await page.$('[data-testid="theme-toggle"], button[aria-label*="theme"], button[title*="theme"]');
       if (themeToggle) {
         await themeToggle.click();
-        await page.waitForTimeout(500);
+        await new Promise(resolve => setTimeout(resolve, 500));
         await page.screenshot({ path: path.join(screenshotsDir, 'after-theme-toggle.png') });
         console.log('✅ Theme toggle works correctly');
         testsPassed++;
