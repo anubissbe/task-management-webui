@@ -154,7 +154,7 @@ export const ProjectList: React.FC = () => {
         </div>
       </div>
 
-      <div className="mt-8 overflow-hidden shadow-2xl shadow-orange-500/10 ring-2 ring-orange-500/30 md:rounded-xl overflow-x-auto">
+      <div className="mt-8 overflow-hidden shadow-2xl shadow-orange-500/10 dark:shadow-orange-500/30 ring-2 ring-orange-500/30 dark:ring-orange-500/50 md:rounded-xl overflow-x-auto dark:bg-gradient-to-br dark:from-gray-950 dark:via-black dark:to-gray-950">
         <table className="min-w-full divide-y divide-orange-500/20">
           <thead className="bg-gradient-to-r from-gray-900 via-black to-gray-900">
             <tr>
@@ -172,7 +172,7 @@ export const ProjectList: React.FC = () => {
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-800">
+          <tbody className="bg-white dark:bg-gradient-to-b dark:from-black dark:via-gray-950 dark:to-black divide-y divide-gray-200 dark:divide-orange-500/20">
             {projects?.length === 0 ? (
               <tr>
                 <td colSpan={4} className="px-6 py-16 text-center">
@@ -193,7 +193,7 @@ export const ProjectList: React.FC = () => {
               </tr>
             ) : (
               projects?.map((project) => (
-              <tr key={project.id}>
+              <tr key={project.id} className="hover:bg-gray-50 dark:hover:bg-orange-500/10 transition-colors duration-200">
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div>
                     <div className="text-sm font-medium text-gray-900 dark:text-white">
@@ -205,14 +205,14 @@ export const ProjectList: React.FC = () => {
                       </Link>
                     </div>
                     {project.description && (
-                      <div className="text-sm text-gray-500 dark:text-gray-400">
+                      <div className="text-sm text-gray-500 dark:text-gray-300">
                         {project.description.length > 100 
                           ? `${project.description.slice(0, 100)}...` 
                           : project.description}
                       </div>
                     )}
                     {projectStats[project.id] && (
-                      <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                      <div className="mt-1 text-xs text-gray-500 dark:text-orange-400/70">
                         {projectStats[project.id].statistics.task_breakdown.total > 0 ? (
                           <>
                             <span className="font-medium">
@@ -238,7 +238,7 @@ export const ProjectList: React.FC = () => {
                     {project.status}
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                   {format(new Date(project.created_at), 'MMM d, yyyy')}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">

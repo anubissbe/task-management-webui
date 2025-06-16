@@ -280,6 +280,20 @@ input, textarea, select {
       radial-gradient(circle at 20% 50%, rgba(249, 115, 22, 0.08) 0%, transparent 50%),
       radial-gradient(circle at 80% 80%, rgba(249, 115, 22, 0.05) 0%, transparent 50%);
   }
+  
+  /* Enhanced dark mode table styling */
+  .dark table {
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0%, rgba(15, 15, 15, 0.5) 100%);
+  }
+  
+  .dark tbody tr {
+    border-color: rgba(249, 115, 22, 0.2);
+  }
+  
+  .dark tbody tr:hover {
+    background: rgba(249, 115, 22, 0.1);
+    box-shadow: inset 0 0 20px rgba(249, 115, 22, 0.1);
+  }
 }
 
 /* Animation Classes */
