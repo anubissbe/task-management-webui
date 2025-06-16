@@ -28,6 +28,7 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3001
+      - DATABASE_URL=postgresql://${DB_USER:-projecthub}:${DB_PASSWORD:-projecthub123}@postgres:5432/${DB_NAME:-projecthub_mcp}
       - DB_HOST=postgres
       - DB_PORT=5432
       - DB_USER=${DB_USER:-projecthub}
