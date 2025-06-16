@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   triage:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, docker, projecthub]
     
     steps:
     - name: Triage PR
@@ -164,7 +164,7 @@ jobs:
           }
 
   pr-commands:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, docker, projecthub]
     if: github.event.issue.pull_request && contains(github.event.comment.body, '/') 
     
     steps:
