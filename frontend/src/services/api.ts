@@ -3,8 +3,8 @@ import axios from 'axios';
 // Dynamically determine API URL based on current location
 const getApiUrl = () => {
   // Check for runtime override first
-  if ((window as any).__PROJECTHUB_API_OVERRIDE__) {
-    return (window as any).__PROJECTHUB_API_OVERRIDE__;
+  if ((window as { __PROJECTHUB_API_OVERRIDE__?: string }).__PROJECTHUB_API_OVERRIDE__) {
+    return (window as { __PROJECTHUB_API_OVERRIDE__?: string }).__PROJECTHUB_API_OVERRIDE__;
   }
   
   // If VITE_API_URL is set, use it
