@@ -173,25 +173,115 @@ jobs:
       with:
         node-version: '22'
         
-    - name: 🧹 Clean up any leftover containers
+    - name: 🧹 Clean up any leftover containers and ports
       run: |
-        echo "Cleaning up any containers using our ports..."
-        docker stop $(docker ps -q --filter "publish=3001" --filter "publish=5173") 2>/dev/null || true
-        docker rm $(docker ps -aq --filter "publish=3001" --filter "publish=5173") 2>/dev/null || true
+        echo "Starting comprehensive cleanup..."
+        
+        # Stop and remove any containers using our ports
+        echo "Stopping containers on ports 3001, 5173, 5432..."
+        docker stop $(docker ps -q --filter "publish=3001" --filter "publish=5173" --filter "publish=5432") 2>/dev/null || true
+        docker rm $(docker ps -aq --filter "publish=3001" --filter "publish=5173" --filter "publish=5432") 2>/dev/null || true
+        
+        # Stop and remove task-management containers
+        echo "Stopping task-management containers..."
         docker stop $(docker ps -q --filter "name=task-management") 2>/dev/null || true
         docker rm $(docker ps -aq --filter "name=task-management") 2>/dev/null || true
-        docker network rm $(docker network ls -q --filter "name=task-management") 2>/dev/null || true
-        echo "Port cleanup completed"
         
-    - name: 🐳 Start services
+        # Remove task-management networks
+        echo "Removing task-management networks..."
+        docker network rm $(docker network ls -q --filter "name=task-management") 2>/dev/null || true
+        
+        # Kill processes using our ports
+        echo "Freeing up ports 3001, 5173, 5432..."
+        sudo fuser -k 3001/tcp 2>/dev/null || true
+        sudo fuser -k 5173/tcp 2>/dev/null || true
+        sudo fuser -k 5432/tcp 2>/dev/null || true
+        
+        # Wait for ports to be freed
+        sleep 5
+        
+        # Verify ports are free
+        echo "Verifying ports are free..."
+        if netstat -tuln | grep -E ':(3001|5173|5432)\s'; then
+          echo "Warning: Some ports are still in use"
+          netstat -tuln | grep -E ':(3001|5173|5432)\s' || true
+        else
+          echo "All ports are free"
+        fi
+        
+        echo "Cleanup completed successfully"
+        
+    - name: 🐳 Start services with health monitoring
       run: |
+        echo "Starting services with docker-compose..."
         docker compose -f docker-compose.ci.yml up -d
-        echo "Waiting for services to start..."
-        sleep 30
-        echo "Checking service status..."
+        
+        echo "Waiting for PostgreSQL to be ready..."
+        timeout=60
+        while [ $timeout -gt 0 ]; do
+          if docker compose -f docker-compose.ci.yml exec postgres pg_isready -U test_user -d test_db >/dev/null 2>&1; then
+            echo "PostgreSQL is ready!"
+            break
+          fi
+          echo "Waiting for PostgreSQL... ($timeout seconds remaining)"
+          sleep 2
+          timeout=$((timeout - 2))
+        done
+        
+        if [ $timeout -le 0 ]; then
+          echo "PostgreSQL failed to start within timeout"
+          docker compose -f docker-compose.ci.yml logs postgres
+          exit 1
+        fi
+        
+        echo "Waiting for backend to be ready..."
+        timeout=90
+        while [ $timeout -gt 0 ]; do
+          if curl -f http://localhost:3001/api/health >/dev/null 2>&1; then
+            echo "Backend is ready!"
+            break
+          fi
+          echo "Waiting for backend... ($timeout seconds remaining)"
+          sleep 3
+          timeout=$((timeout - 3))
+        done
+        
+        if [ $timeout -le 0 ]; then
+          echo "Backend failed to start within timeout"
+          docker compose -f docker-compose.ci.yml logs backend
+          exit 1
+        fi
+        
+        echo "Waiting for frontend to be ready..."
+        timeout=120
+        while [ $timeout -gt 0 ]; do
+          if docker compose -f docker-compose.ci.yml exec frontend wget --no-verbose --tries=1 --spider http://localhost:5173/ >/dev/null 2>&1; then
+            echo "Frontend container health check passed!"
+            # Also verify external access
+            if curl -f http://localhost:5173/ >/dev/null 2>&1; then
+              echo "Frontend is ready and accessible!"
+              break
+            else
+              echo "Frontend container healthy but not externally accessible, retrying..."
+            fi
+          else
+            echo "Waiting for frontend container... ($timeout seconds remaining)"
+          fi
+          sleep 3
+          timeout=$((timeout - 3))
+        done
+        
+        if [ $timeout -le 0 ]; then
+          echo "Frontend failed to start within timeout"
+          echo "Container logs:"
+          docker compose -f docker-compose.ci.yml logs frontend
+          echo "Container status:"
+          docker compose -f docker-compose.ci.yml ps frontend
+          exit 1
+        fi
+        
+        echo "All services are ready!"
         docker compose -f docker-compose.ci.yml ps
-        echo "Waiting additional time for frontend to be ready..."
-        sleep 30
         
     - name: 🔧 Install Chrome dependencies
       run: |
@@ -226,9 +316,25 @@ jobs:
         name: e2e-screenshots
         path: tests/screenshots/
         
-    - name: 🛑 Stop services
+    - name: 📋 Debug logs (if failure)
+      if: failure()
+      run: |
+        echo "=== DOCKER COMPOSE LOGS ==="
+        docker compose -f docker-compose.ci.yml logs --tail=50 || true
+        echo "=== CONTAINER STATUS ==="
+        docker compose -f docker-compose.ci.yml ps || true
+        echo "=== NETWORK STATUS ==="
+        docker network ls | grep task-management || true
+        echo "=== PORT STATUS ==="
+        netstat -tuln | grep -E ':(3001|5173|5432)\s' || true
+        
+    - name: 🛑 Stop services and cleanup
       if: always()
-      run: docker compose -f docker-compose.ci.yml down
+      run: |
+        echo "Stopping and cleaning up services..."
+        docker compose -f docker-compose.ci.yml down --volumes --remove-orphans 2>/dev/null || true
+        docker network prune -f 2>/dev/null || true
+        echo "Services stopped and cleaned up"
 
   # Code Quality
   code-quality:
