@@ -94,7 +94,7 @@ export const ProjectList: React.FC = () => {
           </div>
         </div>
         <p className="mt-4 text-orange-600 dark:text-orange-400 font-medium">Loading ProjectHub-Mcp...</p>
-        <p className="text-xs text-gray-500 dark:text-gray-400">Initializing MCP workspace</p>
+        <p className="text-xs text-gray-400">Initializing MCP workspace</p>
       </div>
     );
   }
@@ -156,23 +156,23 @@ export const ProjectList: React.FC = () => {
 
       <div className="mt-8 overflow-hidden shadow-2xl shadow-orange-500/10 dark:shadow-orange-500/30 ring-2 ring-orange-500/30 dark:ring-orange-500/50 md:rounded-xl overflow-x-auto dark:bg-gradient-to-br dark:from-black dark:via-orange-950/10 dark:to-black">
         <table className="min-w-full divide-y divide-orange-500/20">
-          <thead className="bg-gradient-to-r from-orange-50 via-orange-100 to-orange-50 dark:from-black dark:via-orange-950/20 dark:to-black">
+          <thead className="bg-gradient-to-r from-gray-900 via-black to-gray-900">
             <tr>
-              <th className="px-6 py-4 text-left text-sm font-black text-orange-600 dark:text-orange-400 uppercase tracking-wider w-1/2">
+              <th className="px-6 py-4 text-left text-sm font-black text-orange-400 uppercase tracking-wider w-1/2">
                 Project Name
               </th>
-              <th className="px-6 py-4 text-left text-sm font-black text-orange-600 dark:text-orange-400 uppercase tracking-wider w-24">
+              <th className="px-6 py-4 text-left text-sm font-black text-orange-400 uppercase tracking-wider w-24">
                 Status
               </th>
-              <th className="px-6 py-4 text-left text-sm font-black text-orange-600 dark:text-orange-400 uppercase tracking-wider w-32">
+              <th className="px-6 py-4 text-left text-sm font-black text-orange-400 uppercase tracking-wider w-32">
                 Created
               </th>
-              <th className="relative px-6 py-4 w-32 text-sm font-black text-orange-600 dark:text-orange-400 uppercase tracking-wider">
+              <th className="relative px-6 py-4 w-32 text-sm font-black text-orange-400 uppercase tracking-wider">
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white dark:bg-gradient-to-b dark:from-black dark:via-orange-950/5 dark:to-black divide-y divide-gray-200 dark:divide-orange-500/20">
+          <tbody className="bg-gray-900 divide-y divide-gray-800">
             {projects?.length === 0 ? (
               <tr>
                 <td colSpan={4} className="px-6 py-16 text-center">
@@ -181,7 +181,7 @@ export const ProjectList: React.FC = () => {
                       <span className="text-orange-500 text-6xl">📂</span>
                     </div>
                     <h3 className="text-3xl font-black bg-gradient-to-r from-gray-600 to-orange-600 bg-clip-text text-transparent mb-4">NO PROJECTS YET</h3>
-                    <p className="text-gray-500 dark:text-gray-400 font-semibold mb-6 text-lg">Launch your first MCP-enhanced project</p>
+                    <p className="text-gray-400 font-semibold mb-6 text-lg">Launch your first MCP-enhanced project</p>
                     <Link
                       to="/projects/new"
                       className="inline-flex items-center px-8 py-4 rounded-xl bg-gradient-to-r from-orange-600 to-orange-500 text-white font-black text-lg hover:from-orange-500 hover:to-orange-400 transition-all duration-300 transform hover:scale-110 shadow-2xl shadow-orange-500/40 uppercase tracking-wider"
@@ -193,10 +193,10 @@ export const ProjectList: React.FC = () => {
               </tr>
             ) : (
               projects?.map((project) => (
-              <tr key={project.id} className="hover:bg-gray-50 dark:hover:bg-orange-500/10 transition-colors duration-200">
+              <tr key={project.id} className="hover:bg-orange-500/10 transition-colors duration-200">
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div>
-                    <div className="text-sm font-medium text-gray-900 dark:text-white">
+                    <div className="text-sm font-medium text-white">
                       <Link
                         to={`/projects/${project.id}`}
                         className="hover:text-primary-600 dark:hover:text-primary-400"
@@ -205,14 +205,14 @@ export const ProjectList: React.FC = () => {
                       </Link>
                     </div>
                     {project.description && (
-                      <div className="text-sm text-gray-500 dark:text-gray-300">
+                      <div className="text-sm text-gray-400">
                         {project.description.length > 100 
                           ? `${project.description.slice(0, 100)}...` 
                           : project.description}
                       </div>
                     )}
                     {projectStats[project.id] && (
-                      <div className="mt-1 text-xs text-gray-500 dark:text-orange-400/70">
+                      <div className="mt-1 text-xs text-orange-400/70">
                         {projectStats[project.id].statistics.task_breakdown.total > 0 ? (
                           <>
                             <span className="font-medium">
@@ -238,7 +238,7 @@ export const ProjectList: React.FC = () => {
                     {project.status}
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
                   {format(new Date(project.created_at), 'MMM d, yyyy')}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
