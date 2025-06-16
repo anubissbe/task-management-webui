@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   welcome:
-    runs-on: [self-hosted, docker, projecthub]
+    runs-on: [self-hosted, docker, git-runner]
     steps:
     - name: PR Comment
       uses: actions/github-script@v7

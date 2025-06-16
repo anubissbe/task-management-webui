@@ -14,7 +14,7 @@ env:
 
 jobs:
   build-and-push:
-    runs-on: [self-hosted, docker, projecthub]
+    runs-on: [self-hosted, docker, git-runner]
     permissions:
       contents: read
       packages: write

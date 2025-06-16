@@ -10,7 +10,7 @@ env:
 
 jobs:
   build-backend:
-    runs-on: [self-hosted, docker, projecthub]
+    runs-on: [self-hosted, docker, git-runner]
     permissions:
       contents: read
       packages: write
@@ -45,7 +45,7 @@ jobs:
         labels: ${{ steps.meta.outputs.labels }}
 
   build-frontend:
-    runs-on: [self-hosted, docker, projecthub]
+    runs-on: [self-hosted, docker, git-runner]
     permissions:
       contents: read
       packages: write

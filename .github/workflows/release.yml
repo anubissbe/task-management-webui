@@ -14,7 +14,7 @@ on:
 jobs:
   create-release:
     name: 🏷️ Create Release
-    runs-on: [self-hosted, docker, projecthub]
+    runs-on: [self-hosted, docker, git-runner]
     permissions:
       contents: write
       packages: write

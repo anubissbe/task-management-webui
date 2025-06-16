@@ -15,7 +15,7 @@ jobs:
   # Frontend Tests
   frontend-test:
     name: 🎨 Frontend Tests
-    runs-on: [self-hosted, docker, projecthub]
+    runs-on: [self-hosted, docker, git-runner]
     defaults:
       run:
         working-directory: ./frontend
@@ -60,7 +60,7 @@ jobs:
   # Backend Tests
   backend-test:
     name: 🔧 Backend Tests
-    runs-on: [self-hosted, docker, projecthub]
+    runs-on: [self-hosted, docker, git-runner]
     defaults:
       run:
         working-directory: ./backend
@@ -114,7 +114,7 @@ jobs:
   # Docker Build and Security
   docker-security:
     name: 🐳 Docker & Security
-    runs-on: [self-hosted, docker, projecthub]
+    runs-on: [self-hosted, docker, git-runner]
     needs: [frontend-test, backend-test]
     
     steps:
@@ -161,7 +161,7 @@ jobs:
   # E2E Tests
   e2e-tests:
     name: 🧪 E2E Tests
-    runs-on: [self-hosted, docker, projecthub]
+    runs-on: [self-hosted, docker, git-runner]
     needs: [frontend-test, backend-test]
     
     steps:
@@ -200,7 +200,7 @@ jobs:
   # Code Quality
   code-quality:
     name: 📊 Code Quality
-    runs-on: [self-hosted, docker, projecthub]
+    runs-on: [self-hosted, docker, git-runner]
     
     steps:
     - name: 📦 Checkout code
@@ -243,7 +243,7 @@ jobs:
   # Deployment (only on main branch)
   deploy:
     name: 🚀 Deploy
-    runs-on: [self-hosted, docker, projecthub]
+    runs-on: [self-hosted, docker, git-runner]
     needs: [frontend-test, backend-test, docker-security, e2e-tests]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     
