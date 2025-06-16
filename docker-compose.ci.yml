@@ -13,10 +13,11 @@ services:
     networks:
       - task-management-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U test_user"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      test: ["CMD-SHELL", "pg_isready -U test_user -d test_db"]
+      interval: 5s
+      timeout: 10s
+      retries: 12
+      start_period: 30s
 
   backend:
     build:
@@ -37,9 +38,10 @@ services:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "node", "-e", "require('http').get('http://localhost:3001/api/health', (res) => process.exit(res.statusCode === 200 ? 0 : 1))"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
+      interval: 5s
+      timeout: 10s
+      retries: 15
+      start_period: 45s
 
   frontend:
     build:
