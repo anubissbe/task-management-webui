@@ -1,6 +1,8 @@
 <div align="center">
 
-# ProjectHub-Mcp
+<img src="docs/logo.svg" alt="ProjectHub-Mcp Logo" width="400" height="120" />
+
+# ProjectHub — MCP
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-ff6500?style=for-the-badge)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
@@ -70,6 +72,54 @@ docker compose up -d
 - Professional ProjectHub-MCP aesthetic
 
 Visit **http://localhost:5173** to see your ProjectHub-MCP instance!
+
+## 📸 Screenshots
+
+<div align="center">
+
+### 🏠 Homepage & Dark Theme
+<img src="docs/images/homepage.png" alt="ProjectHub-MCP Homepage" width="600" />
+
+*Modern dark theme with orange accents and gradient effects*
+
+### 📊 Analytics Dashboard
+<img src="analytics.png" alt="Analytics Dashboard" width="600" />
+
+*Comprehensive project analytics with beautiful charts and insights*
+
+### 📋 Kanban Board View
+<img src="board.png" alt="Kanban Board" width="600" />
+
+*Drag-and-drop task management with visual progress tracking*
+
+### 📅 Calendar & Timeline
+<img src="calendar.png" alt="Calendar View" width="600" />
+
+*Advanced scheduling and timeline visualization*
+
+### 📊 Project List & Management
+<img src="project-tasks.png" alt="Project Management" width="600" />
+
+*Organized project overview with task statistics*
+
+</div>
+
+### 🎨 Theme Comparison
+
+<table align="center">
+<tr>
+<td align="center"><strong>🌙 Dark Mode (Default)</strong></td>
+<td align="center"><strong>☀️ Light Mode</strong></td>
+</tr>
+<tr>
+<td><img src="test-screenshots/dark-theme.png" alt="Dark Theme" width="300" /></td>
+<td><img src="test-screenshots/light-theme.png" alt="Light Theme" width="300" /></td>
+</tr>
+<tr>
+<td align="center"><em>Professional black/orange branding</em></td>
+<td align="center"><em>Clean light theme alternative</em></td>
+</tr>
+</table>
 
 ### Development Setup
 
@@ -310,6 +360,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 *If this project helped you, please consider ⭐ starring the repository!*
 
-</div>Testing new runners
-# Test runners - Mon Jun 16 19:18:09 CEST 2025
-# Test runners with Docker support - Mon Jun 16 19:31:52 CEST 2025
+</div>

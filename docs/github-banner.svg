@@ -1,0 +1,91 @@
+<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#000000;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#1a1a1a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#000000;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="orangeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ff6500;stop-opacity:0.8" />
+      <stop offset="50%" style="stop-color:#ff8533;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ff6500;stop-opacity:0.8" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bgGradient)" />
+  
+  <!-- Grid pattern -->
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#333" stroke-width="1" opacity="0.3"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#grid)" />
+  
+  <!-- Main content container -->
+  <g transform="translate(60, 150)">
+    
+    <!-- Project title -->
+    <text x="0" y="80" font-family="Arial, sans-serif" font-size="72" font-weight="bold" fill="white" filter="url(#glow)">
+      Project
+    </text>
+    <text x="420" y="80" font-family="Arial, sans-serif" font-size="72" font-weight="bold" fill="url(#orangeGradient)" filter="url(#glow)">
+      Hub
+    </text>
+    
+    <!-- MCP subtitle -->
+    <text x="700" y="50" font-family="Arial, sans-serif" font-size="24" fill="#9ca3af">MCP</text>
+    <text x="700" y="80" font-family="Arial, sans-serif" font-size="24" fill="#9ca3af">Enhanced</text>
+    
+    <!-- Subtitle -->
+    <text x="0" y="140" font-family="Arial, sans-serif" font-size="28" fill="#ff6500" opacity="0.9">
+      Enterprise Project Management with Dramatic Black &amp; Orange Branding
+    </text>
+    
+    <!-- Feature bullets -->
+    <g transform="translate(0, 200)">
+      <circle cx="10" cy="0" r="4" fill="#ff6500"/>
+      <text x="30" y="6" font-family="Arial, sans-serif" font-size="22" fill="white">
+        Multiple Views: Kanban, List, Calendar, Timeline
+      </text>
+      
+      <circle cx="10" cy="40" r="4" fill="#ff6500"/>
+      <text x="30" y="46" font-family="Arial, sans-serif" font-size="22" fill="white">
+        Real-time Collaboration with WebSocket Integration
+      </text>
+      
+      <circle cx="10" cy="80" r="4" fill="#ff6500"/>
+      <text x="30" y="86" font-family="Arial, sans-serif" font-size="22" fill="white">
+        Modern Dark Theme with Glowing Orange Accents
+      </text>
+      
+      <circle cx="10" cy="120" r="4" fill="#ff6500"/>
+      <text x="30" y="126" font-family="Arial, sans-serif" font-size="22" fill="white">
+        Docker-Ready Enterprise Deployment
+      </text>
+    </g>
+    
+    <!-- GitHub link -->
+    <text x="800" y="380" font-family="Arial, sans-serif" font-size="18" fill="#9ca3af">
+      github.com/anubissbe/ProjectHub-Mcp
+    </text>
+    
+  </g>
+  
+  <!-- Decorative elements -->
+  <circle cx="100" cy="100" r="20" fill="#ff6500" opacity="0.6" filter="url(#glow)"/>
+  <circle cx="1100" cy="530" r="25" fill="#ff6500" opacity="0.4" filter="url(#glow)"/>
+  <circle cx="1050" cy="150" r="15" fill="#ff6500" opacity="0.7" filter="url(#glow)"/>
+  
+  <!-- Orange accent line -->
+  <rect x="0" y="620" width="1200" height="10" fill="url(#orangeGradient)"/>
+  
+</svg>

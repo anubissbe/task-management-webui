@@ -1,6 +1,17 @@
-# Installation Guide
+# 🚀 ProjectHub — MCP Installation Guide
 
-This guide covers different ways to install and run the Task Management WebUI application.
+<div align="center">
+
+![ProjectHub-Mcp](https://img.shields.io/badge/ProjectHub-MCP-ff6500?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDE1Ljc0TDEyIDIyTDEwLjkxIDE1Ljc0TDQgOUwxMC45MSA4LjI2TDEyIDJaIiBmaWxsPSIjZmY2NTAwIi8+Cjwvc3ZnPgo=)
+[![Docker Ready](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
+
+### Get started with ProjectHub — MCP in under 5 minutes!
+
+</div>
+
+---
+
+This comprehensive guide covers different ways to install and run **ProjectHub — MCP** with its dramatic black/orange branding and enterprise-grade features.
 
 ## 🚀 Quick Installation (Recommended)
 
@@ -14,7 +25,7 @@ The fastest way to get started is using our pre-built release packages:
 ### One-Command Installation
 ```bash
 # Download and extract the latest release
-curl -L https://github.com/anubissbe/task-management-webui/releases/download/v1.0.0/task-management-webui-v1.0.0-full.tar.gz | tar -xz
+curl -L https://github.com/anubissbe/ProjectHub-Mcp/releases/latest/download/projecthub-mcp-latest.tar.gz | tar -xz
 
 # Start the application
 docker compose up -d
@@ -86,7 +97,7 @@ For production environments:
 ### Using Production Docker Compose
 ```bash
 # Download production configuration
-curl -L https://github.com/anubissbe/task-management-webui/releases/download/v1.0.0/task-management-webui-v1.0.0-full.tar.gz | tar -xz
+curl -L https://github.com/anubissbe/ProjectHub-Mcp/releases/latest/download/projecthub-mcp-latest.tar.gz | tar -xz
 
 # Use production compose file
 docker compose -f docker-compose.prod.yml up -d
