@@ -178,6 +178,24 @@ jobs:
         docker compose -f docker-compose.ci.yml up -d --wait
         sleep 30
         
+    - name: 🔧 Install Chrome dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          libnss3 \
+          libatk-bridge2.0-0 \
+          libdrm2 \
+          libxkbcommon0 \
+          libxcomposite1 \
+          libxdamage1 \
+          libxrandr2 \
+          libgbm1 \
+          libxss1 \
+          libgconf-2-4 \
+          libgtk-3-0 \
+          libxshmfence1 \
+          libasound2
+        
     - name: 🧪 Install E2E test dependencies
       working-directory: ./tests
       run: npm ci
