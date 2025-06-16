@@ -175,12 +175,13 @@ jobs:
         
     - name: 🐳 Start services
       run: |
-        docker compose -f docker-compose.ci.yml up -d --wait
-        sleep 10
+        docker compose -f docker-compose.ci.yml up -d
+        echo "Waiting for services to start..."
+        sleep 30
         echo "Checking service status..."
         docker compose -f docker-compose.ci.yml ps
-        echo "Waiting for services to be fully ready..."
-        sleep 20
+        echo "Waiting additional time for frontend to be ready..."
+        sleep 30
         
     - name: 🔧 Install Chrome dependencies
       run: |
