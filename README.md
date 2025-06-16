@@ -50,20 +50,82 @@
 - Docker and Docker Compose
 - Node.js 18+ (for local development)
 
-### 🐳 Using Pre-built Containers (Recommended)
+### 🐳 Docker Installation (Recommended)
 
-The fastest way to get started is using our pre-built containers:
+The fastest way to get started is using Docker Compose with all required services:
 
 ```bash
 # 1. Create a directory for your installation
 mkdir projecthub-mcp && cd projecthub-mcp
 
-# 2. Download the production docker-compose file
-curl -L https://raw.githubusercontent.com/anubissbe/ProjectHub-Mcp/main/docker-compose.yml -o docker-compose.yml
+# 2. Create docker-compose.yml with all services
+cat > docker-compose.yml << 'EOF'
+version: '3.8'
 
-# 3. Start the containers
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: projecthub-postgres
+    environment:
+      POSTGRES_USER: projecthub
+      POSTGRES_PASSWORD: changeme123
+      POSTGRES_DB: projecthub_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U projecthub"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    image: ghcr.io/anubissbe/projecthub-mcp-backend:latest
+    container_name: projecthub-backend
+    ports:
+      - "3001:3001"
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://projecthub:changeme123@postgres:5432/projecthub_db
+      CORS_ORIGIN: http://localhost:5173
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    image: ghcr.io/anubissbe/projecthub-mcp-frontend:latest
+    container_name: projecthub-frontend
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_URL: http://localhost:3001/api
+      VITE_WS_URL: ws://localhost:3001
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  default:
+    name: projecthub-network
+EOF
+
+# 3. Start all services
 docker compose up -d
+
+# 4. Wait for services to be ready (about 30 seconds)
+echo "⏳ Waiting for services to start..."
+sleep 30
+
+# 5. Verify everything is running
+docker compose ps
 ```
+
+**Note:** Remember to change the default passwords in production!
 
 🎨 **The application features dramatic black/orange branding with:**
 - Modern gradient backgrounds and glowing effects
@@ -77,65 +139,96 @@ Visit **http://localhost:5173** to see your ProjectHub-MCP instance!
 
 <div align="center">
 
-### 🏠 Homepage & Dark Theme
-<img src="docs/images/homepage.png" alt="ProjectHub-MCP Homepage" width="600" />
+### 🏠 Homepage with Dark Theme
+<img src="docs/screenshots/homepage-dark.png" alt="ProjectHub-MCP Homepage Dark" width="800" />
 
-*Modern dark theme with orange accents and gradient effects*
+*Dramatic black background with vibrant orange accents and modern UI*
 
-### 📊 Analytics Dashboard
-<img src="analytics.png" alt="Analytics Dashboard" width="600" />
+### 📊 Projects Overview
+<img src="docs/screenshots/projects-list.png" alt="Projects List" width="800" />
 
-*Comprehensive project analytics with beautiful charts and insights*
+*Clean project management interface with statistics and quick actions*
 
 ### 📋 Kanban Board View
-<img src="board.png" alt="Kanban Board" width="600" />
+<img src="docs/screenshots/kanban-board.png" alt="Kanban Board" width="800" />
 
-*Drag-and-drop task management with visual progress tracking*
+*Drag-and-drop task management with visual workflow tracking*
 
-### 📅 Calendar & Timeline
-<img src="calendar.png" alt="Calendar View" width="600" />
+### 📈 Analytics Dashboard
+<img src="docs/screenshots/analytics-dashboard.png" alt="Analytics Dashboard" width="800" />
 
-*Advanced scheduling and timeline visualization*
-
-### 📊 Project List & Management
-<img src="project-tasks.png" alt="Project Management" width="600" />
-
-*Organized project overview with task statistics*
+*Comprehensive project analytics with charts and performance insights*
 
 </div>
 
-### 🎨 Theme Comparison
+### 🎨 Theme & Responsive Design
 
 <table align="center">
 <tr>
 <td align="center"><strong>🌙 Dark Mode (Default)</strong></td>
 <td align="center"><strong>☀️ Light Mode</strong></td>
+<td align="center"><strong>📱 Mobile View</strong></td>
 </tr>
 <tr>
-<td><img src="test-screenshots/dark-theme.png" alt="Dark Theme" width="300" /></td>
-<td><img src="test-screenshots/light-theme.png" alt="Light Theme" width="300" /></td>
+<td><img src="docs/screenshots/homepage-dark.png" alt="Dark Theme" width="280" /></td>
+<td><img src="docs/screenshots/homepage-light.png" alt="Light Theme" width="280" /></td>
+<td><img src="docs/screenshots/mobile-view.png" alt="Mobile View" width="150" /></td>
 </tr>
 <tr>
-<td align="center"><em>Professional black/orange branding</em></td>
-<td align="center"><em>Clean light theme alternative</em></td>
+<td align="center"><em>Professional black/orange</em></td>
+<td align="center"><em>Clean light alternative</em></td>
+<td align="center"><em>Fully responsive</em></td>
 </tr>
 </table>
 
 ### Development Setup
 
-For local development:
+For local development with hot-reload:
 
 ```bash
-# Clone the repository
+# 1. Clone the repository
 git clone https://github.com/anubissbe/ProjectHub-Mcp.git
 cd ProjectHub-Mcp
 
-# Start development environment
-docker compose up -d
+# 2. Start PostgreSQL (required)
+docker run -d \
+  --name projecthub-postgres \
+  -e POSTGRES_USER=projecthub \
+  -e POSTGRES_PASSWORD=devpassword \
+  -e POSTGRES_DB=projecthub_db \
+  -p 5432:5432 \
+  postgres:16-alpine
+
+# 3. Install dependencies
+cd frontend && npm install && cd ..
+cd backend && npm install && cd ..
+
+# 4. Create .env files
+# Backend .env
+cat > backend/.env << EOF
+DATABASE_URL=postgresql://projecthub:devpassword@localhost:5432/projecthub_db
+NODE_ENV=development
+PORT=3001
+CORS_ORIGIN=http://localhost:5173
+EOF
+
+# Frontend .env
+cat > frontend/.env << EOF
+VITE_API_URL=http://localhost:3001/api
+VITE_WS_URL=ws://localhost:3001
+EOF
+
+# 5. Start development servers
+# Terminal 1: Backend
+cd backend && npm run dev
+
+# Terminal 2: Frontend  
+cd frontend && npm run dev
 
 # Access the application
 # Frontend: http://localhost:5173
 # Backend API: http://localhost:3001/api
+# PostgreSQL: localhost:5432
 ```
 
 ## 🐳 Container Images
@@ -194,20 +287,33 @@ ProjectHub-Mcp/
 
 ### Environment Variables
 
-The application uses environment variables for configuration:
+Create a `.env` file to customize your installation:
 
 ```env
-# Database
-DATABASE_URL=postgresql://user:password@localhost:5432/mcp_learning
+# Database Configuration
+POSTGRES_USER=projecthub
+POSTGRES_PASSWORD=your_secure_password_here
+POSTGRES_DB=projecthub_db
+DATABASE_URL=postgresql://projecthub:your_secure_password_here@postgres:5432/projecthub_db
 
-# Backend
+# Backend Configuration
 NODE_ENV=production
 PORT=3001
 CORS_ORIGIN=http://localhost:5173
 
-# Frontend
+# Frontend Configuration  
 VITE_API_URL=http://localhost:3001/api
+VITE_WS_URL=ws://localhost:3001
+
+# Optional: External PostgreSQL
+# DATABASE_URL=postgresql://user:password@your-postgres-host:5432/projecthub_db
 ```
+
+For production deployments, ensure you:
+- Use strong passwords
+- Configure CORS_ORIGIN to match your domain
+- Update VITE_API_URL to your API endpoint
+- Use HTTPS/WSS for secure connections
 
 ## 📚 API Documentation
 
@@ -280,6 +386,43 @@ The application is ready for deployment on:
 - Azure Container Instances
 - DigitalOcean App Platform
 - Any Docker-compatible platform
+
+## 🔧 Troubleshooting
+
+### Common Issues
+
+**PostgreSQL Connection Failed**
+```bash
+# Check if PostgreSQL is running
+docker ps | grep postgres
+
+# View PostgreSQL logs
+docker logs projecthub-postgres
+
+# Test connection
+docker exec -it projecthub-postgres psql -U projecthub -d projecthub_db -c "SELECT 1"
+
+# Reset database (WARNING: deletes all data)
+docker compose down -v
+docker compose up -d
+```
+
+**Port Already in Use**
+```bash
+# Check what's using the ports
+lsof -i :5173  # Frontend
+lsof -i :3001  # Backend  
+lsof -i :5432  # PostgreSQL
+
+# Stop conflicting services or change ports in docker-compose.yml
+```
+
+**Database Migrations**
+```bash
+# The backend automatically runs migrations on startup
+# To reset and re-run migrations:
+docker compose restart backend
+```
 
 ## 🎨 Theming & Customization
 

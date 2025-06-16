@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database (Required)
+  postgres:
+    image: postgres:16-alpine
+    container_name: projecthub-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-projecthub}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme123}
+      POSTGRES_DB: ${POSTGRES_DB:-projecthub_db}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-projecthub}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Backend API Service
+  backend:
+    image: ghcr.io/anubissbe/projecthub-mcp-backend:latest
+    container_name: projecthub-backend
+    ports:
+      - "${BACKEND_PORT:-3001}:3001"
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-projecthub}:${POSTGRES_PASSWORD:-changeme123}@postgres:5432/${POSTGRES_DB:-projecthub_db}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:5173}
+      # Optional: Add your own environment variables
+      # JWT_SECRET: ${JWT_SECRET}
+      # API_KEY: ${API_KEY}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Frontend UI Service
+  frontend:
+    image: ghcr.io/anubissbe/projecthub-mcp-frontend:latest
+    container_name: projecthub-frontend
+    ports:
+      - "${FRONTEND_PORT:-5173}:5173"
+    environment:
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:3001/api}
+      VITE_WS_URL: ${VITE_WS_URL:-ws://localhost:3001}
+      # Optional: Add custom branding
+      # VITE_APP_NAME: ${APP_NAME:-ProjectHub}
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+# Persistent data storage
+volumes:
+  postgres_data:
+    driver: local
+
+# Network configuration
+networks:
+  default:
+    name: projecthub-network
+    driver: bridge
