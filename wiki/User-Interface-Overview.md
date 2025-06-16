@@ -1,6 +1,68 @@
-# User Interface Overview
+# 🎨 ProjectHub — MCP User Interface Overview
 
-The Task Management WebUI provides a modern, intuitive interface designed for efficient project and task management. This guide covers all major UI components and navigation patterns.
+<div align="center">
+
+![Interface](https://img.shields.io/badge/Interface-Modern_UI-ff6500?style=for-the-badge)
+![Theme](https://img.shields.io/badge/Theme-Dark_Orange-000000?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDE1Ljc0TDEyIDIyTDEwLjkxIDE1Ljc0TDQgOUwxMC45MSA4LjI2TDEyIDJaIiBmaWxsPSIjZmY2NTAwIi8+Cjwvc3ZnPgo=)
+
+### Experience the dramatic black/orange branding and modern UI design
+
+</div>
+
+---
+
+**ProjectHub — MCP** provides a stunning, modern interface with dramatic black/orange branding designed for efficient enterprise project management. This guide showcases all major UI components and the visual design philosophy.
+
+## 🌟 Visual Design Philosophy
+
+### 🎨 Color Scheme & Branding
+- **Primary Black**: `#0a0a0a` - Deep, professional background
+- **Vibrant Orange**: `#ff6500` - Interactive elements and accents  
+- **Gradient Effects**: Smooth dark-to-orange transitions
+- **High Contrast**: Accessibility-focused typography for enterprise use
+
+### ✨ Interactive Elements
+- **Glowing Effects**: Orange accents that glow on hover
+- **Smooth Animations**: Fluid transitions between UI states
+- **Card-based Layout**: Modern, clean component design
+- **Responsive Design**: Adapts beautifully to all screen sizes
+
+## 📸 Interface Screenshots
+
+<div align="center">
+
+### 🏠 Homepage with Dark Theme
+<img src="../test-screenshots/dark-theme.png" alt="Dark Theme Homepage" width="500" />
+
+*Professional black background with orange navigation accents*
+
+### 📋 Kanban Board Interface  
+<img src="../test-screenshots/board-page.png" alt="Kanban Board" width="500" />
+
+*Drag-and-drop task management with visual progress tracking*
+
+### 📊 Projects Overview
+<img src="../test-screenshots/projects-page.png" alt="Projects Page" width="500" />
+
+*Clean project listing with statistics and quick actions*
+
+### 🌓 Theme Comparison
+<table>
+<tr>
+<td align="center"><strong>🌙 Dark Mode (Default)</strong></td>
+<td align="center"><strong>☀️ Light Mode</strong></td>
+</tr>
+<tr>
+<td><img src="../test-screenshots/projects-table-dark.png" alt="Dark Projects Table" width="300" /></td>
+<td><img src="../test-screenshots/projects-table-light.png" alt="Light Projects Table" width="300" /></td>
+</tr>
+<tr>
+<td align="center"><em>Dramatic black/orange enterprise theme</em></td>
+<td align="center"><em>Clean light alternative</em></td>
+</tr>
+</table>
+
+</div>
 
 ## 🏠 Main Navigation
 
@@ -257,4 +319,18 @@ Select multiple tasks (Ctrl+click) for:
 
 ---
 
+<div align="center">
+
+### 🚀 Ready to Experience ProjectHub — MCP?
+
+[![Get Started](https://img.shields.io/badge/Get_Started-Installation_Guide-ff6500?style=for-the-badge)](Installation-Guide)
+[![View Demo](https://img.shields.io/badge/Live_Demo-localhost:5173-000000?style=for-the-badge)](http://localhost:5173)
+
 **Next**: Learn about [Task Management](Task-Management) workflows and best practices.
+
+---
+
+![ProjectHub-Mcp](https://img.shields.io/badge/ProjectHub-MCP_Enterprise-ff6500?style=flat-square)
+*Built with ❤️ and ☕ by [@anubissbe](https://github.com/anubissbe)*
+
+</div>

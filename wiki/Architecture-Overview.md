@@ -1,6 +1,18 @@
-# Architecture Overview
+# 🏗️ ProjectHub — MCP Architecture Overview
 
-This document provides a comprehensive overview of the Task Management WebUI architecture, including system design, technology stack, and architectural decisions.
+<div align="center">
+
+![Architecture](https://img.shields.io/badge/Architecture-Enterprise_Grade-ff6500?style=for-the-badge)
+![Stack](https://img.shields.io/badge/Stack-Modern_Full_Stack-000000?style=for-the-badge)
+![MCP](https://img.shields.io/badge/MCP-Enhanced-ff6500?style=for-the-badge)
+
+### Enterprise-grade project management with dramatic black/orange branding
+
+</div>
+
+---
+
+This document provides a comprehensive overview of the **ProjectHub — MCP** architecture, showcasing our modern full-stack design with Model Context Protocol integration and stunning visual branding.
 
 ## 🏗️ System Architecture
 
