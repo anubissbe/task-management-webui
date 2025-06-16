@@ -42,6 +42,7 @@ class TaskController {
             const { projectId } = req.params;
             const { status } = req.query;
             const tasks = await taskService.getTasksByProject(projectId, status);
+            console.log(`Retrieved ${tasks.length} tasks for project:`, projectId);
             res.json(tasks);
         }
         catch (error) {

@@ -145,10 +145,10 @@ input, textarea, select {
 /* ==================== PROJECTHUB-MCP CUSTOM BRANDING ==================== */
 @layer base {
   :root {
-    --projecthub-orange: #f97316;
-    --projecthub-orange-dark: #ea580c;
-    --projecthub-orange-light: #fb923c;
-    --projecthub-black: #000000;
+    --projecthub-orange: #ff6500;
+    --projecthub-orange-dark: #cc5200;
+    --projecthub-orange-light: #ff8533;
+    --projecthub-black: #0a0a0a;
     --projecthub-gray-dark: #0a0a0a;
     --projecthub-gray: #1a1a1a;
     --projecthub-gray-light: #2a2a2a;
@@ -158,43 +158,43 @@ input, textarea, select {
   body {
     @apply bg-gray-50 dark:bg-black;
     background-image: 
-      radial-gradient(circle at 20% 50%, rgba(249, 115, 22, 0.05) 0%, transparent 50%),
-      radial-gradient(circle at 80% 80%, rgba(249, 115, 22, 0.03) 0%, transparent 50%);
+      radial-gradient(circle at 20% 50%, rgba(255, 101, 0, 0.05) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(255, 101, 0, 0.03) 0%, transparent 50%);
   }
 }
 
 @layer components {
   /* ProjectHub Header Gradient */
   .projecthub-header {
-    background: linear-gradient(90deg, #000000 0%, #1a1a1a 50%, #000000 100%);
-    border-bottom: 3px solid #f97316;
-    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.2);
+    background: linear-gradient(90deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+    border-bottom: 3px solid #ff6500;
+    box-shadow: 0 4px 12px rgba(255, 101, 0, 0.2);
   }
 
   /* ProjectHub Logo Styling */
   .projecthub-logo {
-    background: linear-gradient(135deg, #000000 0%, #2a2a2a 100%);
-    border: 2px solid rgba(249, 115, 22, 0.5);
+    background: linear-gradient(135deg, #0a0a0a 0%, #2a2a2a 100%);
+    border: 2px solid rgba(255, 101, 0, 0.5);
     box-shadow: 
-      0 0 20px rgba(249, 115, 22, 0.3),
-      inset 0 0 10px rgba(249, 115, 22, 0.1);
+      0 0 20px rgba(255, 101, 0, 0.3),
+      inset 0 0 10px rgba(255, 101, 0, 0.1);
   }
 
   /* Primary Button Styling */
   .projecthub-btn-primary {
-    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
-    border: 1px solid rgba(249, 115, 22, 0.3);
+    background: linear-gradient(135deg, #ff6500 0%, #cc5200 100%);
+    border: 1px solid rgba(255, 101, 0, 0.3);
     box-shadow: 
-      0 4px 15px rgba(249, 115, 22, 0.4),
+      0 4px 15px rgba(255, 101, 0, 0.4),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
     transition: all 0.3s ease;
   }
 
   .projecthub-btn-primary:hover {
-    background: linear-gradient(135deg, #fb923c 0%, #f97316 100%);
+    background: linear-gradient(135deg, #ff8533 0%, #ff6500 100%);
     transform: translateY(-2px) scale(1.05);
     box-shadow: 
-      0 6px 20px rgba(249, 115, 22, 0.5),
+      0 6px 20px rgba(255, 101, 0, 0.5),
       inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }
 
@@ -211,7 +211,7 @@ input, textarea, select {
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, transparent, #f97316, transparent);
+    background: linear-gradient(90deg, transparent, #ff6500, transparent);
     transform: scaleX(0);
     transition: transform 0.3s ease;
   }
@@ -223,8 +223,8 @@ input, textarea, select {
 
   /* Card Styling with Gradient Border */
   .projecthub-card {
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.05) 0%, rgba(249, 115, 22, 0.05) 100%);
-    border: 1px solid rgba(249, 115, 22, 0.2);
+    background: linear-gradient(135deg, rgba(10, 10, 10, 0.05) 0%, rgba(255, 101, 0, 0.05) 100%);
+    border: 1px solid rgba(255, 101, 0, 0.2);
     position: relative;
     overflow: hidden;
   }
@@ -236,7 +236,7 @@ input, textarea, select {
     left: -2px;
     right: -2px;
     bottom: -2px;
-    background: linear-gradient(135deg, #f97316, #ea580c, #f97316);
+    background: linear-gradient(135deg, #ff6500, #cc5200, #ff6500);
     z-index: -1;
     opacity: 0;
     transition: opacity 0.3s ease;
@@ -249,14 +249,14 @@ input, textarea, select {
 
   /* Loading Spinner with Branding */
   .projecthub-spinner {
-    border: 4px solid rgba(249, 115, 22, 0.1);
-    border-top-color: #f97316;
-    border-right-color: #f97316;
+    border: 4px solid rgba(255, 101, 0, 0.1);
+    border-top-color: #ff6500;
+    border-right-color: #ff6500;
   }
 
   /* Text Gradient Effect */
   .projecthub-text-gradient {
-    background: linear-gradient(135deg, #000000 0%, #f97316 100%);
+    background: linear-gradient(135deg, #0a0a0a 0%, #ff6500 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -264,35 +264,41 @@ input, textarea, select {
 
   /* Badge Styling */
   .projecthub-badge {
-    background: rgba(249, 115, 22, 0.1);
-    border: 1px solid rgba(249, 115, 22, 0.3);
-    color: #f97316;
+    background: rgba(255, 101, 0, 0.1);
+    border: 1px solid rgba(255, 101, 0, 0.3);
+    color: #ff6500;
   }
 
   /* Dark Mode Specific Styles */
   .dark .projecthub-card {
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(249, 115, 22, 0.1) 100%);
-    border-color: rgba(249, 115, 22, 0.3);
+    background: linear-gradient(135deg, rgba(10, 10, 10, 0.3) 0%, rgba(255, 101, 0, 0.1) 100%);
+    border-color: rgba(255, 101, 0, 0.3);
   }
 
   .dark body {
     background-image: 
-      radial-gradient(circle at 20% 50%, rgba(249, 115, 22, 0.08) 0%, transparent 50%),
-      radial-gradient(circle at 80% 80%, rgba(249, 115, 22, 0.05) 0%, transparent 50%);
+      radial-gradient(circle at 20% 50%, rgba(255, 101, 0, 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(255, 101, 0, 0.05) 0%, transparent 50%);
   }
   
   /* Enhanced dark mode table styling */
   .dark table {
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0%, rgba(15, 15, 15, 0.5) 100%);
+    background: transparent; /* Let table classes control the background */
+  }
+  
+  /* Dark mode table header with orange theme */
+  .dark thead {
+    background: linear-gradient(90deg, #0a0a0a 0%, rgba(255, 101, 0, 0.15) 50%, #0a0a0a 100%) !important;
+    border-bottom: 2px solid rgba(255, 101, 0, 0.3);
   }
   
   .dark tbody tr {
-    border-color: rgba(249, 115, 22, 0.2);
+    border-color: rgba(255, 101, 0, 0.2);
   }
   
   .dark tbody tr:hover {
-    background: rgba(249, 115, 22, 0.1);
-    box-shadow: inset 0 0 20px rgba(249, 115, 22, 0.1);
+    background: rgba(255, 101, 0, 0.1);
+    box-shadow: inset 0 0 20px rgba(255, 101, 0, 0.1);
   }
 }
 
@@ -319,10 +325,10 @@ input, textarea, select {
 
 @keyframes glow {
   0%, 100% {
-    box-shadow: 0 0 20px rgba(249, 115, 22, 0.5);
+    box-shadow: 0 0 20px rgba(255, 101, 0, 0.5);
   }
   50% {
-    box-shadow: 0 0 40px rgba(249, 115, 22, 0.8);
+    box-shadow: 0 0 40px rgba(255, 101, 0, 0.8);
   }
 }
 

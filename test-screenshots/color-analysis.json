@@ -1,0 +1,194 @@
+{
+  "analysis": {
+    "timestamp": "2025-06-16T12:50:32.660Z",
+    "url": "http://localhost:5173/",
+    "darkModeToggle": {
+      "found": true,
+      "selector": "button[aria-label*=\"theme\" i]"
+    }
+  },
+  "lightMode": {
+    "mode": "light",
+    "timestamp": "2025-06-16T12:50:30.402Z",
+    "pageInfo": {
+      "title": "ProjectHub-Mcp - MCP Enhanced Workspace",
+      "url": "http://localhost:5173/",
+      "bodyBackground": "rgb(249, 250, 251)",
+      "bodyColor": "rgb(0, 0, 0)",
+      "rootBackground": "rgba(0, 0, 0, 0)"
+    },
+    "elements": {
+      "tablesFound": 1,
+      "tableHeadersFound": 4,
+      "statusBadgesFound": 0,
+      "buttonsFound": 4
+    },
+    "colors": {
+      "tables": [
+        {
+          "index": 0,
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "color": "rgb(17, 24, 39)",
+          "borderColor": "rgb(229, 231, 235)"
+        }
+      ],
+      "headers": [
+        {
+          "index": 0,
+          "text": "Project Name",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "color": "rgb(251, 146, 60)",
+          "borderColor": "rgb(229, 231, 235)"
+        },
+        {
+          "index": 1,
+          "text": "Status",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "color": "rgb(251, 146, 60)",
+          "borderColor": "rgb(229, 231, 235)"
+        },
+        {
+          "index": 2,
+          "text": "Created",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "color": "rgb(251, 146, 60)",
+          "borderColor": "rgb(229, 231, 235)"
+        },
+        {
+          "index": 3,
+          "text": "Actions",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "color": "rgb(251, 146, 60)",
+          "borderColor": "rgb(229, 231, 235)"
+        }
+      ],
+      "badges": [],
+      "buttons": [
+        {
+          "index": 0,
+          "text": "",
+          "className": "p-3 rounded-xl bg-gradient-to-r from-orange-500/20 to-orange-600/20 hover:from-orange-500/30 hover:to-orange-600/30 border-2 border-orange-500/50 hover:border-orange-400 transition-all duration-300 transform hover:scale-110 shadow-lg shadow-orange-500/20",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "color": "rgb(0, 0, 0)",
+          "borderColor": "rgba(249, 115, 22, 0.5)"
+        },
+        {
+          "index": 1,
+          "text": "🗑️ Delete",
+          "className": "inline-flex items-center px-4 py-2 rounded-lg text-sm font-bold text-red-600 hover:text-white hover:bg-red-600 border border-red-500/30 hover:border-red-600 transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "color": "rgb(220, 38, 38)",
+          "borderColor": "rgba(239, 68, 68, 0.3)"
+        },
+        {
+          "index": 2,
+          "text": "🗑️ Delete",
+          "className": "inline-flex items-center px-4 py-2 rounded-lg text-sm font-bold text-red-600 hover:text-white hover:bg-red-600 border border-red-500/30 hover:border-red-600 transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "color": "rgb(220, 38, 38)",
+          "borderColor": "rgba(239, 68, 68, 0.3)"
+        },
+        {
+          "index": 3,
+          "text": "🗑️ Delete",
+          "className": "inline-flex items-center px-4 py-2 rounded-lg text-sm font-bold text-red-600 hover:text-white hover:bg-red-600 border border-red-500/30 hover:border-red-600 transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "color": "rgb(220, 38, 38)",
+          "borderColor": "rgba(239, 68, 68, 0.3)"
+        }
+      ]
+    }
+  },
+  "darkMode": {
+    "mode": "dark",
+    "timestamp": "2025-06-16T12:50:32.657Z",
+    "pageInfo": {
+      "title": "ProjectHub-Mcp - MCP Enhanced Workspace",
+      "url": "http://localhost:5173/",
+      "bodyBackground": "rgb(0, 0, 0)",
+      "bodyColor": "rgb(229, 231, 235)",
+      "rootBackground": "rgba(0, 0, 0, 0)"
+    },
+    "elements": {
+      "tablesFound": 1,
+      "tableHeadersFound": 4,
+      "statusBadgesFound": 0,
+      "buttonsFound": 4
+    },
+    "colors": {
+      "tables": [
+        {
+          "index": 0,
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "color": "rgb(243, 244, 246)",
+          "borderColor": "rgb(229, 231, 235)"
+        }
+      ],
+      "headers": [
+        {
+          "index": 0,
+          "text": "Project Name",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "color": "rgb(229, 231, 235)",
+          "borderColor": "rgb(229, 231, 235)"
+        },
+        {
+          "index": 1,
+          "text": "Status",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "color": "rgb(229, 231, 235)",
+          "borderColor": "rgb(229, 231, 235)"
+        },
+        {
+          "index": 2,
+          "text": "Created",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "color": "rgb(229, 231, 235)",
+          "borderColor": "rgb(229, 231, 235)"
+        },
+        {
+          "index": 3,
+          "text": "Actions",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "color": "rgb(229, 231, 235)",
+          "borderColor": "rgb(229, 231, 235)"
+        }
+      ],
+      "badges": [],
+      "buttons": [
+        {
+          "index": 0,
+          "text": "",
+          "className": "p-3 rounded-xl bg-gradient-to-r from-orange-500/20 to-orange-600/20 hover:from-orange-500/30 hover:to-orange-600/30 border-2 border-orange-500/50 hover:border-orange-400 transition-all duration-300 transform hover:scale-110 shadow-lg shadow-orange-500/20",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "color": "rgb(229, 231, 235)",
+          "borderColor": "rgb(251, 146, 60)"
+        },
+        {
+          "index": 1,
+          "text": "🗑️ Delete",
+          "className": "inline-flex items-center px-4 py-2 rounded-lg text-sm font-bold text-red-600 hover:text-white hover:bg-red-600 border border-red-500/30 hover:border-red-600 transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "color": "rgb(220, 38, 38)",
+          "borderColor": "rgba(239, 68, 68, 0.3)"
+        },
+        {
+          "index": 2,
+          "text": "🗑️ Delete",
+          "className": "inline-flex items-center px-4 py-2 rounded-lg text-sm font-bold text-red-600 hover:text-white hover:bg-red-600 border border-red-500/30 hover:border-red-600 transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "color": "rgb(220, 38, 38)",
+          "borderColor": "rgba(239, 68, 68, 0.3)"
+        },
+        {
+          "index": 3,
+          "text": "🗑️ Delete",
+          "className": "inline-flex items-center px-4 py-2 rounded-lg text-sm font-bold text-red-600 hover:text-white hover:bg-red-600 border border-red-500/30 hover:border-red-600 transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "color": "rgb(220, 38, 38)",
+          "borderColor": "rgba(239, 68, 68, 0.3)"
+        }
+      ]
+    }
+  }
+}
