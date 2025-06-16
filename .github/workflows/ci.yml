@@ -218,15 +218,20 @@ jobs:
     - name: ⚠️ SonarCloud Skipped
       run: echo "SonarCloud scan temporarily disabled - can be re-enabled with SONAR_TOKEN"
         
-    - name: 📊 CodeQL Analysis
-      uses: github/codeql-action/init@v3
-      continue-on-error: true
-      with:
-        languages: javascript,typescript
-        
-    - name: 📊 Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
-      continue-on-error: true
+    # CodeQL Analysis temporarily disabled to avoid conflict with GitHub's default setup
+    # Re-enable by removing the following comment blocks and disabling default CodeQL in repo settings
+    # - name: 📊 CodeQL Analysis
+    #   uses: github/codeql-action/init@v3
+    #   continue-on-error: true
+    #   with:
+    #     languages: javascript,typescript
+    #     
+    # - name: 📊 Perform CodeQL Analysis
+    #   uses: github/codeql-action/analyze@v3
+    #   continue-on-error: true
+    
+    - name: ⚠️ CodeQL Skipped
+      run: echo "CodeQL analysis temporarily disabled - conflicts with GitHub default setup"
 
   # Performance Tests
   # Temporarily disabled - TODO: Re-enable once all other CI issues are resolved

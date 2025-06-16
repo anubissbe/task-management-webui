@@ -1,0 +1,15 @@
+{
+  "name": "task-management-e2e-tests",
+  "version": "1.0.0",
+  "description": "End-to-end tests for Task Management Web UI",
+  "main": "ui-test.js",
+  "scripts": {
+    "test": "node ui-test.js"
+  },
+  "dependencies": {
+    "puppeteer": "^22.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
