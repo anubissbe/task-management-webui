@@ -2,19 +2,24 @@ import axios from 'axios';
 
 // Dynamically determine API URL based on current location
 const getApiUrl = () => {
+  // Check for runtime override first
+  if ((window as any).__PROJECTHUB_API_OVERRIDE__) {
+    return (window as any).__PROJECTHUB_API_OVERRIDE__;
+  }
+  
   // If VITE_API_URL is set, use it
   if (import.meta.env.VITE_API_URL) {
     return import.meta.env.VITE_API_URL;
   }
   
-  // Get the hostname from the current page URL
-  const currentUrl = window.location.href;
+  // For development, always use localhost
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    return 'http://localhost:3001/api';
+  }
   
-  // Extract the hostname from the URL
-  const urlMatch = currentUrl.match(/^https?:\/\/([^:/]+)/);
-  const hostname = urlMatch ? urlMatch[1] : 'localhost';
-  
+  // For production, use the same hostname as the frontend
   const protocol = window.location.protocol;
+  const hostname = window.location.hostname;
   
   return `${protocol}//${hostname}:3001/api`;
 };
