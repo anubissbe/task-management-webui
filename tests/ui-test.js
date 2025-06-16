@@ -10,6 +10,42 @@ async function runTests() {
     fs.mkdirSync(screenshotsDir);
   }
 
+  // Pre-test: Check if services are reachable
+  console.log('Pre-test: Checking service connectivity...');
+  const http = require('http');
+  
+  // Check frontend
+  console.log('Checking frontend at http://localhost:5173...');
+  try {
+    await new Promise((resolve, reject) => {
+      const req = http.get('http://localhost:5173', (res) => {
+        console.log(`Frontend status: ${res.statusCode}`);
+        resolve(res);
+      });
+      req.on('error', reject);
+      req.setTimeout(5000, () => reject(new Error('Frontend timeout')));
+    });
+  } catch (error) {
+    console.log(`Frontend not reachable: ${error.message}`);
+  }
+  
+  // Check backend
+  console.log('Checking backend at http://localhost:3001/api/health...');
+  try {
+    await new Promise((resolve, reject) => {
+      const req = http.get('http://localhost:3001/api/health', (res) => {
+        console.log(`Backend status: ${res.statusCode}`);
+        resolve(res);
+      });
+      req.on('error', reject);
+      req.setTimeout(5000, () => reject(new Error('Backend timeout')));
+    });
+  } catch (error) {
+    console.log(`Backend not reachable: ${error.message}`);
+  }
+  
+  console.log('');
+
   let browser;
   let testsPassed = 0;
   let testsFailed = 0;
@@ -25,15 +61,28 @@ async function runTests() {
     // Set viewport
     await page.setViewport({ width: 1280, height: 720 });
 
-    // Test 1: Page Load
+    // Test 1: Page Load with retries
     console.log('Test 1: Page Load');
-    try {
-      await page.goto('http://localhost:5173', { waitUntil: 'networkidle0', timeout: 30000 });
-      await page.waitForSelector('#root', { timeout: 10000 });
-      console.log('✅ Page loaded successfully');
-      testsPassed++;
-    } catch (error) {
-      console.log('❌ Page load failed:', error.message);
+    let pageLoadSuccess = false;
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        console.log(`  Attempt ${attempt}: Trying to load http://localhost:5173`);
+        await page.goto('http://localhost:5173', { waitUntil: 'networkidle0', timeout: 45000 });
+        await page.waitForSelector('#root', { timeout: 15000 });
+        console.log('✅ Page loaded successfully');
+        testsPassed++;
+        pageLoadSuccess = true;
+        break;
+      } catch (error) {
+        console.log(`  Attempt ${attempt} failed: ${error.message}`);
+        if (attempt < 3) {
+          console.log('  Waiting 10 seconds before retry...');
+          await new Promise(resolve => setTimeout(resolve, 10000));
+        }
+      }
+    }
+    if (!pageLoadSuccess) {
+      console.log('❌ Page load failed after 3 attempts');
       testsFailed++;
     }
 

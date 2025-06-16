@@ -49,7 +49,7 @@ services:
       dockerfile: Dockerfile
     container_name: task-management-frontend
     ports:
-      - "5173:80"
+      - "5173:5173"
     environment:
       - VITE_API_URL=http://localhost:3001/api
       - VITE_WS_URL=http://localhost:3001
@@ -58,6 +58,12 @@ services:
     depends_on:
       backend:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5173"]
+      interval: 5s
+      timeout: 10s
+      retries: 12
+      start_period: 30s
 
 networks:
   task-management-network:
