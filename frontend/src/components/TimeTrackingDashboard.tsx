@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { Task } from '../types';
+import { brandColors } from '../utils/brandColors';
 
 interface TimeTrackingDashboardProps {
   tasks: Task[];
@@ -123,7 +124,7 @@ export function TimeTrackingDashboard({ tasks }: TimeTrackingDashboardProps) {
       {/* Key Metrics */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div className="text-center">
-          <div className="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-1">
+          <div className="text-2xl font-bold text-orange-600 dark:text-orange-400 mb-1">
             {formatHours(timeStats.todayTime)}
           </div>
           <p className="text-sm text-gray-600 dark:text-gray-400">Today</p>
@@ -134,7 +135,7 @@ export function TimeTrackingDashboard({ tasks }: TimeTrackingDashboardProps) {
         </div>
         
         <div className="text-center">
-          <div className="text-2xl font-bold text-green-600 dark:text-green-400 mb-1">
+          <div className="text-2xl font-bold text-orange-700 dark:text-orange-300 mb-1">
             {formatHours(timeStats.weekTime)}
           </div>
           <p className="text-sm text-gray-600 dark:text-gray-400">This Week</p>
@@ -146,7 +147,7 @@ export function TimeTrackingDashboard({ tasks }: TimeTrackingDashboardProps) {
         
         <div className="text-center">
           <div className={`text-2xl font-bold mb-1 ${
-            timeStats.efficiency >= 100 ? 'text-green-600 dark:text-green-400' : 'text-orange-600 dark:text-orange-400'
+            timeStats.efficiency >= 100 ? 'text-orange-800 dark:text-orange-200' : 'text-orange-600 dark:text-orange-400'
           }`}>
             {timeStats.efficiency.toFixed(0)}%
           </div>
@@ -164,7 +165,7 @@ export function TimeTrackingDashboard({ tasks }: TimeTrackingDashboardProps) {
         </div>
         
         <div className="text-center">
-          <div className="text-2xl font-bold text-purple-600 dark:text-purple-400 mb-1">
+          <div className="text-2xl font-bold text-gray-600 dark:text-gray-400 mb-1">
             {timeStats.mostActiveDay.slice(0, 3)}
           </div>
           <p className="text-sm text-gray-600 dark:text-gray-400">Most Active Day</p>
@@ -226,8 +227,8 @@ export function TimeTrackingDashboard({ tasks }: TimeTrackingDashboardProps) {
                   pending: 'bg-gray-400',
                   in_progress: 'bg-blue-500',
                   completed: 'bg-green-500',
-                  blocked: 'bg-red-500',
-                  testing: 'bg-yellow-500',
+                  blocked: brandColors.charts.background,
+                  testing: brandColors.charts.secondary,
                   failed: 'bg-red-600',
                 };
                 
@@ -260,7 +261,7 @@ export function TimeTrackingDashboard({ tasks }: TimeTrackingDashboardProps) {
                 const colors: Record<string, string> = {
                   critical: 'bg-red-600',
                   high: 'bg-orange-500',
-                  medium: 'bg-yellow-500',
+                  medium: brandColors.charts.secondary,
                   low: 'bg-green-500',
                 };
                 
@@ -310,7 +311,7 @@ export function TimeTrackingDashboard({ tasks }: TimeTrackingDashboardProps) {
                 <span>🎯</span>
                 <strong>Daily Goal</strong>
               </div>
-              <p className="text-blue-600 dark:text-blue-400 mt-1">
+              <p className="text-orange-600 dark:text-orange-400 mt-1">
                 Start a Pomodoro timer to track your work sessions and reach your daily goals!
               </p>
             </div>
@@ -322,7 +323,7 @@ export function TimeTrackingDashboard({ tasks }: TimeTrackingDashboardProps) {
                 <span>🚀</span>
                 <strong>Great Efficiency!</strong>
               </div>
-              <p className="text-green-600 dark:text-green-400 mt-1">
+              <p className="text-orange-700 dark:text-orange-300 mt-1">
                 You're completing tasks faster than estimated. Consider taking on more challenging work!
               </p>
             </div>
@@ -334,7 +335,7 @@ export function TimeTrackingDashboard({ tasks }: TimeTrackingDashboardProps) {
                 <span>🍅</span>
                 <strong>Start Tracking</strong>
               </div>
-              <p className="text-purple-600 dark:text-purple-400 mt-1">
+              <p className="text-gray-600 dark:text-gray-400 mt-1">
                 Use the Pomodoro timer on your tasks to start building detailed time tracking data.
               </p>
             </div>

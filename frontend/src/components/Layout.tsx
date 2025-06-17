@@ -116,8 +116,8 @@ export const Layout: React.FC = () => {
                 <span className="inline-flex items-center px-4 py-2 text-xs font-bold bg-gradient-to-r from-orange-500/30 to-orange-600/20 text-orange-300 border border-orange-500/50 rounded-full shadow-md transform hover:scale-105 transition-all">
                   🔗 MCP ENHANCED
                 </span>
-                <span className="inline-flex items-center px-4 py-2 text-xs font-bold bg-gradient-to-r from-green-500/30 to-green-600/20 text-green-300 border border-green-500/50 rounded-full shadow-md transform hover:scale-105 transition-all">
-                  ✅ PRODUCTION
+                <span className="inline-flex items-center px-4 py-2 text-xs font-bold bg-gradient-to-r from-gray-600/30 to-gray-700/20 text-gray-300 border border-gray-500/50 rounded-full shadow-md transform hover:scale-105 transition-all">
+                  ⚡ PRODUCTION
                 </span>
               </div>
             </div>
