@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { ActivityEntry, Task, Project } from '../types';
+import { getActivityColor } from '../utils/brandColors';
 
 interface ActivityFeedProps {
   activities: ActivityEntry[];
@@ -112,20 +113,10 @@ export function ActivityFeed({
     return icons[action] || '📝';
   };
 
-  const getActivityColor = (action: string): string => {
-    const colors: Record<string, string> = {
-      created: 'text-green-600 bg-green-100',
-      updated: 'text-blue-600 bg-blue-100',
-      commented: 'text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-900/20',
-      status_changed: 'text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-900/20',
-      assigned: 'text-indigo-600 bg-indigo-100',
-      attached_file: 'text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-700',
-      dependency_added: 'text-yellow-600 dark:text-yellow-400 bg-yellow-100 dark:bg-yellow-900/20',
-      completed: 'text-green-600 bg-green-100',
-      started: 'text-blue-600 bg-blue-100',
-      blocked: 'text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/20',
-    };
-    return colors[action] || 'text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-700';
+  const getActivityColorClass = (action: string): string => {
+    // Map status_changed to updated for color purposes
+    const mappedAction = action === 'status_changed' ? 'updated' : action;
+    return getActivityColor(mappedAction);
   };
 
   const formatActivityMessage = (activity: ActivityEntry): string => {
@@ -295,7 +286,7 @@ export function ActivityFeed({
                     <div key={activity.id || index} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                       <div className="flex items-start gap-3">
                         {/* Activity Icon */}
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm ${getActivityColor(activity.action)}`}>
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm ${getActivityColorClass(activity.action)}`}>
                           {getActivityIcon(activity.action)}
                         </div>
                         
