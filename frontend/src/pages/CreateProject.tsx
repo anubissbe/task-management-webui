@@ -4,6 +4,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { projectService } from '../services/projectService';
 import toast from 'react-hot-toast';
 
+// CreateProject component - Fixed version (December 2024)
+
 export const CreateProject: React.FC = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
