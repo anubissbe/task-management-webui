@@ -9,6 +9,7 @@
 [![React](https://img.shields.io/badge/React-19+-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://reactjs.org/)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
 [![MCP Enhanced](https://img.shields.io/badge/MCP-Enhanced-ff6500?style=for-the-badge)](https://docs.anthropic.com/en/docs/build-with-claude/mcp)
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy_Me_A_Coffee-Support-ff6500?style=for-the-badge&logo=buy-me-a-coffee&logoColor=white)](https://www.buymeacoffee.com/anubissbe)
 
 > **A modern, enterprise-grade project management hub with MCP (Model Context Protocol) integration, featuring advanced task tracking, workflow templates, team collaboration, and comprehensive analytics.**
 
@@ -501,6 +502,14 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 [![GitHub stars](https://img.shields.io/github/stars/anubissbe/ProjectHub-Mcp?style=social)](https://github.com/anubissbe/ProjectHub-Mcp/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/anubissbe/ProjectHub-Mcp?style=social)](https://github.com/anubissbe/ProjectHub-Mcp/network)
 
-*If this project helped you, please consider ⭐ starring the repository!*
+### ☕ Support the Project
+
+If ProjectHub — MCP helps your team, please consider supporting the development:
+
+<a href="https://www.buymeacoffee.com/anubissbe" target="_blank">
+  <img src="https://cdn.buymeacoffee.com/buttons/v2/default-orange.png" alt="Buy Me A Coffee" height="60" width="217">
+</a>
+
+*Your support helps maintain and improve ProjectHub — MCP! ⭐ Also consider starring the repository!*
 
 </div>
