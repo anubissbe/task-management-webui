@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom';
 import { taskService } from '../services/taskService';
 import { projectService } from '../services/projectService';
 import { Task, Project } from '../types';
-import { getStatusColor, getPriorityColor } from '../utils/brandColors';
 import { useStore } from '../store';
 import { TaskFilters, TaskFilters as ITaskFilters } from '../components/TaskFilters';
 import { TaskAnalytics } from '../components/TaskAnalytics';
