@@ -1,8 +1,8 @@
 ---
-name: Feature request
-about: Suggest an idea for the Task Management Web UI
+name: ✨ Feature Request
+about: Suggest an idea for ProjectHub-Mcp
 title: '[FEATURE] '
-labels: enhancement
+labels: 'enhancement, needs-triage'
 assignees: ''
 
 ---
@@ -18,30 +18,20 @@ A clear and concise description of any alternative solutions or features you've 
 
 **Feature Category**
 Which area would this feature enhance?
-- [ ] Task Management (Kanban board, task operations)
-- [ ] Time Tracking & Productivity
-- [ ] Workflow & Templates
+- [ ] Project Management
+- [ ] Task Management
+- [ ] Analytics & Reporting
 - [ ] Team Collaboration
-- [ ] Project Analytics & Reporting
-- [ ] Integration & Export
-- [ ] User Experience & Interface
-- [ ] Performance & Optimization
-- [ ] Security & Authentication
-- [ ] Mobile & Accessibility
+- [ ] MCP Integration
+- [ ] API Capabilities
+- [ ] UI/UX Improvements
+- [ ] Performance
+- [ ] Security
 - [ ] Other (please specify)
 
-**Implementation Considerations**
-- **Frontend Impact**: Would this require React component changes?
-- **Backend Impact**: Would this require API or database changes?
-- **Database Impact**: Would this require schema modifications?
-- **Docker Impact**: Would this affect containerization?
-
-**Priority Level**
-How important is this feature to you?
-- [ ] Critical (blocking daily workflow)
-- [ ] High (significant improvement to productivity)
-- [ ] Medium (nice to have enhancement)
-- [ ] Low (minor improvement)
-
 **Additional context**
-Add any other context, mockups, or screenshots about the feature request here.
+Add any other context or screenshots about the feature request here.
+
+**Potential Implementation**
+If you have ideas about how this could be implemented, please share them here.
+EOF < /dev/null

@@ -1,8 +1,8 @@
 ---
-name: Bug report
-about: Create a report to help us improve the Task Management Web UI
+name: 🐛 Bug Report
+about: Create a report to help us improve ProjectHub-Mcp
 title: '[BUG] '
-labels: bug
+labels: 'bug, needs-triage'
 assignees: ''
 
 ---
@@ -24,28 +24,29 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Environment (please complete the following information):**
- - Browser: [e.g. Chrome, Firefox, Safari]
- - Version: [e.g. 22]
- - OS: [e.g. Windows, macOS, Linux]
- - Node.js version: [e.g. 18.x, 20.x]
- - Docker version: [if using Docker]
+ - OS: [e.g. Ubuntu 22.04, macOS 14, Windows 11]
+ - Browser: [e.g. Chrome 120, Firefox 121]
+ - ProjectHub-Mcp Version: [e.g. 4.0.2]
+ - Docker Version: [e.g. 24.0.7]
+ - PostgreSQL Version: [e.g. 16.1]
 
 **Feature Context**
 Which feature area is affected?
-- [ ] Task Management (Kanban board, task creation/editing)
-- [ ] Time Tracking & Pomodoro Timer
-- [ ] Workflow Templates
-- [ ] Task Dependencies & Flow Visualization
-- [ ] Collaboration Features (comments, @mentions, activity feed)
-- [ ] File Attachments
-- [ ] Analytics & Reporting
-- [ ] Export functionality
-- [ ] Dark/Light theme
+- [ ] Project Management
+- [ ] Task Management
+- [ ] Analytics Dashboard
+- [ ] Real-time Updates
+- [ ] API/Backend
+- [ ] Database/PostgreSQL
+- [ ] Docker/Deployment
+- [ ] UI/Frontend
+- [ ] MCP Integration
 - [ ] Other (please specify)
 
 **Additional context**
-Add any other context about the problem here, including:
-- Console error messages
-- Network requests that failed
-- Database connection issues
-- Docker container problems
+Add any other context about the problem here.
+
+**Logs**
+```
+Paste any relevant error logs here
+```
