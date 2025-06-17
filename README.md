@@ -108,7 +108,9 @@ services:
       retries: 5
 
   backend:
-    image: ghcr.io/anubissbe/projecthub-mcp-backend:latest
+    # Choose your registry:
+    # image: ghcr.io/anubissbe/projecthub-mcp-backend:latest  # GitHub Container Registry
+    image: anubissbe/projecthub-mcp-backend:latest          # Docker Hub
     container_name: projecthub-backend
     ports:
       - "3001:3001"
@@ -122,7 +124,9 @@ services:
     restart: unless-stopped
 
   frontend:
-    image: ghcr.io/anubissbe/projecthub-mcp-frontend:latest
+    # Choose your registry:
+    # image: ghcr.io/anubissbe/projecthub-mcp-frontend:latest  # GitHub Container Registry
+    image: anubissbe/projecthub-mcp-frontend:latest          # Docker Hub
     container_name: projecthub-frontend
     ports:
       - "5173:5173"
@@ -260,12 +264,17 @@ cd frontend && npm run dev
 
 ## 🐳 Container Images
 
-Pre-built container images are available on GitHub Container Registry:
+Pre-built container images are available on multiple registries:
 
+### GitHub Container Registry
 - **Frontend**: `ghcr.io/anubissbe/projecthub-mcp-frontend:latest`
 - **Backend**: `ghcr.io/anubissbe/projecthub-mcp-backend:latest`
 
-Images are automatically built and published via GitHub Actions.
+### Docker Hub
+- **Frontend**: `docker.io/anubissbe/projecthub-mcp-frontend:latest`
+- **Backend**: `docker.io/anubissbe/projecthub-mcp-backend:latest`
+
+Images are automatically built and published to both registries via GitHub Actions.
 
 ## 🏗️ Architecture
 
