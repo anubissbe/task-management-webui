@@ -5,6 +5,7 @@ import { Toaster } from 'react-hot-toast';
 import { Layout } from './components/Layout';
 import { ProjectList } from './pages/ProjectList';
 import { ProjectDetail } from './pages/ProjectDetail';
+import { CreateProject } from './pages/CreateProject';
 import { Board } from './pages/Board';
 import { BoardSelector } from './pages/BoardSelector';
 import { EnhancedAnalytics } from './pages/EnhancedAnalytics';
@@ -28,7 +29,7 @@ function App() {
             <Route index element={<ProjectList />} />
             <Route path="projects/:id" element={<ProjectDetail />} />
             <Route path="projects/:id/board" element={<Board />} />
-            <Route path="projects/new" element={<div>New Project (TODO)</div>} />
+            <Route path="projects/new" element={<CreateProject />} />
             <Route path="board" element={<BoardSelector />} />
             <Route path="board/:projectId" element={<Board />} />
             <Route path="analytics" element={<EnhancedAnalytics />} />
