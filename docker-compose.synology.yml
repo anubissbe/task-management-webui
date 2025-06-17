@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  backend:
+    image: anubissbe/projecthub-mcp-backend:latest
+    container_name: projecthub-mcp-backend
+    network_mode: "host"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - DATABASE_URL=postgresql://app_user:app_secure_2024@localhost:5433/mcp_learning?schema=project_management
+      - CORS_ORIGIN=http://192.168.1.24:5173
+    restart: unless-stopped
+
+  frontend:
+    image: anubissbe/projecthub-mcp-frontend:latest
+    container_name: projecthub-mcp-frontend
+    ports:
+      - "5173:80"
+    environment:
+      - VITE_API_URL=http://192.168.1.24:3001/api
+      - VITE_WS_URL=ws://192.168.1.24:3001
+    restart: unless-stopped

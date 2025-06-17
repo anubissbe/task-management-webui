@@ -79,7 +79,7 @@
 
 ### 🐳 Docker Installation (Recommended)
 
-The fastest way to get started is using Docker Compose with all required services:
+The fastest way to get started is using Docker Compose. **You need PostgreSQL 16+ for this application.**
 
 ```bash
 # 1. Create a directory for your installation
@@ -276,6 +276,75 @@ Pre-built container images are available on multiple registries:
 
 Images are automatically built and published to both registries via GitHub Actions.
 
+### 🚨 Important Note for Pre-built Images
+
+The pre-built frontend images have the API URL hardcoded to `http://localhost:3001/api`. If your backend runs on a different host/port, you'll need to:
+1. Use a reverse proxy to redirect requests, OR
+2. Build your own frontend image with the correct `VITE_API_URL`
+
+## 📋 Complete Deployment Examples
+
+### Example 1: Quick Start with External PostgreSQL
+If you already have PostgreSQL 16+ running (e.g., on Synology NAS):
+
+```bash
+# Run backend with host networking (for Synology)
+docker run -d \
+  --name projecthub-backend \
+  --network host \
+  -e NODE_ENV=production \
+  -e DATABASE_URL="postgresql://your_user:your_password@localhost:5433/your_db?schema=project_management" \
+  -e CORS_ORIGIN="http://YOUR_IP:5173" \
+  anubissbe/projecthub-mcp-backend:latest
+
+# Run frontend
+docker run -d \
+  --name projecthub-frontend \
+  -p 5173:80 \
+  anubissbe/projecthub-mcp-frontend:latest
+```
+
+### Example 2: Docker Compose for Synology/External DB
+Create `docker-compose.yml`:
+```yaml
+version: '3.8'
+
+services:
+  backend:
+    image: anubissbe/projecthub-mcp-backend:latest
+    container_name: projecthub-backend
+    network_mode: "host"  # Required for Synology
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://app_user:your_password@localhost:5433/mcp_learning?schema=project_management
+      CORS_ORIGIN: http://192.168.1.24:5173  # Replace with your IP
+    restart: unless-stopped
+
+  frontend:
+    image: anubissbe/projecthub-mcp-frontend:latest
+    container_name: projecthub-frontend
+    ports:
+      - "5173:80"
+    restart: unless-stopped
+```
+
+### Common Issues & Solutions
+
+1. **"Cannot connect to database"**
+   - Ensure PostgreSQL is version 16+
+   - Check if the database exists
+   - Verify username/password
+   - For Synology: Use `network_mode: "host"` for backend
+   - Schema `project_management` will be created automatically
+
+2. **"Frontend can't reach backend"**
+   - Frontend expects backend at `http://localhost:3001`
+   - If backend is elsewhere, use nginx proxy or rebuild frontend
+
+3. **"CORS errors"**
+   - Set `CORS_ORIGIN` to match your frontend URL exactly
+   - Include protocol and port (e.g., `http://192.168.1.24:5173`)
+
 ## 🏗️ Architecture
 
 ### Tech Stack
@@ -321,20 +390,47 @@ ProjectHub-Mcp/
 
 ## 🔧 Configuration
 
-### Environment Variables
+### Required Environment Variables
 
-Create a `.env` file to customize your installation:
+Both containers require specific environment variables to function properly:
 
+#### Backend Container
 ```env
-# Database Configuration
-POSTGRES_USER=projecthub
-POSTGRES_PASSWORD=your_secure_password_here
-POSTGRES_DB=projecthub_db
-DATABASE_URL=postgresql://projecthub:your_secure_password_here@postgres:5432/projecthub_db
-
-# Backend Configuration
+# Required
+DATABASE_URL=postgresql://username:password@host:port/database?schema=project_management
 NODE_ENV=production
 PORT=3001
+CORS_ORIGIN=http://your-frontend-url:5173
+
+# Example for local PostgreSQL
+DATABASE_URL=postgresql://projecthub:changeme123@host.docker.internal:5432/projecthub_db?schema=project_management
+
+# Example for external PostgreSQL (e.g., Synology NAS)
+DATABASE_URL=postgresql://app_user:app_secure_2024@192.168.1.24:5433/mcp_learning?schema=project_management
+```
+
+#### Frontend Container
+```env
+# Required (these are build-time variables, must be set when building)
+VITE_API_URL=http://your-backend-url:3001/api
+VITE_WS_URL=ws://your-backend-url:3001
+
+# Example for local deployment
+VITE_API_URL=http://localhost:3001/api
+VITE_WS_URL=ws://localhost:3001
+
+# Example for network deployment
+VITE_API_URL=http://192.168.1.24:3001/api
+VITE_WS_URL=ws://192.168.1.24:3001
+```
+
+### Database Requirements
+
+ProjectHub-Mcp requires PostgreSQL 16+ with the following:
+- A database (e.g., `projecthub_db` or existing like `mcp_learning`)
+- A schema named `project_management` (will be created automatically)
+- User with full permissions on the database
+
 CORS_ORIGIN=http://localhost:5173
 
 # Frontend Configuration  
