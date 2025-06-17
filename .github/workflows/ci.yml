@@ -78,7 +78,7 @@ jobs:
           --health-timeout 5s
           --health-retries 5
         ports:
-          - 5432:5432
+          - 5433:5432
     
     steps:
     - name: 📦 Checkout code
@@ -97,7 +97,7 @@ jobs:
     - name: 🧪 Run tests
       run: npm test -- --coverage
       env:
-        DATABASE_URL: postgresql://test_user:test_pass@localhost:5432/test_db
+        DATABASE_URL: postgresql://test_user:test_pass@localhost:5433/test_db
         NODE_ENV: test
         
     - name: 📊 Upload coverage reports
