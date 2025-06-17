@@ -1,144 +1,85 @@
-# 🏠 Welcome to ProjectHub — MCP Wiki
-
 <div align="center">
 
-![ProjectHub-Mcp Logo](https://raw.githubusercontent.com/anubissbe/ProjectHub-Mcp/main/docs/logo.svg)
+# 🚀 ProjectHub — MCP Wiki
 
-### Modern Enterprise Project Management with MCP Integration
+<p style="font-size: 1.2em; color: #ff6500; font-weight: bold;">
+MCP-Enhanced Project Management Workspace
+</p>
 
-[![GitHub stars](https://img.shields.io/github/stars/anubissbe/ProjectHub-Mcp?style=for-the-badge&color=ff6500)](https://github.com/anubissbe/ProjectHub-Mcp/stargazers)
-[![License: MIT](https://img.shields.io/badge/License-MIT-ff6500?style=for-the-badge)](https://opensource.org/licenses/MIT)
-[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
+Welcome to the comprehensive documentation for **ProjectHub-Mcp**!
 
-</div>
+## 🌟 Overview
 
----
-
-## 🌟 About ProjectHub — MCP
-
-**ProjectHub — MCP** is a cutting-edge project management platform featuring:
-
-🎨 **Dramatic Black & Orange Branding**
-- Professional dark theme with glowing orange accents
-- Consistent branding across all components
-- Modern gradient effects and smooth animations
-
-🚀 **Enterprise-Grade Features**
-- Multiple view modes (Kanban, List, Calendar, Timeline)
-- Real-time collaboration and updates
-- Advanced analytics and reporting
-- Task dependencies and workflows
-
-🤖 **MCP Integration**
-- Model Context Protocol enhanced functionality
-- AI-powered project insights
-- Automated workflow suggestions
+**ProjectHub-Mcp** is a modern, enterprise-grade project management hub with **MCP (Model Context Protocol)** integration, featuring advanced task tracking, workflow templates, team collaboration, and comprehensive analytics. Built with React 19, TypeScript, and Node.js, it provides a powerful solution for managing projects with a distinctive **black and orange** branded interface.
 
 ## 📚 Documentation Sections
 
-### 🚀 Getting Started
-- [**Installation Guide**](Installation-Guide) — Quick setup with Docker
-- [**Development Setup**](Development-Setup) — Local development environment
-- [**Production Deployment**](Production-Deployment) — Enterprise deployment
-- [**Troubleshooting**](Troubleshooting) — Common issues and solutions
+### 🎯 Getting Started
+- [📦 Quick Installation Guide](Installation-Guide) - Get up and running in minutes
+- [⚙️ Development Setup](Development-Setup) - Set up your development environment
+- [🐳 Docker Deployment](Production-Deployment) - Deploy with containers
+- [🔧 Troubleshooting](Troubleshooting) - Common issues and solutions
 
-### 👨‍💻 User Guides
-- [**User Interface Overview**](User-Interface-Overview) — Navigate the modern UI
-- [**Task Management**](Task-Management) — Create and manage tasks
-- [**Project Management**](Project-Management) — Organize your projects
-- [**Analytics Dashboard**](Analytics-Dashboard) — Track progress and insights
+### 📚 User Guides
+- [🎨 User Interface Overview](User-Interface-Overview) - Navigate the black/orange UI
+- [✅ Task Management](Task-Management) - Master task workflows
+- [📁 Project Management](Project-Management) - Organize your projects
+- [📊 Analytics Dashboard](Analytics-Dashboard) - Track progress and metrics
+- [🌓 Theme & Branding](FAQ) - Customization options
 
-### 🔧 Development & Architecture
-- [**Architecture Overview**](Architecture-Overview) — System design and components
-- [**API Documentation**](API-Documentation) — RESTful API reference
-- [**AI Development Tools**](AI-Development-Tools) — MCP integration guide
+### 💻 Development
+- [🏗️ Architecture Overview](Architecture-Overview) - System design and patterns
+- [🤖 AI Development Tools](AI-Development-Tools) - MCP integration guide
+- [📡 API Documentation](API-Documentation) - RESTful endpoints
+- [🧪 Testing Guide](Development-Setup#testing) - Unit and E2E tests
+- [🤝 Contributing](https://github.com/anubissbe/ProjectHub-Mcp/blob/main/CONTRIBUTING.md) - Join the project
 
-### 🎯 Advanced Features
-- [**Real-time Features**](Real-time-Features) — WebSocket integration
-- [**Custom Integrations**](Custom-Integrations) — Extend functionality
-- [**Performance Optimization**](Performance-Optimization) — Scale your deployment
+### 🚀 Deployment
+- [🐳 Production Deployment](Production-Deployment) - Container orchestration
+- [🔐 Environment Configuration](Installation-Guide#configuration) - Secrets and settings
+- [💾 PostgreSQL Setup](Architecture-Overview#database) - Database configuration
+- [🛡️ Security Best Practices](FAQ#security) - Secure your deployment
 
-## 🎨 Visual Highlights
+### 🔮 Advanced Topics
+- [⚡ Real-time Updates](Architecture-Overview#websockets) - WebSocket integration
+- [🔌 MCP Server Integration](AI-Development-Tools) - Extend with MCP
+- [📈 Performance Tuning](Troubleshooting#performance) - Optimize for scale
+- [💾 Backup Strategies](FAQ#backup) - Data protection
 
-### Dark Mode Excellence
-- **Primary Colors**: Black (#0a0a0a) with Orange (#ff6500) accents
-- **Gradient Backgrounds**: Smooth dark-to-orange transitions
-- **Interactive Elements**: Glowing effects on hover/focus
-- **Typography**: High contrast for accessibility
+## 🚀 Quick Links
 
-### Modern UI Components
-- Animated navigation with smooth transitions
-- Card-based layouts with subtle shadows
-- Responsive design for all screen sizes
-- Consistent iconography throughout
-
-## 🚀 Quick Start Links
-
-<div align="center">
-
-| Resource | Description | Link |
-|----------|-------------|------|
-| 🏗️ **Installation** | Get started in 5 minutes | [Install Now](Installation-Guide) |
-| 🎮 **Live Demo** | Try the application | http://localhost:5173 |
-| 📦 **Container Images** | Pre-built Docker images | [GHCR Registry](https://ghcr.io/anubissbe) |
-| 🐛 **Issues** | Report bugs or request features | [GitHub Issues](https://github.com/anubissbe/ProjectHub-Mcp/issues) |
-| 💬 **Discussions** | Community support | [GitHub Discussions](https://github.com/anubissbe/ProjectHub-Mcp/discussions) |
-
-</div>
-
-## 🏢 Enterprise Features
-
-### Scalability & Performance
-- **Docker-based Architecture**: Easy scaling and deployment
-- **PostgreSQL Backend**: Robust data management with pgvector
-- **Real-time Updates**: WebSocket-powered live synchronization
-- **Responsive Design**: Works on desktop, tablet, and mobile
-
-### Security & Reliability
-- **MIT Licensed**: Open source with commercial-friendly license
-- **Type Safety**: Full TypeScript implementation
-- **Automated Testing**: Comprehensive test suite with CI/CD
-- **Production Ready**: Battle-tested in enterprise environments
-
-### Integration Ready
-- **RESTful API**: Complete API for third-party integrations
-- **Webhook Support**: Event-driven notifications
-- **Export Options**: CSV, JSON, PDF, Excel formats
-- **MCP Protocol**: Model Context Protocol integration
+- **🌐 Live Instance**: [http://192.168.1.24:5173](http://192.168.1.24:5173) (Synology deployment)
+- **📦 Container Images**: [ghcr.io/anubissbe/projecthub-mcp](https://github.com/anubissbe/ProjectHub-Mcp/pkgs)
+- **💻 GitHub Repository**: [ProjectHub-Mcp](https://github.com/anubissbe/ProjectHub-Mcp)
+- **🐛 Report Issues**: [GitHub Issues](https://github.com/anubissbe/ProjectHub-Mcp/issues)
+- **☕ Support Development**: [Buy Me A Coffee](https://www.buymeacoffee.com/anubissbe)
 
 ## 💡 Need Help?
 
-### Community Support
-- 📖 Browse the [FAQ](FAQ) for quick answers
-- 🔧 Check [Troubleshooting](Troubleshooting) for common issues
-- 🐛 [Report bugs](https://github.com/anubissbe/ProjectHub-Mcp/issues) on GitHub
-- 💬 Join [Discussions](https://github.com/anubissbe/ProjectHub-Mcp/discussions) for community help
+- Check the [FAQ](FAQ) for common questions
+- Browse the [Troubleshooting](Troubleshooting) guide
+- Create an [Issue](https://github.com/anubissbe/task-management-webui/issues) for bug reports
+- Join our community discussions
 
-### Documentation Resources
-- 🏗️ [Architecture Overview](Architecture-Overview) — Understand the system
-- 🔌 [API Documentation](API-Documentation) — Integrate with our API
-- 🚀 [Development Setup](Development-Setup) — Contribute to the project
+## 🔗 External Resources
+
+- [React Documentation](https://reactjs.org/docs)
+- [TypeScript Handbook](https://www.typescriptlang.org/docs)
+- [Docker Documentation](https://docs.docker.com)
+- [PostgreSQL Documentation](https://postgresql.org/docs)
+
+---
+
+</div>
 
 ---
 
 <div align="center">
 
-## 🌟 Star the Project
+**Last Updated**: June 2025 | **Version**: 1.0.0 | **Status**: 91.7% Complete
 
-**If ProjectHub — MCP helps your team, please consider starring the repository!**
-
-[![GitHub stars](https://img.shields.io/github/stars/anubissbe/ProjectHub-Mcp?style=social)](https://github.com/anubissbe/ProjectHub-Mcp/stargazers)
-
----
-
-**Built with ❤️ and ☕ by [@anubissbe](https://github.com/anubissbe)**
-
-### ☕ Support Development
-
-<a href="https://www.buymeacoffee.com/anubissbe" target="_blank">
-  <img src="https://cdn.buymeacoffee.com/buttons/v2/default-orange.png" alt="Buy Me A Coffee" height="50" width="180">
-</a>
-
-*Last Updated: June 2025 | Version: 2.0.0 | ProjectHub — MCP Enterprise*
+<p style="color: #ff6500; font-weight: bold;">
+🧡 Built with the signature black (#0a0a0a) and orange (#ff6500) theme 🧡
+</p>
 
 </div>
