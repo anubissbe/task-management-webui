@@ -7,7 +7,9 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"No tests at root level\" && exit 0",
+    "test:frontend": "cd frontend && npm test",
+    "test:backend": "cd backend && npm test"
   },
   "keywords": [],
   "author": "",
