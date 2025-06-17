@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { taskService } from '../services/taskService';
 import { projectService } from '../services/projectService';
 import { Task, Project } from '../types';
+import { getStatusColor, getPriorityColor } from '../utils/brandColors';
 import { useStore } from '../store';
 import { TaskFilters, TaskFilters as ITaskFilters } from '../components/TaskFilters';
 import { TaskAnalytics } from '../components/TaskAnalytics';
@@ -17,18 +18,18 @@ const TASK_STATUSES = ['pending', 'in_progress', 'blocked', 'testing', 'complete
 
 const STATUS_COLORS: Record<string, string> = {
   pending: 'bg-gray-100 border-gray-300',
-  in_progress: 'bg-blue-50 border-blue-300',
-  blocked: 'bg-red-50 border-red-300',
-  testing: 'bg-yellow-50 border-yellow-300',
-  completed: 'bg-green-50 border-green-300',
-  failed: 'bg-red-100 border-red-400',
+  in_progress: 'bg-orange-50 border-orange-300',
+  blocked: 'bg-gray-900 border-gray-700',
+  testing: 'bg-orange-100 border-orange-400',
+  completed: 'bg-orange-200 border-orange-500',
+  failed: 'bg-black border-gray-800',
 };
 
 const PRIORITY_COLORS: Record<string, string> = {
-  critical: 'bg-red-500',
+  critical: 'bg-orange-600',
   high: 'bg-orange-500',
-  medium: 'bg-yellow-500',
-  low: 'bg-green-500',
+  medium: 'bg-orange-400',
+  low: 'bg-gray-400',
 };
 
 export function Board() {
@@ -229,7 +230,7 @@ export function Board() {
       <div 
         className={`bg-white dark:bg-gray-700 p-3 rounded-lg shadow-sm border transition-all cursor-pointer hover:shadow-md ${
           isSubtask ? 'ml-4 mt-2' : 'mb-2'
-        } ${isSelected ? 'ring-2 ring-blue-500 border-blue-300' : 'border-gray-200 dark:border-gray-600'}`}
+        } ${isSelected ? 'ring-2 ring-orange-500 border-orange-300' : 'border-gray-200 dark:border-gray-600'}`}
         onClick={(e) => {
           // Don't open edit modal if clicking on checkbox, button, or link
           if ((e.target as HTMLElement).closest('input, button, a, .pomodoro-timer')) {
@@ -246,7 +247,7 @@ export function Board() {
                 type="checkbox"
                 checked={isSelected}
                 onChange={() => toggleSelection()}
-                className="mt-1 h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                className="mt-1 h-4 w-4 text-orange-600 rounded border-gray-300 focus:ring-orange-500"
               />
             )}
             
@@ -283,7 +284,7 @@ export function Board() {
                   </span>
                 )}
                 {task.actual_hours && (
-                  <span className="text-xs text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-900/20 px-2 py-0.5 rounded">
+                  <span className="text-xs text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-900/20 px-2 py-0.5 rounded">
                     ✅ {task.actual_hours}h
                   </span>
                 )}

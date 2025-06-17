@@ -83,12 +83,12 @@ export function TaskAnalytics({ tasks }: TaskAnalyticsProps) {
   const StatusChart = ({ data }: { data: Record<string, number> }) => {
     const total = Object.values(data).reduce((sum, count) => sum + count, 0);
     const colors: Record<string, string> = {
-      pending: '#6B7280',
-      in_progress: '#3B82F6',
-      blocked: '#EF4444',
-      testing: '#F59E0B',
-      completed: '#10B981',
-      failed: '#DC2626',
+      pending: '#666666',      // gray
+      in_progress: '#ff6500',  // orange primary
+      blocked: '#0a0a0a',      // black
+      testing: '#ff8533',      // orange secondary
+      completed: '#ffa366',    // orange tertiary
+      failed: '#1a1a1a',       // dark gray
     };
 
     return (
@@ -187,7 +187,7 @@ export function TaskAnalytics({ tasks }: TaskAnalyticsProps) {
         <div className="text-center">
           <div className={`text-2xl font-bold mb-1 ${
             analytics.timeTracking.efficiency > 100 
-              ? 'text-green-600 dark:text-green-400' 
+              ? 'text-orange-600 dark:text-orange-400' 
               : 'text-orange-600 dark:text-orange-400'
           }`}>
             {analytics.timeTracking.efficiency.toFixed(0)}%
@@ -204,8 +204,8 @@ export function TaskAnalytics({ tasks }: TaskAnalyticsProps) {
         <div className="text-center">
           <div className={`text-2xl font-bold mb-1 ${
             analytics.blockedTasks.length > 0 
-              ? 'text-red-600 dark:text-red-400' 
-              : 'text-green-600 dark:text-green-400'
+              ? 'text-gray-600 dark:text-gray-400' 
+              : 'text-orange-600 dark:text-orange-400'
           }`}>
             {analytics.blockedTasks.length}
           </div>
@@ -245,7 +245,7 @@ export function TaskAnalytics({ tasks }: TaskAnalyticsProps) {
           
           {analytics.blockedTasks.length > 0 && (
             <div className="mb-4">
-              <h5 className="text-sm font-medium text-red-600 dark:text-red-400 mb-2">
+              <h5 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
                 🚫 Blocked Tasks ({analytics.blockedTasks.length})
               </h5>
               <div className="space-y-1">
