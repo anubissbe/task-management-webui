@@ -127,7 +127,7 @@ jobs:
           --health-timeout 5s
           --health-retries 5
         ports:
-          - 5432:5432
+          - 5433:5432
 
       redis:
         image: redis:7-alpine
@@ -158,7 +158,7 @@ jobs:
       - name: 🧪 Run backend tests
         run: npm run test:backend -- --coverage
         env:
-          DATABASE_URL: postgresql://test_user:test_password@localhost:5432/test_db
+          DATABASE_URL: postgresql://test_user:test_password@localhost:5433/test_db
           REDIS_URL: redis://localhost:6379
 
       - name: 📊 Upload coverage reports
@@ -187,7 +187,7 @@ jobs:
           --health-timeout 5s
           --health-retries 5
         ports:
-          - 5432:5432
+          - 5433:5432
 
     steps:
       - name: 📥 Checkout code
@@ -213,7 +213,7 @@ jobs:
           npm run start:test &
           npx wait-on http://localhost:3000 --timeout 60000
         env:
-          DATABASE_URL: postgresql://test_user:test_password@localhost:5432/test_db
+          DATABASE_URL: postgresql://test_user:test_password@localhost:5433/test_db
           NODE_ENV: test
 
       - name: 🎭 Run E2E tests
