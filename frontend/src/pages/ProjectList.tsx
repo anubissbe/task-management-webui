@@ -249,15 +249,18 @@ export const ProjectList: React.FC = () => {
                     >
                       👁️ View
                     </Link>
-                    {canCompleteProject(project) && (
+                    {project.status === 'active' && (
                       <button
                         onClick={() => {
-                          if (confirm(`Are you sure you want to mark "${project.name}" as completed? This action cannot be undone.`)) {
-                            completeProjectMutation.mutate(project.id);
+                          if (canCompleteProject(project)) {
+                            if (confirm(`Are you sure you want to mark "${project.name}" as completed? This action cannot be undone.`)) {
+                              completeProjectMutation.mutate(project.id);
+                            }
                           }
                         }}
-                        disabled={completeProjectMutation.isPending}
+                        disabled={completeProjectMutation.isPending || !canCompleteProject(project)}
                         className="inline-flex items-center px-4 py-2 rounded-lg text-sm font-bold text-green-600 hover:text-white hover:bg-green-600 border border-green-500/30 hover:border-green-600 transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                        title={!canCompleteProject(project) ? "Complete all tasks before marking project as completed" : "Mark project as completed"}
                       >
                         {completeProjectMutation.isPending ? '⏳ Completing...' : '✅ Complete'}
                       </button>

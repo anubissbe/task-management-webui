@@ -50,6 +50,19 @@ export class ProjectService {
   }
 
   async updateProject(id: string, data: Partial<Project>): Promise<Project | null> {
+    // If trying to mark as completed, check if all tasks are done
+    if (data.status === 'completed') {
+      const taskStats = await pool.query(`
+        SELECT COUNT(*) as incomplete_tasks
+        FROM project_management.tasks
+        WHERE project_id = $1 AND status != 'completed'
+      `, [id]);
+      
+      if (parseInt(taskStats.rows[0].incomplete_tasks) > 0) {
+        throw new Error('Cannot mark project as completed while tasks are still open. All tasks must be completed first.');
+      }
+    }
+
     const allowedFields = ['name', 'description', 'status', 'requirements', 'acceptance_criteria'];
     const updates: string[] = [];
     const values: any[] = [];
@@ -65,6 +78,13 @@ export class ProjectService {
 
     if (updates.length === 0) {
       return this.getProjectById(id);
+    }
+
+    // Add completed_at timestamp if marking as completed
+    if (data.status === 'completed') {
+      updates.push(`completed_at = $${paramIndex}`);
+      values.push(new Date().toISOString());
+      paramIndex++;
     }
 
     values.push(id);
