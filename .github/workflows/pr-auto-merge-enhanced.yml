@@ -18,7 +18,7 @@ permissions:
 
 jobs:
   auto-merge-on-approval:
-    runs-on: [self-hosted, docker, git-runner]
+    runs-on: [self-hosted, docker, runnerhub]
     if: |
       (github.event_name == 'pull_request_review' && github.event.review.state == 'approved') ||
       (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'auto-merge')) ||
@@ -241,7 +241,7 @@ jobs:
           }
 
   handle-merge-queue:
-    runs-on: [self-hosted, docker, git-runner]
+    runs-on: [self-hosted, docker, runnerhub]
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     
     steps:
