@@ -8,7 +8,7 @@ on:
 jobs:
   update-dependencies:
     name: 📦 Update Dependencies
-    runs-on: [self-hosted, docker, git-runner]
+    runs-on: [self-hosted, docker, runnerhub]
     
     steps:
     - name: 📦 Checkout code
