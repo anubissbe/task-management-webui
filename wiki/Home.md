@@ -133,6 +133,12 @@
 
 **Built with ❤️ and ☕ by [@anubissbe](https://github.com/anubissbe)**
 
+### ☕ Support Development
+
+<a href="https://www.buymeacoffee.com/anubissbe" target="_blank">
+  <img src="https://cdn.buymeacoffee.com/buttons/v2/default-orange.png" alt="Buy Me A Coffee" height="50" width="180">
+</a>
+
 *Last Updated: June 2025 | Version: 2.0.0 | ProjectHub — MCP Enterprise*
 
 </div>
