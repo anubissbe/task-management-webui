@@ -1,21 +1,23 @@
-# 📦 ProjectHub-Mcp Installation Guide
+# 📦 Installation Guide
 
-<p align="center" style="color: #ff6500; font-size: 1.1em; font-weight: bold;">
-🧡 Get your MCP-Enhanced Project Management Workspace up and running! 🧡
-</p>
+<div align="center">
+<img src="https://raw.githubusercontent.com/anubissbe/ProjectHub-Mcp/main/docs/logo.svg" alt="ProjectHub-Mcp Logo" width="300" />
+</div>
 
-This guide covers different ways to install and run **ProjectHub-Mcp** with its signature black and orange interface.
+## 🚀 Quick Start
 
-## 🚀 Quick Installation (Recommended)
+Get ProjectHub-Mcp running in less than 5 minutes using Docker!
 
-The fastest way to get started is using our pre-built release packages:
+## Prerequisites
 
-### Prerequisites
-- Docker and Docker Compose installed
-- 4GB+ RAM available
-- 2GB+ disk space
+- **Docker** 20.10+ and **Docker Compose** 2.0+
+- **PostgreSQL** 16+ (included in docker-compose or use external)
+- **2GB RAM** minimum, 4GB recommended
+- **Port availability**: 5173 (frontend), 3001 (backend), 5432 (PostgreSQL)
 
-### 🐳 Docker Installation (Recommended)
+## 🐳 Docker Installation (Recommended)
+
+### Option 1: Complete Stack with PostgreSQL
 ```bash
 # Create docker-compose.yml
 cat > docker-compose.yml << 'EOF'
@@ -32,21 +34,22 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   backend:
-    image: ghcr.io/anubissbe/projecthub-mcp-backend:latest
+    image: anubissbe/projecthub-mcp-backend:latest
     ports:
       - "3001:3001"
     environment:
-      DATABASE_URL: postgresql://projecthub:changeme123@postgres:5432/projecthub_db
+      DATABASE_URL: postgresql://projecthub:changeme123@postgres:5432/projecthub_db?schema=project_management
+      NODE_ENV: production
       CORS_ORIGIN: http://localhost:5173
     depends_on:
       - postgres
 
   frontend:
-    image: ghcr.io/anubissbe/projecthub-mcp-frontend:latest
+    image: anubissbe/projecthub-mcp-frontend:latest
     ports:
       - "5173:80"
-    environment:
-      VITE_API_URL: http://localhost:3001/api
+    depends_on:
+      - backend
 
 volumes:
   postgres_data:
@@ -54,233 +57,192 @@ EOF
 
 # Start the application
 docker compose up -d
+
+# Access the application
+open http://localhost:5173
+```
+
+### Option 2: Use External PostgreSQL
+
+If you have PostgreSQL 16+ already running (e.g., on Synology NAS):
+
+```yaml
+# docker-compose.yml
+version: '3.8'
+
+services:
+  backend:
+    image: anubissbe/projecthub-mcp-backend:latest
+    container_name: projecthub-backend
+    network_mode: "host"  # Required for Synology
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://user:pass@192.168.1.24:5433/db?schema=project_management
+      CORS_ORIGIN: http://192.168.1.24:5173
+    restart: unless-stopped
+
+  frontend:
+    image: anubissbe/projecthub-mcp-frontend:latest
+    container_name: projecthub-frontend
+    ports:
+      - "5173:80"
+    restart: unless-stopped
 ```
 
 ### Verify Installation
 ```bash
-# Check if services are running
-docker compose ps
+# Check running containers
+docker ps
 
-# Access the application
-# Frontend: http://localhost:5173
-# Backend API: http://localhost:3001/api
-# Health Check: http://localhost:3001/api/health
-```
-
-## 🛠️ Development Installation
-
-For developers who want to modify the code:
-
-### Prerequisites
-- Node.js 18+ 
-- Docker and Docker Compose
-- Git
-
-### Step-by-Step Setup
-
-1. **Clone the Repository**
-   ```bash
-   git clone https://github.com/anubissbe/ProjectHub-Mcp.git
-   cd ProjectHub-Mcp
-   ```
-
-2. **Environment Setup**
-   ```bash
-   # Copy environment template
-   cp .env.example .env
-   
-   # Edit environment variables (optional)
-   nano .env
-   ```
-
-3. **Start Services**
-   ```bash
-   # Start with Docker (recommended)
-   docker compose up -d
-   
-   # Or start PostgreSQL only and run apps locally
-   docker compose up -d postgres
-   ```
-
-4. **Local Development (Optional)**
-   ```bash
-   # Install frontend dependencies
-   cd frontend
-   npm install
-   npm run dev
-   
-   # In another terminal, install backend dependencies
-   cd ../backend
-   npm install
-   npm run dev
-   ```
-
-## 🐳 Production Deployment
-
-For production environments:
-
-### Using Production Docker Compose
-```bash
-# Download production configuration
-curl -L https://github.com/anubissbe/task-management-webui/releases/download/v1.0.0/task-management-webui-v1.0.0-full.tar.gz | tar -xz
-
-# Use production compose file
-docker compose -f docker-compose.prod.yml up -d
-```
-
-### Environment Configuration
-Create a `.env` file with production settings:
-```env
-# Database
-DATABASE_URL=postgresql://mcp_user:SECURE_PASSWORD@postgres:5432/mcp_learning
-POSTGRES_PASSWORD=SECURE_PASSWORD
-
-# Backend
-NODE_ENV=production
-PORT=3001
-CORS_ORIGIN=https://yourdomain.com
-
-# Frontend
-VITE_API_URL=https://yourdomain.com/api
-VITE_WS_URL=wss://yourdomain.com
-```
-
-## 🗄️ Database Setup
-
-### Automatic Setup (Recommended)
-The application automatically creates the database schema on startup.
-
-### Manual Database Setup
-If you prefer manual setup:
-```bash
-# Connect to PostgreSQL
-docker exec -it task-management-postgres-prod psql -U mcp_user -d mcp_learning
-
-# Run initialization scripts
-\i /docker-entrypoint-initdb.d/init-db.sql
-```
-
-## 🔧 Configuration Options
-
-### Environment Variables
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `DATABASE_URL` | PostgreSQL connection string | `postgresql://mcp_user:mcp_secure_password_2024@localhost:5432/mcp_learning` |
-| `NODE_ENV` | Environment mode | `development` |
-| `PORT` | Backend server port | `3001` |
-| `CORS_ORIGIN` | Frontend URL for CORS | `http://localhost:5173` |
-| `VITE_API_URL` | Backend API URL | `http://localhost:3001/api` |
-| `VITE_WS_URL` | WebSocket URL | `ws://localhost:3001` |
-
-### Docker Compose Options
-```yaml
-# Override default settings
-version: '3.8'
-services:
-  backend:
-    environment:
-      - NODE_ENV=production
-      - DATABASE_URL=your_connection_string
-    ports:
-      - "3001:3001"
-```
-
-## ✅ Verification Steps
-
-### Health Checks
-```bash
-# Check application health
+# Check backend health
 curl http://localhost:3001/api/health
-
-# Check database connection
-curl http://localhost:3001/api/projects
 
 # Check frontend
 curl http://localhost:5173
-```
 
-### Service Logs
-```bash
-# View all logs
+# View logs
 docker compose logs -f
-
-# View specific service logs
-docker compose logs -f backend
-docker compose logs -f frontend
-docker compose logs -f postgres
 ```
 
-## 🚨 Troubleshooting
+## 🔧 Configuration
 
-### Common Issues
+### Required Environment Variables
 
-**Port Already in Use**
+#### Backend
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `DATABASE_URL` | PostgreSQL connection string | `postgresql://user:pass@host:5432/db?schema=project_management` |
+| `NODE_ENV` | Environment mode | `production` |
+| `CORS_ORIGIN` | Frontend URL | `http://localhost:5173` |
+| `PORT` | Backend port (optional) | `3001` |
+
+#### Frontend
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `VITE_API_URL` | Backend API endpoint | `http://localhost:3001/api` |
+| `VITE_WS_URL` | WebSocket endpoint | `ws://localhost:3001` |
+
+> **Note**: Frontend variables are build-time only. Pre-built images use `http://localhost:3001`.
+
+## 🏗️ Development Setup
+
+For local development with hot-reload:
+
 ```bash
-# Check what's using the port
+# 1. Clone repository
+git clone https://github.com/anubissbe/ProjectHub-Mcp.git
+cd ProjectHub-Mcp
+
+# 2. Install dependencies
+npm install -g pnpm  # Optional: use pnpm for faster installs
+cd frontend && npm install
+cd ../backend && npm install
+
+# 3. Set up PostgreSQL
+docker run -d \
+  --name projecthub-postgres \
+  -e POSTGRES_USER=projecthub \
+  -e POSTGRES_PASSWORD=devpassword \
+  -e POSTGRES_DB=projecthub_db \
+  -p 5432:5432 \
+  postgres:16-alpine
+
+# 4. Configure environment
+# Backend
+echo "DATABASE_URL=postgresql://projecthub:devpassword@localhost:5432/projecthub_db?schema=project_management
+NODE_ENV=development
+PORT=3001
+CORS_ORIGIN=http://localhost:5173" > backend/.env
+
+# Frontend
+echo "VITE_API_URL=http://localhost:3001/api
+VITE_WS_URL=ws://localhost:3001" > frontend/.env
+
+# 5. Start development servers
+# Terminal 1
+cd backend && npm run dev
+
+# Terminal 2
+cd frontend && npm run dev
+
+# Access at http://localhost:5173
+```
+
+## 🚀 Container Registries
+
+Pre-built images are available from:
+
+### GitHub Container Registry
+```bash
+docker pull ghcr.io/anubissbe/projecthub-mcp-frontend:latest
+docker pull ghcr.io/anubissbe/projecthub-mcp-backend:latest
+```
+
+### Docker Hub
+```bash
+docker pull anubissbe/projecthub-mcp-frontend:latest
+docker pull anubissbe/projecthub-mcp-backend:latest
+```
+
+## ✅ Verification
+
+After installation, verify everything is working:
+
+```bash
+# Check running containers
+docker ps
+
+# Check backend health
+curl http://localhost:3001/api/health
+
+# Check frontend
+curl http://localhost:5173
+
+# View logs
+docker compose logs -f
+```
+
+## 🔒 Security Considerations
+
+1. **Change default passwords** in production
+2. **Use HTTPS** with proper certificates
+3. **Configure firewall** to restrict database access
+4. **Set strong DATABASE_URL** credentials
+5. **Use secrets management** for sensitive data
+
+## 🆘 Common Issues
+
+### Cannot connect to database
+- Ensure PostgreSQL is version 16+
+- Check network connectivity
+- Verify credentials and database exists
+- For Synology: use `network_mode: "host"`
+
+### CORS errors
+- Ensure `CORS_ORIGIN` matches frontend URL exactly
+- Include protocol (http/https) and port
+
+### Port conflicts
+```bash
+# Find what's using ports
 lsof -i :5173
 lsof -i :3001
+lsof -i :5432
 
-# Change ports in docker-compose.yml
+# Or change ports in docker-compose.yml
 ```
 
-**Database Connection Failed**
-```bash
-# Check PostgreSQL is running
-docker compose ps postgres
+## 📚 Next Steps
 
-# Check database logs
-docker compose logs postgres
-
-# Reset database
-docker compose down -v
-docker compose up -d
-```
-
-**Permission Issues**
-```bash
-# Fix Docker permissions (Linux/Mac)
-sudo chown -R $USER:$USER .
-```
-
-### Getting Help
-
-If you encounter issues:
-
-1. Check the [Troubleshooting Guide](Troubleshooting)
-2. Review [GitHub Issues](https://github.com/anubissbe/task-management-webui/issues)
-3. Create a new issue with:
-   - Your operating system
-   - Docker version (`docker --version`)
-   - Error messages
-   - Steps to reproduce
-
-## 📦 Alternative Installation Methods
-
-### Using npm (Frontend Only)
-```bash
-git clone https://github.com/anubissbe/task-management-webui.git
-cd task-management-webui/frontend
-npm install
-npm run build
-npm run preview
-```
-
-### Manual Build
-```bash
-# Build frontend
-cd frontend
-npm install
-npm run build
-
-# Build backend
-cd ../backend
-npm install
-npm run build
-
-# Start manually
-npm start
-```
+- [User Interface Overview](User-Interface-Overview) - Learn the UI
+- [Project Management](Project-Management) - Create your first project
+- [Task Management](Task-Management) - Organize tasks
+- [Production Deployment](Production-Deployment) - Deploy to production
 
 ---
 
-**Next Steps**: After installation, check out the [First-Time Setup](First-Time-Setup) guide to configure your application.
+<div align="center">
+
+**Need help?** Create an [issue](https://github.com/anubissbe/ProjectHub-Mcp/issues) or check the [FAQ](FAQ)
+
+</div>

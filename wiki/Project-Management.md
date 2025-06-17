@@ -1,400 +1,271 @@
-# Project Management
+# 📁 Project Management Guide
 
-This comprehensive guide covers project management workflows, strategies, and best practices using the Task Management WebUI.
+<div align="center">
+<img src="https://raw.githubusercontent.com/anubissbe/ProjectHub-Mcp/main/docs/logo.svg" alt="ProjectHub-Mcp Logo" width="300" />
+</div>
 
-## 🎨 Creating and Setting Up Projects
+## 🚀 Overview
 
-### New Project Creation
+ProjectHub-Mcp provides powerful project management capabilities with a distinctive **black and orange** interface designed for MCP integration. This guide covers everything you need to manage projects effectively.
 
-**Basic Project Setup**:
-1. Click **"New Project"** from the project list
-2. Enter project details:
-   - **Name**: Clear, descriptive project title
-   - **Description**: Project goals and scope
-   - **Status**: Active (default), Planning, On Hold, Archived
-3. Click **"Create Project"**
-4. You'll be redirected to the new project board
+## 📋 Project Structure
 
-**Project Information**:
-- **Unique ID**: Auto-generated UUID for API references
-- **Creation Date**: Automatically tracked
-- **Owner**: Project creator (can be reassigned)
-- **Team Members**: Add collaborators
-- **Tags**: Categorize projects by type, client, or department
+Each project in ProjectHub-Mcp contains:
 
-### Project Templates
+- **Project Information**
+  - Name and description
+  - Requirements and specifications
+  - Acceptance criteria
+  - Status tracking (Pending → In Progress → Completed)
+  
+- **Task Management**
+  - Hierarchical task structure
+  - Priority levels (Low, Medium, High)
+  - Status workflow
+  - Assignment tracking
+  
+- **Analytics & Metrics**
+  - Real-time progress tracking
+  - Completion statistics
+  - Time tracking
+  - Performance insights
 
-**Built-in Templates**:
-- **Software Development**: Agile workflow with sprints
-- **Marketing Campaign**: Campaign planning and execution
-- **Product Launch**: Go-to-market strategy
-- **Bug Tracking**: Issue management and resolution
-- **Research Project**: Investigation and analysis workflow
+## 🆕 Creating a Project
 
-**Creating Custom Templates**:
-1. Set up a project with your ideal structure
-2. Add standard tasks, statuses, and workflows
-3. Go to Project Settings → **"Save as Template"**
-4. Give your template a name and description
-5. Choose visibility (personal or organization-wide)
+### Step 1: Navigate to Projects
+Click the **PROJECTS** button in the navigation bar or go to the homepage.
 
-## 📈 Project Planning
+### Step 2: Create New Project
+Click the **+ NEW PROJECT** button (orange gradient button).
 
-### Project Scope Definition
+### Step 3: Fill Project Details
 
-**Define Project Goals**:
-- **Primary Objectives**: What success looks like
-- **Key Deliverables**: Specific outputs expected
-- **Success Metrics**: How you'll measure progress
-- **Constraints**: Budget, timeline, resource limitations
-
-**Stakeholder Identification**:
-- **Project Sponsor**: Decision maker and budget owner
-- **Project Team**: People doing the work
-- **End Users**: Who will use the final product
-- **External Dependencies**: Third parties affecting the project
-
-### Work Breakdown Structure (WBS)
-
-**Hierarchical Task Organization**:
-```
-Project: Website Redesign
-├── Phase 1: Discovery
-│   ├── User Research
-│   ├── Competitive Analysis
-│   └── Requirements Gathering
-├── Phase 2: Design
-│   ├── Wireframes
-│   ├── Visual Design
-│   └── Prototyping
-└── Phase 3: Development
-    ├── Frontend Implementation
-    ├── Backend Integration
-    └── Testing & QA
+```typescript
+// Project structure
+{
+  name: string;              // Project title
+  description: string;       // Detailed description
+  requirements?: string;     // Technical requirements
+  acceptance_criteria?: string; // Success criteria
+}
 ```
 
-**Task Breakdown Guidelines**:
-- Each task should take 2-8 hours maximum
-- Tasks should have clear acceptance criteria
-- Assign one person per task
-- Include buffer time for complexity
+### Step 4: Submit
+Click **CREATE PROJECT** to save. You'll be redirected to the project detail page.
 
-### Timeline Planning
+## 📊 Project Views
 
-**Critical Path Method**:
-1. Identify all project tasks
-2. Determine task dependencies
-3. Estimate task durations
-4. Find the longest path through the project
-5. Focus optimization efforts on critical path tasks
+### List View
+The default view shows all projects with:
+- Project name and description
+- Status indicators
+- Task statistics
+- Quick actions (View, Edit, Delete)
 
-**Milestone Planning**:
-- **Project Kickoff**: Team alignment and resource allocation
-- **Phase Gates**: End of major project phases
-- **Demo/Review Points**: Stakeholder feedback sessions
-- **Go-Live**: Product launch or delivery
-- **Project Closure**: Final deliverables and lessons learned
+### Card View
+Visual cards displaying:
+- Project progress bars
+- Task completion percentage
+- Team member avatars
+- Priority indicators
 
-## 📄 Project Views and Workflows
+### Analytics View
+Comprehensive metrics including:
+- Task completion trends
+- Time tracking data
+- Team productivity
+- Bottleneck identification
 
-### Kanban Board Management
+## 🔄 Project Lifecycle
 
-**Standard Workflow**:
-- **Backlog**: Future work items not yet prioritized
-- **Ready**: Prioritized tasks ready to be started
-- **In Progress**: Active work with assigned owners
-- **Review**: Completed work awaiting approval
-- **Done**: Fully completed and accepted work
+### 1. **Planning Phase** (Status: Pending)
+- Define requirements
+- Set acceptance criteria
+- Create initial tasks
+- Assign team members
 
-**Custom Workflows**:
-**Software Development**:
-`Backlog → Sprint Ready → In Progress → Code Review → Testing → Deployed`
+### 2. **Execution Phase** (Status: In Progress)
+- Track task completion
+- Monitor progress
+- Update requirements as needed
+- Manage dependencies
 
-**Content Creation**:
-`Ideas → Outlined → Drafting → Review → Editing → Published`
+### 3. **Completion Phase** (Status: Completed)
+- All tasks must be completed
+- Review acceptance criteria
+- Archive or close project
+- Generate reports
 
-**Bug Tracking**:
-`Reported → Triaged → Assigned → In Progress → Fixed → Verified → Closed`
+> **Note**: Projects cannot be marked as completed until all associated tasks are completed. This ensures project integrity.
 
-### Timeline/Gantt View Usage
+## 🛠️ Project Operations
 
-**Project Timeline Visualization**:
-- See all tasks plotted against time
-- Identify resource conflicts and overallocation
-- Visualize dependencies and critical path
-- Track progress against planned schedule
+### Editing Projects
+1. Navigate to project detail page
+2. Click **EDIT PROJECT** button
+3. Update required fields
+4. Save changes
 
-**Timeline Best Practices**:
-- Start with high-level milestones
-- Add detailed tasks within milestone periods
-- Use dependencies to show task relationships
-- Update progress regularly to reflect reality
-- Adjust timeline based on actual progress
+### Deleting Projects
+1. Click the delete icon (trash can)
+2. Confirm deletion in modal
+3. Project and all tasks will be permanently removed
 
-### Calendar View for Deadlines
+### Archiving Projects
+1. Mark project as completed
+2. Optional: Export project data
+3. Project remains in system for reference
 
-**Deadline Management**:
-- View all project deadlines in calendar format
-- Color-code by priority or team member
-- Spot conflicts and overcommitments
-- Plan work around team availability
+## 📈 Project Analytics
 
-**Sprint Planning**:
-- Visualize sprint boundaries and capacity
-- Plan task assignments across team members
-- Identify potential bottlenecks early
-- Balance workload distribution
+Access detailed analytics by clicking the **ANALYTICS** tab on any project:
 
-## 👥 Team Management
+### Available Metrics
+- **Completion Rate**: Percentage of completed tasks
+- **Velocity**: Tasks completed per time period
+- **Burndown Chart**: Progress toward completion
+- **Team Performance**: Individual contributions
+- **Time Tracking**: Actual vs. estimated time
 
-### Role Assignment
+### Exporting Data
+Export project data in multiple formats:
+- **CSV**: For spreadsheet analysis
+- **JSON**: For API integration
+- **PDF**: For reports and documentation
+- **Excel**: For detailed analysis
 
-**Project Roles**:
-- **Project Manager**: Overall coordination and delivery
-- **Tech Lead**: Technical decisions and architecture
-- **Designer**: User experience and visual design
-- **Developer**: Implementation and coding
-- **QA Engineer**: Testing and quality assurance
-- **Stakeholder**: Business requirements and approval
+## 🔌 MCP Integration
 
-**Task Assignment Strategies**:
-- **Skill-based**: Match tasks to team member expertise
-- **Availability-based**: Consider current workload
-- **Development-focused**: Assign challenging tasks for growth
-- **Round-robin**: Distribute routine tasks evenly
+ProjectHub-Mcp is designed for Model Context Protocol integration:
 
-### Workload Management
-
-**Capacity Planning**:
-- Track each team member's current task load
-- Account for meetings, email, and administrative time
-- Plan for vacation, sick days, and other time off
-- Monitor velocity and adjust expectations
-
-**Workload Visualization**:
-- **Team Dashboard**: Overview of all assignments
-- **Individual Dashboards**: Personal task lists
-- **Burndown Charts**: Progress toward sprint/milestone goals
-- **Velocity Tracking**: Team completion rates over time
-
-### Communication Workflows
-
-**Daily Standups**:
-- Review tasks completed yesterday
-- Plan tasks for today
-- Identify blockers and dependencies
-- Quick team sync (15 minutes maximum)
-
-**Weekly Reviews**:
-- Sprint/milestone progress assessment
-- Upcoming deadline preparation
-- Resource allocation adjustments
-- Stakeholder communication
-
-**Retrospectives**:
-- What went well this sprint/project?
-- What could be improved?
-- What actions will we take next time?
-- Team process optimization
-
-## 📉 Project Tracking and Monitoring
-
-### Progress Metrics
-
-**Completion Metrics**:
-- **Tasks Completed**: Number and percentage
-- **Story Points**: If using agile estimation
-- **Hours Logged**: Actual time spent on work
-- **Milestone Progress**: High-level deliverable status
-
-**Quality Metrics**:
-- **Defect Rate**: Bugs found per feature delivered
-- **Rework Rate**: Tasks that needed to be redone
-- **Customer Satisfaction**: Stakeholder feedback scores
-- **Technical Debt**: Accumulation of shortcuts and workarounds
-
-**Team Metrics**:
-- **Velocity**: Team's rate of work completion
-- **Cycle Time**: Average time from start to completion
-- **Lead Time**: Time from request to delivery
-- **Burnout Indicators**: Overtime, stress levels, turnover
-
-### Status Reporting
-
-**Dashboard Views**:
-- **Executive Summary**: High-level status for leadership
-- **Team Dashboard**: Detailed progress for project team
-- **Stakeholder View**: Customer-focused progress updates
-- **Individual Dashboard**: Personal task and progress view
-
-**Automated Reports**:
-- **Daily**: Task completion and blocker updates
-- **Weekly**: Sprint progress and upcoming deadlines
-- **Monthly**: Milestone achievement and trend analysis
-- **Project End**: Final deliverables and lessons learned
-
-### Risk Management
-
-**Common Project Risks**:
-- **Scope Creep**: Uncontrolled expansion of requirements
-- **Resource Constraints**: Team members unavailable
-- **Technical Challenges**: Unforeseen complexity
-- **Dependency Delays**: Waiting for external deliverables
-- **Quality Issues**: Defects requiring significant rework
-
-**Risk Mitigation Strategies**:
-- **Buffer Time**: Add 20-30% extra time to estimates
-- **Cross-training**: Ensure multiple people can handle critical tasks
-- **Regular Check-ins**: Frequent progress reviews and course correction
-- **Stakeholder Communication**: Keep everyone informed of issues early
-
-## 🐾 Agile Project Management
-
-### Sprint Planning
-
-**Sprint Setup**:
-1. **Sprint Goal**: What will be accomplished this sprint?
-2. **Sprint Duration**: Typically 1-4 weeks
-3. **Team Capacity**: Available hours accounting for time off
-4. **Story Selection**: Choose tasks that fit capacity and goal
-
-**Planning Process**:
-1. **Backlog Refinement**: Review and estimate upcoming tasks
-2. **Sprint Planning Meeting**: Select tasks for upcoming sprint
-3. **Task Breakdown**: Ensure tasks are appropriately sized
-4. **Commitment**: Team agrees to sprint scope
-
-### Scrum Workflows
-
-**Daily Standups** (15 minutes):
-- What did you complete yesterday?
-- What will you work on today?
-- Are there any blockers or impediments?
-- Update task statuses in real-time
-
-**Sprint Review**:
-- Demo completed features to stakeholders
-- Gather feedback on delivered work
-- Discuss upcoming priorities
-- Celebrate team accomplishments
-
-**Sprint Retrospective**:
-- What went well in this sprint?
-- What didn't go well?
-- What can we improve next sprint?
-- Action items for process improvement
-
-### Kanban Workflows
-
-**Continuous Flow**:
-- No fixed sprint boundaries
-- Pull work from backlog as capacity allows
-- Focus on optimizing flow and reducing cycle time
-- Limit work in progress (WIP limits)
-
-**WIP Limit Benefits**:
-- Reduces context switching
-- Identifies bottlenecks quickly
-- Improves focus and quality
-- Encourages team collaboration
-
-## 📋 Project Templates and Standards
-
-### Standard Project Structures
-
-**Software Development Project**:
-```
-Project Phases:
-1. Planning & Requirements
-2. Design & Architecture
-3. Development
-4. Testing & QA
-5. Deployment
-6. Maintenance
-
-Standard Tasks per Phase:
-- Requirements gathering
-- Technical design
-- Implementation
-- Unit testing
-- Integration testing
-- User acceptance testing
-- Deployment preparation
-- Go-live activities
+### API Endpoints
+```bash
+GET    /api/projects          # List all projects
+GET    /api/projects/:id      # Get project details
+POST   /api/projects          # Create project
+PUT    /api/projects/:id      # Update project
+DELETE /api/projects/:id      # Delete project
+GET    /api/projects/:id/stats # Get statistics
 ```
 
-**Marketing Campaign Project**:
-```
-Project Phases:
-1. Strategy & Planning
-2. Creative Development
-3. Production
-4. Launch
-5. Optimization
-
-Standard Tasks per Phase:
-- Market research
-- Campaign strategy
-- Creative brief
-- Asset creation
-- Campaign setup
-- Launch execution
-- Performance monitoring
-- Optimization activities
+### WebSocket Events
+```javascript
+// Real-time project updates
+socket.on('project:created', (project) => {});
+socket.on('project:updated', (project) => {});
+socket.on('project:deleted', (projectId) => {});
 ```
 
-### Naming Conventions
+## 🎯 Best Practices
 
-**Project Names**:
-- Use descriptive, searchable names
-- Include client/department if applicable
-- Add year or version number
-- Examples: "Website Redesign 2025", "Q1 Marketing Campaign"
+### Project Naming
+- Use clear, descriptive names
+- Include version or iteration numbers
+- Follow consistent naming conventions
 
-**Task Names**:
-- Start with action verb
+### Requirements Definition
 - Be specific and measurable
-- Include acceptance criteria
-- Examples: "Create user login page", "Test payment integration"
+- Include technical specifications
+- Define clear acceptance criteria
 
-**Tag Standards**:
-- Use consistent vocabulary
-- Create tag hierarchies
-- Regular tag cleanup
-- Examples: `frontend`, `backend`, `design`, `bug`, `feature`
+### Task Organization
+- Break down into manageable chunks
+- Set realistic priorities
+- Assign clear ownership
 
-## 📄 Documentation and Knowledge Management
+### Progress Tracking
+- Update task status regularly
+- Use comments for context
+- Track blockers immediately
 
-### Project Documentation
+## 🚨 Common Scenarios
 
-**Essential Documents**:
-- **Project Charter**: Goals, scope, stakeholders
-- **Requirements Document**: Detailed specifications
-- **Technical Design**: Architecture and implementation plans
-- **Test Plan**: Quality assurance strategy
-- **Deployment Guide**: Go-live procedures
-- **User Manual**: End-user instructions
+### Scenario 1: Large Project Setup
+```javascript
+// Example: E-commerce Platform
+{
+  name: "E-commerce Platform v2.0",
+  description: "Complete redesign of shopping experience",
+  requirements: `
+    - React 19 frontend
+    - Node.js backend
+    - PostgreSQL database
+    - Stripe integration
+    - Mobile responsive
+  `,
+  acceptance_criteria: `
+    - All payment flows working
+    - Load time < 2 seconds
+    - Mobile score > 90
+    - Zero critical bugs
+  `
+}
+```
 
-**Living Documentation**:
-- Keep documents updated throughout project
-- Link documents to relevant tasks
-- Version control for document changes
-- Make documents easily searchable
+### Scenario 2: Sprint Planning
+1. Create project for sprint
+2. Import tasks from backlog
+3. Set sprint duration
+4. Assign team members
+5. Track daily progress
 
-### Knowledge Sharing
+### Scenario 3: Client Projects
+1. Create project with client requirements
+2. Set milestones as subtasks
+3. Track billable hours
+4. Generate progress reports
 
-**Lessons Learned**:
-- Document what worked well
-- Record what didn't work and why
-- Share insights with other teams
-- Build organizational knowledge base
+## 🤝 Collaboration Features
 
-**Best Practice Sharing**:
-- Regular lunch-and-learn sessions
-- Project retrospective summaries
-- Template updates based on experience
-- Cross-team collaboration workshops
+### Comments
+- Add comments to projects
+- Mention team members with @
+- Track discussion history
+
+### Activity Feed
+- See all project updates
+- Filter by user or action
+- Export activity logs
+
+### Notifications
+- Task assignments
+- Status changes
+- Deadline reminders
+
+## 📚 Advanced Features
+
+### Templates
+Save project structures as templates:
+1. Complete a project setup
+2. Click "Save as Template"
+3. Reuse for similar projects
+
+### Bulk Operations
+- Import projects from CSV
+- Update multiple projects
+- Bulk assignment changes
+
+### Integrations
+- GitHub integration for code repos
+- Slack notifications
+- Email reports
+
+## 🔗 Related Documentation
+
+- [Task Management](Task-Management) - Detailed task workflows
+- [Analytics Dashboard](Analytics-Dashboard) - Understanding metrics
+- [API Documentation](API-Documentation) - Integration guide
+- [User Interface Overview](User-Interface-Overview) - UI guide
 
 ---
 
-**Next**: Learn about [Analytics Dashboard](Analytics-Dashboard) for project performance insights.
+<div align="center">
+
+**Pro Tip**: Use keyboard shortcuts for faster navigation\!
+- `P` - Go to Projects
+- `N` - New Project
+- `E` - Edit current project
+- `?` - Show all shortcuts
+
+</div>
+EOF < /dev/null
