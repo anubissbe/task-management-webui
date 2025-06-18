@@ -2,6 +2,7 @@ import React, { useMemo, useRef, useEffect } from 'react';
 import { Task } from '../types';
 import { format, differenceInDays, addDays, startOfDay, endOfDay, isWithinInterval } from 'date-fns';
 import clsx from 'clsx';
+import { getStatusColor } from '../utils/brandColors';
 
 interface TimelineViewProps {
   tasks: Task[];
@@ -34,21 +35,12 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ tasks, onTaskClick }
   const totalDays = differenceInDays(dateRange.maxDate, dateRange.minDate);
   const pixelsPerDay = 40;
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'completed':
-        return 'bg-green-500 border-green-600';
-      case 'in_progress':
-        return 'bg-blue-500 border-blue-600';
-      case 'blocked':
-        return 'bg-red-500 border-red-600';
-      case 'testing':
-        return 'bg-yellow-500 border-yellow-600';
-      case 'failed':
-        return 'bg-red-600 border-red-700';
-      default:
-        return 'bg-gray-400 border-gray-500';
-    }
+  const getTaskStatusColor = (status: string) => {
+    const colorClasses = getStatusColor(status);
+    // Extract just the bg and border classes for timeline bars
+    const bgMatch = colorClasses.match(/bg-\S+/);
+    const borderMatch = colorClasses.match(/border-\S+/);
+    return `${bgMatch ? bgMatch[0] : 'bg-gray-400'} ${borderMatch ? borderMatch[0] : 'border-gray-500'}`;
   };
 
   const getPriorityHeight = (priority: string) => {
@@ -140,11 +132,11 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ tasks, onTaskClick }
           </h2>
           <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-green-500 rounded" />
+              <div className="w-4 h-4 bg-orange-500 rounded" />
               <span>Completed</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-blue-500 rounded" />
+              <div className="w-4 h-4 bg-orange-400 rounded" />
               <span>In Progress</span>
             </div>
             <div className="flex items-center gap-2">
@@ -152,7 +144,7 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ tasks, onTaskClick }
               <span>Pending</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-red-500 rounded" />
+              <div className="w-4 h-4 bg-gray-600 rounded" />
               <span>Blocked</span>
             </div>
           </div>
@@ -174,7 +166,7 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ tasks, onTaskClick }
                     key={index}
                     className={clsx(
                       'flex-shrink-0 border-r border-gray-200 dark:border-gray-700',
-                      header.isToday && 'bg-blue-50 dark:bg-blue-900/20',
+                      header.isToday && 'bg-orange-50 dark:bg-orange-900/20',
                       header.isWeekStart && 'border-r-2 border-gray-400 dark:border-gray-500'
                     )}
                     style={{ width: `${pixelsPerDay}px` }}
@@ -182,13 +174,13 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ tasks, onTaskClick }
                     <div className="text-center py-1">
                       <div className={clsx(
                         'text-xs font-medium',
-                        header.isToday ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'
+                        header.isToday ? 'text-orange-600 dark:text-orange-400' : 'text-gray-500 dark:text-gray-400'
                       )}>
                         {header.month}
                       </div>
                       <div className={clsx(
                         'text-sm',
-                        header.isToday ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-gray-900 dark:text-white'
+                        header.isToday ? 'text-orange-600 dark:text-orange-400 font-bold' : 'text-gray-900 dark:text-white'
                       )}>
                         {header.label}
                       </div>
@@ -217,7 +209,7 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ tasks, onTaskClick }
                           key={index}
                           className={clsx(
                             'flex-shrink-0 border-r border-gray-100 dark:border-gray-700',
-                            header.isToday && 'bg-blue-50/50 dark:bg-blue-900/10',
+                            header.isToday && 'bg-orange-50/50 dark:bg-orange-900/10',
                             header.isWeekStart && 'border-r-gray-300 dark:border-r-gray-600'
                           )}
                           style={{ width: `${pixelsPerDay}px` }}
@@ -234,7 +226,7 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ tasks, onTaskClick }
                           onClick={() => onTaskClick(task)}
                           className={clsx(
                             'absolute rounded cursor-pointer transition-all hover:shadow-lg hover:z-10 border',
-                            getStatusColor(task.status),
+                            getTaskStatusColor(task.status),
                             getPriorityHeight(task.priority)
                           )}
                           style={{
@@ -269,12 +261,12 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ tasks, onTaskClick }
             {/* Today indicator */}
             {dayHeaders.some(h => h.isToday) && (
               <div
-                className="absolute top-0 bottom-0 w-0.5 bg-red-500 z-30 pointer-events-none"
+                className="absolute top-0 bottom-0 w-0.5 bg-orange-500 z-30 pointer-events-none"
                 style={{
                   left: `${dayHeaders.findIndex(h => h.isToday) * pixelsPerDay + pixelsPerDay / 2}px`
                 }}
               >
-                <div className="absolute -top-1 -left-1 w-3 h-3 bg-red-500 rounded-full" />
+                <div className="absolute -top-1 -left-1 w-3 h-3 bg-orange-500 rounded-full" />
               </div>
             )}
           </div>

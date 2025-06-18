@@ -12,6 +12,7 @@ import { TaskTemplates } from '../components/TaskTemplates';
 import { TimeTrackingDashboard } from '../components/TimeTrackingDashboard';
 import { CreateTaskModal } from '../components/CreateTaskModal';
 import { EditTaskModal } from '../components/EditTaskModal';
+import { PageBanner } from '../components/PageBanner';
 
 const TASK_STATUSES = ['pending', 'in_progress', 'blocked', 'testing', 'completed', 'failed'];
 
@@ -332,7 +333,7 @@ export function Board() {
                 <div className="mt-2">
                   <button
                     onClick={() => setActiveTimers(prev => ({ ...prev, [task.id]: true }))}
-                    className="flex items-center gap-1 px-2 py-1 text-xs bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 rounded hover:bg-green-100 dark:hover:bg-green-900/30 transition-colors"
+                    className="flex items-center gap-1 px-2 py-1 text-xs bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-300 rounded hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors"
                   >
                     🍅 Start Timer
                   </button>
@@ -371,29 +372,25 @@ export function Board() {
 
   return (
     <div className="flex flex-col">
-      <div className="p-6 pb-0">
-        <div className="flex items-start justify-between mb-4">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-              {project?.name || 'Kanban Board'}
-            </h2>
-            {project?.description && (
-              <p className="text-gray-600 dark:text-gray-300 mt-1">{project.description}</p>
-            )}
-          </div>
-          <div className="flex items-center gap-2">
+      <div className="p-6">
+        <PageBanner
+          icon="📋"
+          title={project?.name || 'Kanban Board'}
+          subtitle={project?.description || 'Manage your tasks efficiently'}
+          actionButton={
+            <div className="flex items-center gap-2">
             <button
               onClick={() => {
                 setCreateTaskStatus('pending');
                 setShowCreateTask(true);
               }}
-              className="px-4 py-2 text-sm bg-green-500 text-white rounded hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 transition-colors"
+              className="px-4 py-2 text-sm bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors font-semibold shadow-lg shadow-orange-500/20"
             >
               ➕ New Task
             </button>
             <button
               onClick={() => setShowTemplates(true)}
-              className="px-4 py-2 text-sm bg-purple-500 text-white rounded hover:bg-purple-600 dark:bg-purple-600 dark:hover:bg-purple-700 transition-colors"
+              className="px-4 py-2 text-sm bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors font-semibold"
             >
               📋 Templates
             </button>
@@ -401,7 +398,7 @@ export function Board() {
               onClick={() => setShowAnalytics(!showAnalytics)}
               className={`px-4 py-2 text-sm rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors ${
                 showAnalytics 
-                  ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300' 
+                  ? 'bg-orange-100 dark:bg-orange-900/20 text-orange-700 dark:text-orange-300' 
                   : 'bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
               }`}
             >
@@ -412,7 +409,7 @@ export function Board() {
                 const allTaskIds = filteredTasks.filter(t => !t.parent_task_id).map(t => t.id);
                 setExpandedTasks(new Set(allTaskIds));
               }}
-              className="px-4 py-2 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
+              className="px-4 py-2 text-sm bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
             >
               Expand All
             </button>
@@ -424,12 +421,13 @@ export function Board() {
                   setSelectedTasks(filteredTasks.filter(t => !t.parent_task_id));
                 }
               }}
-              className="px-4 py-2 text-sm bg-green-500 text-white rounded hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700"
+              className="px-4 py-2 text-sm bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
             >
               {selectedTasks.length === filteredTasks.filter(t => !t.parent_task_id).length ? 'Deselect All' : 'Select All'}
             </button>
-          </div>
-        </div>
+            </div>
+          }
+        />
 
         {/* Task Filters */}
         <TaskFilters
