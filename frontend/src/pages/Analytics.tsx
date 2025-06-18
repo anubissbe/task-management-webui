@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { projectService } from '../services/projectService';
 import { taskService } from '../services/taskService';
 import { Project } from '../types';
+import { PageBanner } from '../components/PageBanner';
 
 interface ProjectStats {
   totalTasks: number;
@@ -83,7 +84,11 @@ export function Analytics() {
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">Analytics Dashboard</h2>
+      <PageBanner
+        icon="📊"
+        title="Analytics Dashboard"
+        subtitle="Track project progress and team performance"
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {projects.map((project) => {
@@ -112,7 +117,7 @@ export function Analytics() {
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
                     <div
-                      className="bg-green-600 h-2 rounded-full transition-all duration-300"
+                      className="bg-orange-500 h-2 rounded-full transition-all duration-300"
                       style={{ width: `${completionRate}%` }}
                     />
                   </div>
@@ -128,7 +133,7 @@ export function Analytics() {
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
                     <div
-                      className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                      className="bg-orange-400 h-2 rounded-full transition-all duration-300"
                       style={{ width: `${hoursProgress}%` }}
                     />
                   </div>
@@ -142,17 +147,17 @@ export function Analytics() {
                     <div className="text-2xl font-semibold text-gray-900">{stats.totalTasks}</div>
                     <div className="text-sm text-gray-600">Total Tasks</div>
                   </div>
-                  <div className="bg-blue-50 rounded p-3">
-                    <div className="text-2xl font-semibold text-blue-900">{stats.inProgressTasks}</div>
-                    <div className="text-sm text-blue-600">In Progress</div>
+                  <div className="bg-orange-50 rounded p-3">
+                    <div className="text-2xl font-semibold text-orange-900">{stats.inProgressTasks}</div>
+                    <div className="text-sm text-orange-600">In Progress</div>
                   </div>
-                  <div className="bg-yellow-50 rounded p-3">
-                    <div className="text-2xl font-semibold text-yellow-900">{stats.pendingTasks}</div>
-                    <div className="text-sm text-yellow-600">Pending</div>
+                  <div className="bg-gray-100 rounded p-3">
+                    <div className="text-2xl font-semibold text-gray-900">{stats.pendingTasks}</div>
+                    <div className="text-sm text-gray-600">Pending</div>
                   </div>
-                  <div className="bg-red-50 rounded p-3">
-                    <div className="text-2xl font-semibold text-red-900">{stats.blockedTasks}</div>
-                    <div className="text-sm text-red-600">Blocked</div>
+                  <div className="bg-gray-200 rounded p-3">
+                    <div className="text-2xl font-semibold text-gray-900">{stats.blockedTasks}</div>
+                    <div className="text-sm text-gray-600">Blocked</div>
                   </div>
                 </div>
 

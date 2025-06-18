@@ -43,15 +43,15 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ tasks, onTaskClick }
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'completed':
-        return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200';
+        return 'bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-200';
       case 'in_progress':
-        return 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-200';
+        return 'bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-200';
       case 'blocked':
-        return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-200';
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-200';
       case 'testing':
-        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-200';
+        return 'bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-200';
       case 'failed':
-        return 'bg-red-200 text-red-900 dark:bg-red-900/30 dark:text-red-200';
+        return 'bg-gray-200 text-gray-900 dark:bg-gray-900/30 dark:text-gray-200';
       default:
         return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200';
     }
@@ -60,13 +60,13 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ tasks, onTaskClick }
   const getPriorityDot = (priority: string) => {
     switch (priority) {
       case 'critical':
-        return 'bg-red-500';
+        return 'bg-gray-500';
       case 'high':
         return 'bg-orange-500';
       case 'medium':
-        return 'bg-yellow-500';
+        return 'bg-orange-500';
       case 'low':
-        return 'bg-green-500';
+        return 'bg-orange-500';
       default:
         return 'bg-gray-500';
     }
@@ -137,7 +137,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ tasks, onTaskClick }
                 className={clsx(
                   'aspect-square border rounded-lg p-2 overflow-hidden hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors',
                   isToday
-                    ? 'border-blue-500 dark:border-blue-400 bg-blue-50 dark:bg-blue-900/20'
+                    ? 'border-orange-500 dark:border-orange-400 bg-orange-50 dark:bg-orange-900/20'
                     : 'border-gray-200 dark:border-gray-600'
                 )}
               >
@@ -145,7 +145,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ tasks, onTaskClick }
                   <div className={clsx(
                     'text-sm font-medium mb-1',
                     isToday
-                      ? 'text-blue-600 dark:text-blue-400'
+                      ? 'text-orange-600 dark:text-orange-400'
                       : 'text-gray-900 dark:text-white'
                   )}>
                     {format(day, 'd')}
@@ -188,15 +188,15 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ tasks, onTaskClick }
                 <span className="text-gray-600 dark:text-gray-400">Pending</span>
               </div>
               <div className="flex items-center gap-1">
-                <div className="w-3 h-3 bg-blue-100 dark:bg-blue-900/20 rounded" />
+                <div className="w-3 h-3 bg-orange-100 dark:bg-orange-900/20 rounded" />
                 <span className="text-gray-600 dark:text-gray-400">In Progress</span>
               </div>
               <div className="flex items-center gap-1">
-                <div className="w-3 h-3 bg-green-100 dark:bg-green-900/20 rounded" />
+                <div className="w-3 h-3 bg-orange-100 dark:bg-orange-900/20 rounded" />
                 <span className="text-gray-600 dark:text-gray-400">Completed</span>
               </div>
               <div className="flex items-center gap-1">
-                <div className="w-3 h-3 bg-red-100 dark:bg-red-900/20 rounded" />
+                <div className="w-3 h-3 bg-gray-100 dark:bg-gray-900/20 rounded" />
                 <span className="text-gray-600 dark:text-gray-400">Blocked</span>
               </div>
             </div>

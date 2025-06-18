@@ -56,11 +56,11 @@ export function FileAttachments({
   };
 
   const getFileTypeColor = (mimeType: string): string => {
-    if (mimeType.startsWith('image/')) return 'bg-green-100 text-green-800';
-    if (mimeType === 'application/pdf') return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-200';
-    if (mimeType.includes('word') || mimeType.includes('document')) return 'bg-blue-100 text-blue-800';
-    if (mimeType.includes('excel') || mimeType.includes('sheet')) return 'bg-green-100 text-green-800';
-    if (mimeType.includes('zip')) return 'bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-200';
+    if (mimeType.startsWith('image/')) return 'bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-200';
+    if (mimeType === 'application/pdf') return 'bg-orange-50 text-orange-700 dark:bg-orange-900/10 dark:text-orange-300';
+    if (mimeType.includes('word') || mimeType.includes('document')) return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200';
+    if (mimeType.includes('excel') || mimeType.includes('sheet')) return 'bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-200';
+    if (mimeType.includes('zip')) return 'bg-gray-200 text-gray-800 dark:bg-gray-900/20 dark:text-gray-200';
     return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200';
   };
 
@@ -176,7 +176,7 @@ export function FileAttachments({
       <div
         className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
           isDragOver
-            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+            ? 'border-orange-500 bg-orange-50 dark:bg-orange-900/20'
             : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'
         }`}
         onDragOver={handleDragOver}
@@ -194,7 +194,7 @@ export function FileAttachments({
           <button
             onClick={() => fileInputRef.current?.click()}
             disabled={uploading}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {uploading ? 'Uploading...' : 'Choose Files'}
           </button>
@@ -222,7 +222,7 @@ export function FileAttachments({
                 </div>
                 <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2">
                   <div
-                    className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                    className="bg-orange-500 h-2 rounded-full transition-all duration-300"
                     style={{ width: `${progress}%` }}
                   />
                 </div>
@@ -258,7 +258,7 @@ export function FileAttachments({
                     {attachment.filename}
                   </h5>
                   {attachment.mime_type.startsWith('image/') && (
-                    <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded">
+                    <span className="text-xs bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-200 px-2 py-0.5 rounded">
                       Image
                     </span>
                   )}
@@ -279,7 +279,7 @@ export function FileAttachments({
                     // Download file - this would be implemented based on your file storage
                     window.open(attachment.upload_path, '_blank');
                   }}
-                  className="p-2 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition-colors"
+                  className="p-2 text-gray-500 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/20 rounded transition-colors"
                   title="Download"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -295,7 +295,7 @@ export function FileAttachments({
                         onFileDelete(attachment.id);
                       }
                     }}
-                    className="p-2 text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors"
+                    className="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-900/20 rounded transition-colors"
                     title="Delete"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
