@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   auto-merge-dependabot:
-    runs-on: [self-hosted, docker, runnerhub]
+    runs-on: ubuntu-latest
     if: github.actor == 'dependabot[bot]'
     
     steps:
@@ -30,7 +30,7 @@ jobs:
         merge-method: squash
         
   label-pr:
-    runs-on: [self-hosted, docker, runnerhub]
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       pull-requests: write
