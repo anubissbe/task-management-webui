@@ -491,7 +491,7 @@ jobs:
       - name: 🐳 Build and Push Docker Image
         if: needs.setup.outputs.has-docker == 'true'
         id: build
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ${{ matrix.directory }}
           file: ${{ matrix.directory }}/${{ matrix.dockerfile }}
