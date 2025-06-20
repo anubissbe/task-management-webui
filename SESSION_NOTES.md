@@ -36,8 +36,8 @@
 
 ### 📊 Current Status
 - Application is production-ready at v4.1.0
-- Running live at http://192.168.1.24:5173
-- Serving 206 tasks across 3 projects
+- Deployed with Docker containers
+- Serving 200+ tasks across multiple projects
 - All core features operational
 - Documentation fully updated
 
@@ -101,8 +101,8 @@
 
 ### 🚀 Current State
 **PRODUCTION-READY APPLICATION**
-- Live URL: http://192.168.1.25:5173
-- API URL: http://192.168.1.25:3001/api
+- Frontend: React application with Nginx
+- Backend: Express.js API
 - Status: ✅ FULLY OPERATIONAL
 
 ---
