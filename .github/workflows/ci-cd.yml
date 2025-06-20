@@ -387,7 +387,7 @@ jobs:
 
       - name: 📈 Upload Coverage to Codecov
         if: secrets.CODECOV_TOKEN
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ${{ matrix.directory }}
