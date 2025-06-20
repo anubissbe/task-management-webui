@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { ProjectController } from '../controllers/projectController';
 import { TaskController } from '../controllers/taskController';
+import webhookRoutes from './webhooks';
 
 const router = Router();
 const projectController = new ProjectController();
@@ -31,5 +32,8 @@ router.get('/tasks/:id/history', taskController.getTaskHistory);
 router.post('/tasks/:id/test-results', taskController.addTestResult);
 router.get('/tasks/:id/test-results', taskController.getTestResults);
 router.get('/next-task', taskController.getNextTask);
+
+// Webhook routes
+router.use('/webhooks', webhookRoutes);
 
 export default router;

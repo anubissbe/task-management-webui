@@ -83,3 +83,54 @@ export interface ProjectStats {
     };
   };
 }
+
+export type WebhookEvent = 
+  | 'task.created' 
+  | 'task.updated' 
+  | 'task.completed' 
+  | 'task.deleted'
+  | 'project.created'
+  | 'project.updated'
+  | 'project.completed'
+  | 'project.deleted';
+
+export interface Webhook {
+  id: string;
+  name: string;
+  url: string;
+  events: WebhookEvent[];
+  secret?: string;
+  active: boolean;
+  created_at: Date;
+  updated_at: Date;
+  last_triggered_at?: Date;
+  failure_count: number;
+  max_retries: number;
+  retry_delay: number;
+  headers?: Record<string, string>;
+  project_id?: string; // Optional: webhook can be project-specific
+}
+
+export interface WebhookDelivery {
+  id: string;
+  webhook_id: string;
+  event: WebhookEvent;
+  payload: Record<string, any>;
+  response_status?: number;
+  response_body?: string;
+  error_message?: string;
+  retry_count: number;
+  delivered_at?: Date;
+  created_at: Date;
+}
+
+export interface WebhookPayload {
+  event: WebhookEvent;
+  timestamp: string;
+  data: Task | Project;
+  previous_data?: Partial<Task | Project>;
+  webhook: {
+    id: string;
+    name: string;
+  };
+}
