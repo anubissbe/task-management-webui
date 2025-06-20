@@ -128,6 +128,18 @@ debug-*.png
 .npm
 .yarn-integrity
 
+# Archive and temporary files
+_archive/
+*.rar
+*.zip
+*.tar.gz
+test-*.txt
+*-test-*.txt
+scale-test-*.txt
+
+# Frontend build artifacts
+frontend/assets/
+
 # Keep these test files and screenshots
 # They are documentation
 !docs/images/*.png
