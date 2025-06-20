@@ -27,6 +27,7 @@ ProjectHub-MCP is a comprehensive project and task management system built speci
 - **✅ Task Management**: Create, update, and track tasks with priorities, time estimates, and dependencies
 - **📊 Kanban Board**: Drag-and-drop interface with real-time updates via WebSocket
 - **📈 Analytics Dashboard**: Comprehensive charts for project progress, task distribution, and team productivity
+- **🔗 Webhook Integration**: Enterprise-grade webhook system with retry logic, HMAC security, and delivery tracking
 - **⏱️ Pomodoro Timer**: Built-in time tracking with work/break intervals
 - **📅 Calendar View**: Visualize tasks and deadlines in a calendar format
 - **📱 Responsive Design**: Optimized for desktop, tablet, and mobile devices
@@ -227,6 +228,20 @@ ProjectHub-Mcp/
 | GET | `/api/tasks/:id/history` | Get task history |
 | GET | `/api/next-task` | Get next prioritized task |
 
+### Webhooks Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/webhooks` | List all webhooks |
+| GET | `/api/webhooks/:id` | Get webhook details |
+| POST | `/api/webhooks` | Create new webhook |
+| PUT | `/api/webhooks/:id` | Update webhook |
+| DELETE | `/api/webhooks/:id` | Delete webhook |
+| POST | `/api/webhooks/:id/test` | Test webhook endpoint |
+| GET | `/api/webhooks/:id/deliveries` | Get delivery history |
+| GET | `/api/webhooks/:id/stats` | Get webhook statistics |
+| GET | `/api/webhooks/templates` | Get webhook templates |
+
 ## 📊 Database Schema
 
 The application uses PostgreSQL with the following main tables:
@@ -298,6 +313,7 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 - Pomodoro timer
 - Calendar view
 - Export functionality
+- **Enterprise webhook system** with HMAC security, retry logic, and delivery tracking
 
 ### 🚧 In Progress
 - Advanced reporting features

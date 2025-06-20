@@ -9,6 +9,7 @@ import { CreateProject } from './pages/CreateProject';
 import { Board } from './pages/Board';
 import { BoardSelector } from './pages/BoardSelector';
 import { EnhancedAnalytics } from './pages/EnhancedAnalytics';
+import { WebhookManagement } from './components/WebhookManagement';
 // import { TestPage } from './TestPage';
 
 const queryClient = new QueryClient({
@@ -33,6 +34,7 @@ function App() {
             <Route path="board" element={<BoardSelector />} />
             <Route path="board/:projectId" element={<Board />} />
             <Route path="analytics" element={<EnhancedAnalytics />} />
+            <Route path="webhooks" element={<WebhookManagement />} />
           </Route>
         </Routes>
         <Toaster position="top-right" />

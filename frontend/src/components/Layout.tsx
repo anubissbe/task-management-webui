@@ -88,6 +88,18 @@ export const Layout: React.FC = () => {
                   <span className="text-lg mr-2">📊</span>
                   <span className="uppercase tracking-wider">Analytics</span>
                 </Link>
+                <Link
+                  to="/webhooks"
+                  className={clsx(
+                    'projecthub-nav-link inline-flex items-center px-4 py-2 rounded-lg text-sm font-bold transition-all duration-300 transform hover:scale-105',
+                    isActive('/webhooks')
+                      ? 'bg-orange-500/20 text-orange-400 border border-orange-500/50 shadow-lg shadow-orange-500/20'
+                      : 'text-gray-300 hover:text-orange-400 hover:bg-orange-500/10 hover:border-orange-500/30 border border-transparent'
+                  )}
+                >
+                  <span className="text-lg mr-2">🔗</span>
+                  <span className="uppercase tracking-wider">Webhooks</span>
+                </Link>
               </div>
             </div>
             <div className="flex items-center">
