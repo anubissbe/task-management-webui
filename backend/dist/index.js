@@ -52,8 +52,6 @@ app.use((0, cors_1.default)({
             'http://localhost:5174',
             'http://localhost:5175',
             'http://localhost:5176',
-            'http://192.168.1.25:5173',
-            'https://192.168.1.25:5173',
             'http://127.0.0.1:5173'
         ];
         // Add CORS_ORIGIN from environment if specified

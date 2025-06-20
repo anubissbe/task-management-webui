@@ -1,8 +1,12 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const projectController_1 = require("../controllers/projectController");
 const taskController_1 = require("../controllers/taskController");
+const webhooks_1 = __importDefault(require("./webhooks"));
 const router = (0, express_1.Router)();
 const projectController = new projectController_1.ProjectController();
 const taskController = new taskController_1.TaskController();
@@ -29,4 +33,6 @@ router.get('/tasks/:id/history', taskController.getTaskHistory);
 router.post('/tasks/:id/test-results', taskController.addTestResult);
 router.get('/tasks/:id/test-results', taskController.getTestResults);
 router.get('/next-task', taskController.getNextTask);
+// Webhook routes
+router.use('/webhooks', webhooks_1.default);
 exports.default = router;

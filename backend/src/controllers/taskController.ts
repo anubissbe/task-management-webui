@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { TaskService } from '../services/taskService';
+import { triggerWebhooksForEvent } from './webhookController';
 import { z } from 'zod';
 
 const taskService = new TaskService();
@@ -87,6 +88,10 @@ export class TaskController {
     try {
       const data = createTaskSchema.parse(req.body);
       const task = await taskService.createTask(data);
+      
+      // Trigger webhooks for task creation
+      await triggerWebhooksForEvent('task.created', task, undefined, task.project_id);
+      
       res.status(201).json(task);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -102,11 +107,27 @@ export class TaskController {
     try {
       const { id } = req.params;
       const data = updateTaskSchema.parse(req.body);
+      
+      // Get previous task state for webhook comparison
+      const previousTask = await taskService.getTaskById(id);
+      if (!previousTask) {
+        res.status(404).json({ error: 'Task not found' });
+        return;
+      }
+      
       const task = await taskService.updateTask(id, data);
       
       if (!task) {
         res.status(404).json({ error: 'Task not found' });
         return;
+      }
+      
+      // Trigger webhooks for task update
+      await triggerWebhooksForEvent('task.updated', task, previousTask, task.project_id);
+      
+      // Check if task was completed
+      if (task.status === 'completed' && previousTask.status !== 'completed') {
+        await triggerWebhooksForEvent('task.completed', task, previousTask, task.project_id);
       }
       
       res.json(task);
@@ -124,11 +145,27 @@ export class TaskController {
     try {
       const { id } = req.params;
       const { status, notes } = updateStatusSchema.parse(req.body);
+      
+      // Get previous task state for webhook comparison
+      const previousTask = await taskService.getTaskById(id);
+      if (!previousTask) {
+        res.status(404).json({ error: 'Task not found' });
+        return;
+      }
+      
       const task = await taskService.updateTaskStatus(id, status, notes);
       
       if (!task) {
         res.status(404).json({ error: 'Task not found' });
         return;
+      }
+      
+      // Trigger webhooks for task update
+      await triggerWebhooksForEvent('task.updated', task, previousTask, task.project_id);
+      
+      // Check if task was completed
+      if (task.status === 'completed' && previousTask.status !== 'completed') {
+        await triggerWebhooksForEvent('task.completed', task, previousTask, task.project_id);
       }
       
       res.json(task);
@@ -145,12 +182,23 @@ export class TaskController {
   async deleteTask(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
+      
+      // Get task data before deletion for webhook
+      const task = await taskService.getTaskById(id);
+      if (!task) {
+        res.status(404).json({ error: 'Task not found' });
+        return;
+      }
+      
       const deleted = await taskService.deleteTask(id);
       
       if (!deleted) {
         res.status(404).json({ error: 'Task not found' });
         return;
       }
+      
+      // Trigger webhooks for task deletion
+      await triggerWebhooksForEvent('task.deleted', task, undefined, task.project_id);
       
       res.status(204).send();
     } catch (error) {

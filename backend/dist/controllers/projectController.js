@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProjectController = void 0;
 const projectService_1 = require("../services/projectService");
+const webhookController_1 = require("./webhookController");
 const zod_1 = require("zod");
 const projectService = new projectService_1.ProjectService();
 // Emergency direct database connection (for future use)
@@ -55,6 +56,8 @@ class ProjectController {
         try {
             const data = createProjectSchema.parse(req.body);
             const project = await projectService.createProject(data);
+            // Trigger webhooks for project creation
+            await (0, webhookController_1.triggerWebhooksForEvent)('project.created', project, undefined, project.id);
             res.status(201).json(project);
         }
         catch (error) {
@@ -70,10 +73,22 @@ class ProjectController {
         try {
             const { id } = req.params;
             const data = updateProjectSchema.parse(req.body);
+            // Get previous project state for webhook comparison
+            const previousProject = await projectService.getProjectById(id);
+            if (!previousProject) {
+                res.status(404).json({ error: 'Project not found' });
+                return;
+            }
             const project = await projectService.updateProject(id, data);
             if (!project) {
                 res.status(404).json({ error: 'Project not found' });
                 return;
+            }
+            // Trigger webhooks for project update
+            await (0, webhookController_1.triggerWebhooksForEvent)('project.updated', project, previousProject, project.id);
+            // Check if project was completed
+            if (project.status === 'completed' && previousProject.status !== 'completed') {
+                await (0, webhookController_1.triggerWebhooksForEvent)('project.completed', project, previousProject, project.id);
             }
             res.json(project);
         }
@@ -89,11 +104,19 @@ class ProjectController {
     async deleteProject(req, res) {
         try {
             const { id } = req.params;
+            // Get project data before deletion for webhook
+            const project = await projectService.getProjectById(id);
+            if (!project) {
+                res.status(404).json({ error: 'Project not found' });
+                return;
+            }
             const deleted = await projectService.deleteProject(id);
             if (!deleted) {
                 res.status(404).json({ error: 'Project not found' });
                 return;
             }
+            // Trigger webhooks for project deletion
+            await (0, webhookController_1.triggerWebhooksForEvent)('project.deleted', project, undefined, project.id);
             res.status(204).send();
         }
         catch (error) {
