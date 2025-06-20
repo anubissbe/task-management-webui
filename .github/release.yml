@@ -1,0 +1,62 @@
+changelog:
+  exclude:
+    labels:
+      - ignore-for-release
+      - dependencies
+      - duplicate
+      - question
+      - invalid
+      - wontfix
+  categories:
+    - title: 🚀 New Features
+      labels:
+        - enhancement
+        - feature
+        - new-feature
+    - title: 🐛 Bug Fixes
+      labels:
+        - bug
+        - bugfix
+        - fix
+    - title: 📚 Documentation
+      labels:
+        - documentation
+        - docs
+    - title: 🔒 Security
+      labels:
+        - security
+    - title: ⚡ Performance
+      labels:
+        - performance
+        - optimization
+    - title: 🧹 Maintenance
+      labels:
+        - maintenance
+        - refactor
+        - chore
+    - title: 🧪 Testing
+      labels:
+        - test
+        - testing
+    - title: 🔧 CI/CD
+      labels:
+        - ci
+        - cd
+        - github-actions
+    - title: 📦 Dependencies
+      labels:
+        - dependencies
+        - npm
+    - title: 🎨 UI/UX
+      labels:
+        - ui
+        - ux
+        - design
+        - frontend
+    - title: 🔌 API
+      labels:
+        - api
+        - backend
+    - title: Other Changes
+      labels:
+        - "*"
