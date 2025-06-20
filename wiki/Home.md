@@ -76,7 +76,7 @@ Welcome to the comprehensive documentation for **ProjectHub-Mcp**!
 
 <div align="center">
 
-**Last Updated**: December 2024 | **Version**: 4.0.2 | **Status**: 100% Complete
+**Last Updated**: June 2025 | **Version**: 4.1.0 | **Status**: Production Ready
 
 <p style="color: #ff6500; font-weight: bold;">
 🧡 Built with the signature black (#0a0a0a) and orange (#ff6500) theme 🧡

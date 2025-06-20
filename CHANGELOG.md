@@ -5,6 +5,24 @@ All notable changes to ProjectHub-Mcp will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.1.0] - 2025-06-20
+
+### 📚 Documentation & Repository Updates
+- **Updated** comprehensive README.md with production status and live metrics
+- **Enhanced** README with detailed feature list, architecture diagram, and API documentation
+- **Added** complete technology stack documentation
+- **Updated** deployment instructions for both Docker and local development
+- **Added** database schema documentation
+- **Created** proper repository structure documentation
+- **Updated** all GitHub links to use correct repository URL
+- **Added** production deployment status badges
+
+### 🔧 Repository Maintenance
+- **Synced** GitHub repository with latest changes
+- **Updated** all documentation files to reflect current implementation
+- **Prepared** wiki content for GitHub wiki pages
+- **Cleaned** repository structure and removed outdated files
+
 ## [4.0.0] - 2025-06-15
 
 ### 🎨 Major Rebranding
