@@ -1,6 +1,6 @@
 # API Documentation
 
-The Task Management WebUI provides a comprehensive REST API for all application functionality. This documentation covers all available endpoints, request/response formats, and authentication.
+The ProjectHub-MCP provides a comprehensive REST API for all application functionality. This documentation covers all available endpoints, request/response formats, and WebSocket events.
 
 ## 🔗 Base URL
 
@@ -27,7 +27,7 @@ headers: {
 ### Get All Projects
 **GET** `/projects`
 
-Returns a list of all projects.
+Returns a list of all projects with their current status and statistics.
 
 **Response:**
 ```json
@@ -36,9 +36,14 @@ Returns a list of all projects.
     "id": "uuid",
     "name": "Project Name",
     "description": "Project description",
-    "status": "active",
-    "createdAt": "2025-06-14T10:00:00.000Z",
-    "updatedAt": "2025-06-14T10:00:00.000Z"
+    "status": "active", // planning, active, paused, completed, cancelled
+    "metadata": {},
+    "requirements": "Project requirements",
+    "acceptance_criteria": "Acceptance criteria",
+    "created_at": "2025-06-14T10:00:00.000Z",
+    "updated_at": "2025-06-14T10:00:00.000Z",
+    "started_at": null,
+    "completed_at": null
   }
 ]
 ```
@@ -49,7 +54,7 @@ Returns a list of all projects.
 Returns details of a specific project.
 
 **Parameters:**
-- `id` (string): Project UUID
+- `id` (required): Project UUID
 
 **Response:**
 ```json
@@ -58,10 +63,13 @@ Returns details of a specific project.
   "name": "Project Name",
   "description": "Project description",
   "status": "active",
-  "createdAt": "2025-06-14T10:00:00.000Z",
-  "updatedAt": "2025-06-14T10:00:00.000Z",
-  "taskCount": 15,
-  "completedTasks": 8
+  "metadata": {},
+  "requirements": "Project requirements",
+  "acceptance_criteria": "Acceptance criteria",
+  "created_at": "2025-06-14T10:00:00.000Z",
+  "updated_at": "2025-06-14T10:00:00.000Z",
+  "started_at": "2025-06-14T10:00:00.000Z",
+  "completed_at": null
 }
 ```
 
@@ -74,19 +82,20 @@ Creates a new project.
 ```json
 {
   "name": "New Project",
-  "description": "Project description"
+  "description": "Project description",
+  "status": "planning",
+  "requirements": "Project requirements",
+  "acceptance_criteria": "Acceptance criteria",
+  "metadata": {}
 }
 ```
 
-**Response:**
+**Response:** 201 Created
 ```json
 {
   "id": "uuid",
   "name": "New Project",
-  "description": "Project description",
-  "status": "active",
-  "createdAt": "2025-06-14T10:00:00.000Z",
-  "updatedAt": "2025-06-14T10:00:00.000Z"
+  // ... full project object
 }
 ```
 
@@ -96,14 +105,24 @@ Creates a new project.
 Updates an existing project.
 
 **Parameters:**
-- `id` (string): Project UUID
+- `id` (required): Project UUID
 
 **Request Body:**
 ```json
 {
-  "name": "Updated Project Name",
+  "name": "Updated Name",
   "description": "Updated description",
-  "status": "archived"
+  "status": "active",
+  "metadata": {}
+}
+```
+
+**Response:** 200 OK
+```json
+{
+  "id": "uuid",
+  "name": "Updated Name",
+  // ... full updated project object
 }
 ```
 
@@ -113,35 +132,33 @@ Updates an existing project.
 Deletes a project and all associated tasks.
 
 **Parameters:**
-- `id` (string): Project UUID
+- `id` (required): Project UUID
 
-**Response:**
-```json
-{
-  "message": "Project deleted successfully"
-}
-```
+**Response:** 204 No Content
 
 ### Get Project Statistics
 **GET** `/projects/:id/stats`
 
-Returns comprehensive project statistics.
+Returns statistics for a specific project.
+
+**Parameters:**
+- `id` (required): Project UUID
 
 **Response:**
 ```json
 {
-  "taskCount": 25,
-  "completedTasks": 12,
-  "inProgressTasks": 8,
-  "pendingTasks": 3,
-  "blockedTasks": 2,
-  "completionRate": 48,
-  "averageCompletionTime": "2.5 days",
-  "overdueTasks": 1
+  "total_tasks": 50,
+  "completed_tasks": 30,
+  "in_progress_tasks": 10,
+  "pending_tasks": 8,
+  "blocked_tasks": 2,
+  "completion_percentage": 60,
+  "estimated_hours": 120,
+  "actual_hours": 95
 }
 ```
 
-## 📋 Tasks API
+## ✅ Tasks API
 
 ### Get Tasks by Project
 **GET** `/projects/:projectId/tasks`
@@ -149,32 +166,30 @@ Returns comprehensive project statistics.
 Returns all tasks for a specific project.
 
 **Parameters:**
-- `projectId` (string): Project UUID
+- `projectId` (required): Project UUID
 
 **Query Parameters:**
-- `status` (string): Filter by status (pending, in_progress, completed, etc.)
-- `priority` (string): Filter by priority (low, medium, high, critical)
-- `assignee` (string): Filter by assignee
-- `limit` (number): Limit number of results
-- `offset` (number): Pagination offset
+- `status` (optional): Filter by status (pending, in_progress, completed, blocked, testing, failed)
+- `priority` (optional): Filter by priority (low, medium, high, critical)
+- `assignee` (optional): Filter by assignee
+- `search` (optional): Search in title and description
 
 **Response:**
 ```json
 [
   {
     "id": "uuid",
-    "projectId": "uuid",
-    "name": "Task name",
+    "project_id": "project-uuid",
+    "title": "Task Title",
     "description": "Task description",
     "status": "in_progress",
     "priority": "high",
-    "assignee": "john.doe@example.com",
-    "dueDate": "2025-06-20T00:00:00.000Z",
-    "createdAt": "2025-06-14T10:00:00.000Z",
-    "updatedAt": "2025-06-14T10:00:00.000Z",
-    "tags": ["frontend", "bug"],
-    "estimatedHours": 8,
-    "actualHours": 5.5
+    "assignee": "user@example.com",
+    "estimated_hours": 8,
+    "actual_hours": 6,
+    "due_date": "2025-06-20T10:00:00.000Z",
+    "created_at": "2025-06-14T10:00:00.000Z",
+    "updated_at": "2025-06-14T10:00:00.000Z"
   }
 ]
 ```
@@ -184,39 +199,27 @@ Returns all tasks for a specific project.
 
 Returns details of a specific task.
 
+**Parameters:**
+- `id` (required): Task UUID
+
 **Response:**
 ```json
 {
   "id": "uuid",
-  "projectId": "uuid",
-  "name": "Task name",
-  "description": "Detailed task description",
+  "project_id": "project-uuid",
+  "parent_task_id": null,
+  "title": "Task Title",
+  "description": "Task description",
   "status": "in_progress",
   "priority": "high",
-  "assignee": "john.doe@example.com",
-  "dueDate": "2025-06-20T00:00:00.000Z",
-  "createdAt": "2025-06-14T10:00:00.000Z",
-  "updatedAt": "2025-06-14T10:00:00.000Z",
-  "tags": ["frontend", "bug"],
-  "estimatedHours": 8,
-  "actualHours": 5.5,
-  "dependencies": ["other-task-uuid"],
-  "attachments": [
-    {
-      "id": "uuid",
-      "filename": "screenshot.png",
-      "url": "/uploads/screenshot.png",
-      "size": 1024000
-    }
-  ],
-  "comments": [
-    {
-      "id": "uuid",
-      "author": "jane.doe@example.com",
-      "content": "Updated the implementation",
-      "createdAt": "2025-06-14T11:00:00.000Z"
-    }
-  ]
+  "assignee": "user@example.com",
+  "tags": ["backend", "api"],
+  "estimated_hours": 8,
+  "actual_hours": 6,
+  "due_date": "2025-06-20T10:00:00.000Z",
+  "metadata": {},
+  "created_at": "2025-06-14T10:00:00.000Z",
+  "updated_at": "2025-06-14T10:00:00.000Z"
 }
 ```
 
@@ -228,14 +231,25 @@ Creates a new task.
 **Request Body:**
 ```json
 {
-  "projectId": "uuid",
-  "name": "New Task",
+  "project_id": "project-uuid",
+  "parent_task_id": null,
+  "title": "New Task",
   "description": "Task description",
+  "status": "pending",
   "priority": "medium",
-  "assignee": "john.doe@example.com",
-  "dueDate": "2025-06-20T00:00:00.000Z",
-  "tags": ["feature"],
-  "estimatedHours": 4
+  "assignee": "user@example.com",
+  "tags": ["frontend"],
+  "estimated_hours": 4,
+  "due_date": "2025-06-25T10:00:00.000Z"
+}
+```
+
+**Response:** 201 Created
+```json
+{
+  "id": "uuid",
+  "title": "New Task",
+  // ... full task object
 }
 ```
 
@@ -244,20 +258,35 @@ Creates a new task.
 
 Updates an existing task.
 
+**Parameters:**
+- `id` (required): Task UUID
+
 **Request Body:**
 ```json
 {
-  "name": "Updated Task Name",
+  "title": "Updated Title",
+  "description": "Updated description",
   "status": "completed",
-  "priority": "high",
-  "actualHours": 6
+  "actual_hours": 5
+}
+```
+
+**Response:** 200 OK
+```json
+{
+  "id": "uuid",
+  "title": "Updated Title",
+  // ... full updated task object
 }
 ```
 
 ### Update Task Status
 **PATCH** `/tasks/:id/status`
 
-Updates only the task status (for quick status changes).
+Quick update for task status only.
+
+**Parameters:**
+- `id` (required): Task UUID
 
 **Request Body:**
 ```json
@@ -266,349 +295,333 @@ Updates only the task status (for quick status changes).
 }
 ```
 
+**Response:** 200 OK
+```json
+{
+  "id": "uuid",
+  "status": "completed",
+  // ... full task object
+}
+```
+
 ### Delete Task
 **DELETE** `/tasks/:id`
 
-Deletes a specific task.
+Deletes a task and all subtasks.
 
-### Bulk Create Tasks
-**POST** `/tasks/bulk`
+**Parameters:**
+- `id` (required): Task UUID
 
-Creates multiple tasks at once.
-
-**Request Body:**
-```json
-{
-  "projectId": "uuid",
-  "tasks": [
-    {
-      "name": "Task 1",
-      "description": "Description 1",
-      "priority": "high"
-    },
-    {
-      "name": "Task 2",
-      "description": "Description 2",
-      "priority": "medium"
-    }
-  ]
-}
-```
+**Response:** 204 No Content
 
 ### Get Subtasks
 **GET** `/tasks/:id/subtasks`
 
-Returns all subtasks for a specific task.
+Returns all subtasks of a parent task.
 
-## 🕐 Time Tracking API
-
-### Log Time Entry
-**POST** `/tasks/:id/time`
-
-Logs time spent on a task.
-
-**Request Body:**
-```json
-{
-  "hours": 2.5,
-  "description": "Implemented user authentication",
-  "date": "2025-06-14"
-}
-```
-
-### Get Time Tracking Data
-**GET** `/tasks/:id/time-tracking`
-
-Returns time tracking history for a task.
+**Parameters:**
+- `id` (required): Parent task UUID
 
 **Response:**
 ```json
 [
   {
     "id": "uuid",
-    "taskId": "uuid",
-    "hours": 2.5,
-    "description": "Implemented user authentication",
-    "date": "2025-06-14",
-    "createdAt": "2025-06-14T10:00:00.000Z"
+    "parent_task_id": "parent-uuid",
+    "title": "Subtask Title",
+    // ... task object
   }
 ]
 ```
 
-### Get Project Time Summary
-**GET** `/projects/:id/time-summary`
+### Get Task History
+**GET** `/tasks/:id/history`
 
-Returns time tracking summary for a project.
+Returns the change history for a task.
+
+**Parameters:**
+- `id` (required): Task UUID
+
+**Response:**
+```json
+[
+  {
+    "id": "uuid",
+    "task_id": "task-uuid",
+    "field_name": "status",
+    "old_value": "pending",
+    "new_value": "in_progress",
+    "changed_by": "user@example.com",
+    "changed_at": "2025-06-14T10:00:00.000Z"
+  }
+]
+```
+
+### Get Next Task
+**GET** `/next-task`
+
+Returns the next prioritized task to work on.
+
+**Query Parameters:**
+- `project_id` (optional): Limit to specific project
+- `assignee` (optional): Limit to specific assignee
 
 **Response:**
 ```json
 {
-  "totalHours": 150.5,
-  "estimatedHours": 200,
-  "efficiency": 75.25,
-  "byUser": [
-    {
-      "user": "john.doe@example.com",
-      "hours": 45.5
-    }
-  ],
-  "byTask": [
-    {
-      "taskId": "uuid",
-      "taskName": "User Authentication",
-      "hours": 12.5
-    }
-  ]
+  "id": "uuid",
+  "title": "High Priority Task",
+  "priority": "critical",
+  // ... task object
 }
 ```
 
-## 📊 Analytics API
+## 🧪 Test Results API
 
-### Get Project Analytics
-**GET** `/projects/:id/analytics`
+### Add Test Result
+**POST** `/tasks/:id/test-results`
 
-Returns comprehensive analytics for a project.
+Records a test result for a task.
 
-**Query Parameters:**
-- `period` (string): time, week, month, quarter, year
-- `startDate` (string): ISO date string
-- `endDate` (string): ISO date string
-
-**Response:**
-```json
-{
-  "overview": {
-    "totalTasks": 50,
-    "completedTasks": 30,
-    "completionRate": 60,
-    "averageCompletionTime": "3.2 days"
-  },
-  "statusDistribution": [
-    { "status": "completed", "count": 30 },
-    { "status": "in_progress", "count": 15 },
-    { "status": "pending", "count": 5 }
-  ],
-  "priorityDistribution": [
-    { "priority": "high", "count": 10 },
-    { "priority": "medium", "count": 25 },
-    { "priority": "low", "count": 15 }
-  ],
-  "completionTrend": [
-    { "date": "2025-06-01", "completed": 5 },
-    { "date": "2025-06-08", "completed": 8 },
-    { "date": "2025-06-15", "completed": 12 }
-  ],
-  "teamPerformance": [
-    {
-      "user": "john.doe@example.com",
-      "tasksCompleted": 12,
-      "averageCompletionTime": "2.8 days"
-    }
-  ]
-}
-```
-
-## 📤 Export API
-
-### Export Project Data
-**GET** `/projects/:id/export`
-
-Exports project data in various formats.
-
-**Query Parameters:**
-- `format` (string): csv, json, pdf, xlsx
-- `includeComments` (boolean): Include task comments
-- `includeTimeTracking` (boolean): Include time tracking data
-
-**Response:**
-Returns file download or JSON data based on format.
-
-### Export Filtered Tasks
-**POST** `/export/tasks`
-
-Exports tasks based on filter criteria.
+**Parameters:**
+- `id` (required): Task UUID
 
 **Request Body:**
 ```json
 {
-  "projectId": "uuid",
-  "format": "csv",
-  "filters": {
-    "status": ["completed", "in_progress"],
-    "priority": ["high"],
-    "assignee": ["john.doe@example.com"],
-    "dateRange": {
-      "start": "2025-06-01",
-      "end": "2025-06-30"
-    }
-  }
+  "test_name": "Unit Test Suite",
+  "status": "passed", // passed, failed, skipped
+  "execution_time": 1500,
+  "error_message": null,
+  "test_output": "All tests passed"
 }
 ```
 
-## 🔍 Search API
+**Response:** 201 Created
+```json
+{
+  "id": "uuid",
+  "task_id": "task-uuid",
+  "test_name": "Unit Test Suite",
+  // ... full test result object
+}
+```
 
-### Global Search
-**GET** `/search`
+### Get Test Results
+**GET** `/tasks/:id/test-results`
 
-Searches across all projects and tasks.
+Returns all test results for a task.
 
-**Query Parameters:**
-- `q` (string): Search query
-- `type` (string): projects, tasks, comments
-- `limit` (number): Limit results
-- `offset` (number): Pagination offset
+**Parameters:**
+- `id` (required): Task UUID
 
 **Response:**
 ```json
-{
-  "results": [
-    {
-      "type": "task",
-      "id": "uuid",
-      "title": "Task Title",
-      "description": "Matching description...",
-      "projectName": "Project Name",
-      "relevance": 0.95
-    }
-  ],
-  "totalCount": 25,
-  "hasMore": true
-}
+[
+  {
+    "id": "uuid",
+    "task_id": "task-uuid",
+    "test_name": "Unit Test Suite",
+    "status": "passed",
+    "execution_time": 1500,
+    "error_message": null,
+    "test_output": "All tests passed",
+    "created_at": "2025-06-14T10:00:00.000Z"
+  }
+]
 ```
 
-## 📡 WebSocket Events
+## 🔔 WebSocket Events
 
-The application uses WebSocket for real-time updates:
+Connect to WebSocket for real-time updates:
 
-### Connection
 ```javascript
 const socket = io('ws://localhost:3001');
+
+socket.on('connect', () => {
+  console.log('Connected to WebSocket');
+});
 ```
 
 ### Events
 
-**Task Updates:**
+#### Task Updated
 ```javascript
 socket.on('task:updated', (data) => {
-  // Handle task update
-  console.log('Task updated:', data.task);
+  console.log('Task updated:', data);
+  // data = { id, title, status, ... }
 });
 ```
 
-**Task Created:**
+#### Task Created
 ```javascript
 socket.on('task:created', (data) => {
-  // Handle new task
-  console.log('New task:', data.task);
+  console.log('New task:', data);
+  // data = full task object
 });
 ```
 
-**Task Deleted:**
+#### Task Deleted
 ```javascript
 socket.on('task:deleted', (data) => {
-  // Handle task deletion
-  console.log('Task deleted:', data.taskId);
+  console.log('Task deleted:', data);
+  // data = { id }
 });
 ```
 
-**Project Updates:**
+#### Project Updated
 ```javascript
 socket.on('project:updated', (data) => {
-  // Handle project update
-  console.log('Project updated:', data.project);
+  console.log('Project updated:', data);
+  // data = full project object
 });
 ```
 
-## 🚨 Error Handling
+## 🏥 Health Check
 
-### Standard Error Response
+### API Health
+**GET** `/health`
+
+Check if the API is running.
+
+**Response:**
 ```json
 {
-  "error": {
-    "code": "VALIDATION_ERROR",
-    "message": "Invalid input data",
-    "details": [
-      {
-        "field": "name",
-        "message": "Name is required"
-      }
-    ]
+  "status": "ok",
+  "timestamp": "2025-06-14T10:00:00.000Z"
+}
+```
+
+### Database Health
+**GET** `/health/db`
+
+Check database connectivity.
+
+**Response:**
+```json
+{
+  "status": "ok",
+  "database": "connected",
+  "latency": 5
+}
+```
+
+### WebSocket Health
+**GET** `/health/ws`
+
+Check WebSocket server status.
+
+**Response:**
+```json
+{
+  "status": "ok",
+  "connected_clients": 42
+}
+```
+
+## 🔍 Error Responses
+
+All endpoints may return the following error responses:
+
+### 400 Bad Request
+```json
+{
+  "error": "Bad Request",
+  "message": "Invalid input data",
+  "details": {
+    "field": "title",
+    "error": "Title is required"
   }
 }
 ```
 
-### HTTP Status Codes
-- `200` - Success
-- `201` - Created
-- `400` - Bad Request
-- `401` - Unauthorized
-- `403` - Forbidden
-- `404` - Not Found
-- `422` - Validation Error
-- `500` - Internal Server Error
-
-### Common Error Codes
-- `VALIDATION_ERROR` - Input validation failed
-- `NOT_FOUND` - Resource not found
-- `UNAUTHORIZED` - Authentication required
-- `FORBIDDEN` - Insufficient permissions
-- `CONFLICT` - Resource conflict
-- `RATE_LIMITED` - Too many requests
-
-## 📝 Rate Limiting
-
-API requests are rate limited:
-- **Global**: 1000 requests per hour per IP
-- **Search**: 100 requests per hour per IP
-- **Bulk operations**: 10 requests per hour per IP
-
-Rate limit headers:
-```
-X-RateLimit-Limit: 1000
-X-RateLimit-Remaining: 999
-X-RateLimit-Reset: 1623456789
+### 401 Unauthorized
+```json
+{
+  "error": "Unauthorized",
+  "message": "Authentication required"
+}
 ```
 
-## 🧪 Testing the API
+### 404 Not Found
+```json
+{
+  "error": "Not Found",
+  "message": "Resource not found"
+}
+```
 
-### Using cURL
+### 500 Internal Server Error
+```json
+{
+  "error": "Internal Server Error",
+  "message": "An unexpected error occurred"
+}
+```
+
+## 📝 Request Examples
+
+### cURL
 ```bash
 # Get all projects
-curl -X GET http://localhost:3001/api/projects
+curl http://localhost:3001/api/projects
 
-# Create a new task
+# Create a task
 curl -X POST http://localhost:3001/api/tasks \
   -H "Content-Type: application/json" \
   -d '{
-    "projectId": "uuid",
-    "name": "Test Task",
-    "description": "API test task"
+    "project_id": "uuid",
+    "title": "New Task",
+    "priority": "high"
   }'
 ```
 
-### Using Postman
-Import the API collection: [Download Postman Collection](../postman/Task-Management-API.postman_collection.json)
-
-### Using JavaScript
+### JavaScript (Fetch)
 ```javascript
-// Get projects
-const response = await fetch('http://localhost:3001/api/projects');
-const projects = await response.json();
+// Get project tasks
+const response = await fetch('http://localhost:3001/api/projects/uuid/tasks');
+const tasks = await response.json();
 
-// Create task
-const newTask = await fetch('http://localhost:3001/api/tasks', {
-  method: 'POST',
+// Update task status
+const response = await fetch('http://localhost:3001/api/tasks/uuid/status', {
+  method: 'PATCH',
   headers: {
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
-    projectId: 'uuid',
-    name: 'New Task',
-    description: 'Created via API'
+    status: 'completed'
   })
 });
 ```
 
----
+### Python (Requests)
+```python
+import requests
 
-**Next**: Explore [Real-time Features](Real-time-Features) for WebSocket integration details.
+# Get all projects
+response = requests.get('http://localhost:3001/api/projects')
+projects = response.json()
+
+# Create a new project
+data = {
+    'name': 'New Project',
+    'description': 'Project description',
+    'status': 'planning'
+}
+response = requests.post('http://localhost:3001/api/projects', json=data)
+```
+
+## 🚀 Rate Limiting
+
+In production, API endpoints are rate-limited:
+
+- **Default**: 100 requests per minute per IP
+- **Authenticated**: 1000 requests per minute per user
+- **WebSocket**: 50 messages per minute per connection
+
+Rate limit headers are included in responses:
+```
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 95
+X-RateLimit-Reset: 1623456789
+```

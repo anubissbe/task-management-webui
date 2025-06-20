@@ -8,6 +8,7 @@
 
 ## 📚 User Guides  
 - [🎨 Interface Overview](User-Interface-Overview)
+- [✨ Features](Features)
 - [✅ Task Management](Task-Management)
 - [📁 Project Management](Project-Management)
 - [📊 Analytics](Analytics-Dashboard)
