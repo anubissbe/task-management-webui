@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📚 Documentation
+    url: https://github.com/anubissbe/ProjectHub-Mcp/wiki
+    about: Check our comprehensive documentation
+  - name: 💬 Discussions
+    url: https://github.com/anubissbe/ProjectHub-Mcp/discussions
+    about: Ask questions and discuss features
+  - name: ☕ Support Development
+    url: https://buymeacoffee.com/anubissbe
+    about: Buy me a coffee to support development
