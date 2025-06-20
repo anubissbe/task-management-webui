@@ -216,12 +216,12 @@ describe('Webhook Service', () => {
     });
 
     it('should reject invalid signature format', () => {
-      // Check that the static method exists and can be called
-      const WebhookServiceClass = webhookService.constructor as any;
-      expect(typeof WebhookServiceClass.verifySignature).toBe('function');
+      // Import the WebhookService class directly
+      const { WebhookService } = require('../services/webhookService');
+      expect(typeof WebhookService.verifySignature).toBe('function');
       
       // Test invalid signature format
-      const result = WebhookServiceClass.verifySignature(
+      const result = WebhookService.verifySignature(
         '{"test": "data"}', 
         'invalid-format', 
         'secret'
