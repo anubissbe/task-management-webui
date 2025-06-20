@@ -10,7 +10,7 @@
 
 ### 2. ✅ Security Audit & Cleanup
 - **Removed all sensitive data**:
-  - Internal IP addresses (192.168.x.x)
+  - Internal IP addresses (private network ranges)
   - Database credentials
   - Private infrastructure details
 - **Updated documentation** with generic deployment instructions

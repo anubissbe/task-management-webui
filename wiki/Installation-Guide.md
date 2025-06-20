@@ -77,8 +77,8 @@ services:
     network_mode: "host"  # Required for Synology
     environment:
       NODE_ENV: production
-      DATABASE_URL: postgresql://user:pass@192.168.1.24:5433/db?schema=project_management
-      CORS_ORIGIN: http://192.168.1.24:5173
+      DATABASE_URL: postgresql://user:pass@your-server-ip:5433/db?schema=project_management
+      CORS_ORIGIN: http://your-server-ip:5173
     restart: unless-stopped
 
   frontend:

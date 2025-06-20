@@ -37,7 +37,7 @@ Moved to `scripts/deployment/`:
 - Python script: `upload-wiki.py`
 
 ## Security Improvements
-- Removed all internal IP addresses (192.168.x.x)
+- Removed all internal IP addresses (private network ranges)
 - Removed hardcoded credentials
 - Replaced with generic deployment instructions
 
