@@ -1,7 +1,7 @@
 import request from 'supertest';
 import express from 'express';
 import { WebhookController } from '../controllers/webhookController';
-import { webhookService, WebhookService } from '../services/webhookService';
+import { webhookService } from '../services/webhookService';
 
 // Mock the webhook service
 jest.mock('../services/webhookService');
