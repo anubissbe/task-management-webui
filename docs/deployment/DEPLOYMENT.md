@@ -1,223 +1,262 @@
-# ProjectHub-Mcp - Deployment Guide
+# ProjectHub-MCP Deployment Guide
 
-## Current Implementation Details
+## 🐳 Docker Deployment (Recommended)
 
-### Features Implemented
-
-1. **Multi-Project Management**
-   - Projects list with table view
-   - Project creation and management
-   - Project-specific task isolation
-
-2. **Kanban Board**
-   - Drag-and-drop functionality
-   - 5 status columns: Pending, In Progress, Review, Completed, Blocked
-   - Expandable task hierarchy (phases with subtasks)
-   - Task count per column
-   - "Expand All" button for convenience
-   - Vertical scrolling within columns for many tasks
-
-3. **Navigation Flow**
-   - `/` - Projects list (landing page)
-   - `/board` - Project selector (card-based UI)
-   - `/projects/:id` - Project-specific Kanban board
-   - `/analytics` - Multi-project analytics dashboard
-
-4. **Analytics Dashboard**
-   - Task completion percentage per project
-   - Hours progress tracking
-   - Task distribution by status
-   - Visual progress bars and statistics
-
-5. **UI/UX Features**
-   - Dark/Light theme toggle
-   - Responsive design
-   - Priority color coding (critical=red, high=orange, medium=yellow, low=green)
-   - Status-based column styling
-   - Modern card-based interfaces
-
-### Database Integration
-- Connected to PostgreSQL at `localhost:5432`
-- Database: `mcp_learning`
-- Schema: `project_management`
-- Integrated with project-tasks MCP server
-
-### Current Deployment (Local)
-- Backend: http://localhost:3001
-- Frontend: http://localhost:5173
-- Database: postgresql://mcp_user:mcp_secure_password_2024@localhost:5432/mcp_learning
-
-## Deploying to Remote Server (192.168.1.25)
-
-### Prerequisites on Remote Server
+### Prerequisites
 - Docker and Docker Compose installed
-- PostgreSQL with pgvector extension
-- Port 5173 (frontend) and 3001 (backend) available
+- PostgreSQL database (local or remote)
+- Node.js 18+ (for building)
 
-### Step 1: Prepare for Transfer
+### Quick Start
 
+1. **Clone the repository**
 ```bash
-# Create deployment package
-cd /opt/projects/projects/ProjectHub-Mcp
-tar -czf ProjectHub-Mcp.tar.gz \
-  backend/ \
-  frontend/ \
-  docker-compose.yml \
-  README.md \
-  DEPLOYMENT.md
-
-# Copy to remote server
-scp ProjectHub-Mcp.tar.gz drwho@192.168.1.25:/home/drwho/
+git clone https://github.com/anubissbe/ProjectHub-Mcp.git
+cd ProjectHub-Mcp
 ```
 
-### Step 2: Remote Server Setup
-
+2. **Configure environment**
 ```bash
-# SSH to remote server
-ssh drwho@192.168.1.25
-
-# Create project directory
-mkdir -p /opt/projects/ProjectHub-Mcp
-cd /opt/projects/ProjectHub-Mcp
-
-# Extract files
-tar -xzf ~/ProjectHub-Mcp.tar.gz
-
-# Update backend environment
-cat > backend/.env << EOF
-DATABASE_URL=postgresql://mcp_user:mcp_secure_password_2024@host.docker.internal:5432/mcp_learning
-PORT=3001
-NODE_ENV=production
-CORS_ORIGIN=http://192.168.1.25:5173
-EOF
-
-# Update frontend environment for remote access
-cat > frontend/.env << EOF
-VITE_API_URL=http://192.168.1.25:3001/api
-EOF
+cp .env.example .env
+# Edit .env with your configuration
 ```
 
-### Step 3: Update Docker Compose for Remote
+3. **Build and run with Docker Compose**
+```bash
+docker-compose up -d
+```
+
+4. **Access the application**
+- Frontend: http://localhost:5173
+- Backend API: http://localhost:3001/api
+- Health check: http://localhost:3001/api/health
+
+## 📦 Manual Deployment
+
+### Building the Application
+
+1. **Install dependencies**
+```bash
+npm install
+cd frontend && npm install
+cd ../backend && npm install
+```
+
+2. **Build frontend**
+```bash
+cd frontend
+npm run build
+```
+
+3. **Build backend**
+```bash
+cd backend
+npm run build
+```
+
+### Deployment Options
+
+#### Option 1: Using Docker
+
+Create a production docker-compose file:
 
 ```yaml
-# docker-compose.yml modifications for remote deployment
 version: '3.8'
 
 services:
   backend:
-    container_name: projecthub-mcp-backend
-    build: ./backend
+    image: projecthub-backend:latest
+    environment:
+      - DATABASE_URL=postgresql://user:password@db-host:5432/projecthub
+      - NODE_ENV=production
+      - CORS_ORIGIN=https://your-domain.com
     ports:
       - "3001:3001"
-    environment:
-      - DATABASE_URL=postgresql://mcp_user:mcp_secure_password_2024@192.168.1.25:5432/mcp_learning
-      - PORT=3001
-      - NODE_ENV=production
-      - CORS_ORIGIN=http://192.168.1.25:5173
     restart: unless-stopped
-    extra_hosts:
-      - "host.docker.internal:192.168.1.25"
 
   frontend:
-    container_name: projecthub-mcp-frontend
-    build: ./frontend
-    ports:
-      - "5173:5173"
+    image: projecthub-frontend:latest
     environment:
-      - VITE_API_URL=http://192.168.1.25:3001/api
+      - VITE_API_URL=https://your-domain.com/api
+    ports:
+      - "80:80"
     restart: unless-stopped
 ```
 
-### Step 4: Database Setup on Remote
+#### Option 2: Traditional Deployment
 
+1. **Backend deployment**
 ```bash
-# Ensure PostgreSQL is running and accessible
-docker exec mcp-postgres psql -U mcp_user -d mcp_learning -c "\dn"
+# Copy built backend to server
+scp -r backend/dist user@your-server:/path/to/app/
 
-# The project_management schema should already exist from MCP setup
-# If not, run the schema creation script
+# On the server
+cd /path/to/app
+npm install --production
+NODE_ENV=production node dist/index.js
 ```
 
-### Step 5: Build and Run
-
+2. **Frontend deployment**
 ```bash
-# Build and start containers
-docker-compose up -d --build
-
-# Check logs
-docker-compose logs -f
-
-# Verify containers are running
-docker ps | grep projecthub-mcp
+# Copy built frontend to web server
+scp -r frontend/dist/* user@your-server:/var/www/html/
 ```
 
-### Step 6: Access the Application
+## 🔒 Production Configuration
 
-- Frontend: http://192.168.1.25:5173
-- Backend API: http://192.168.1.25:3001/api
-- Health check: http://192.168.1.25:3001/api/health
+### Environment Variables
 
-### Step 7: Configure MCP Server
+Create a production `.env` file:
 
-Update the claude.json on your local machine to use the remote task management UI:
+```bash
+# Database
+DATABASE_URL=postgresql://user:password@your-db-host:5432/projecthub
+POSTGRES_HOST=your-db-host
+POSTGRES_PORT=5432
+POSTGRES_USER=your-user
+POSTGRES_PASSWORD=your-password
+POSTGRES_DB=projecthub
 
-```json
-{
-  "task-management-ui": {
-    "url": "http://192.168.1.25:5173",
-    "api": "http://192.168.1.25:3001/api"
-  }
+# Application
+NODE_ENV=production
+PORT=3001
+CORS_ORIGIN=https://your-domain.com
+
+# Frontend URLs
+VITE_API_URL=https://your-domain.com/api
+VITE_WS_URL=wss://your-domain.com
+```
+
+### Nginx Configuration (for frontend)
+
+```nginx
+server {
+    listen 80;
+    server_name your-domain.com;
+
+    root /var/www/projecthub;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    location /api {
+        proxy_pass http://localhost:3001;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+    location /socket.io {
+        proxy_pass http://localhost:3001;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
 }
 ```
 
-## Maintenance
+## 🚀 Production Checklist
 
-### Viewing Logs
+- [ ] Set strong database passwords
+- [ ] Configure HTTPS with SSL certificates
+- [ ] Set up proper CORS origins
+- [ ] Enable rate limiting
+- [ ] Configure backup strategy
+- [ ] Set up monitoring (e.g., PM2, systemd)
+- [ ] Configure log rotation
+- [ ] Set up health check monitoring
+- [ ] Configure firewall rules
+- [ ] Enable auto-restart on failure
+
+## 📊 Monitoring
+
+### Health Check Endpoints
+
+- API Health: `/api/health`
+- Database Status: `/api/health/db`
+- WebSocket Status: `/api/health/ws`
+
+### Using PM2 (recommended for Node.js)
+
 ```bash
-docker logs projecthub-mcp-backend
-docker logs projecthub-mcp-frontend
+# Install PM2
+npm install -g pm2
+
+# Start backend with PM2
+cd backend
+pm2 start dist/index.js --name projecthub-api
+
+# Save PM2 configuration
+pm2 save
+pm2 startup
 ```
+
+## 🔄 Updates and Maintenance
 
 ### Updating the Application
-```bash
-# Pull latest changes
-git pull
 
+1. **Pull latest changes**
+```bash
+git pull origin main
+```
+
+2. **Install dependencies**
+```bash
+npm install
+cd frontend && npm install
+cd ../backend && npm install
+```
+
+3. **Build and deploy**
+```bash
 # Rebuild containers
-docker-compose down
-docker-compose up -d --build
+docker-compose build
+docker-compose up -d
 ```
 
-### Backup Database
+### Database Migrations
+
+Run any new migrations:
 ```bash
-docker exec mcp-postgres pg_dump -U mcp_user -d mcp_learning -n project_management > project_tasks_backup.sql
+cd backend
+npm run migrate
 ```
 
-### Monitoring
-- Check container health: `docker ps`
-- API health: `curl http://192.168.1.25:3001/api/health`
-- Database connections: `docker exec mcp-postgres psql -U mcp_user -d mcp_learning -c "SELECT count(*) FROM pg_stat_activity;"`
+## 🆘 Troubleshooting
 
-## Troubleshooting
+### Common Issues
 
-### Frontend can't connect to backend
-- Check CORS settings in backend
-- Verify firewall rules allow port 3001
-- Check docker network connectivity
+1. **Database connection failed**
+   - Check DATABASE_URL is correct
+   - Verify PostgreSQL is running
+   - Check firewall rules
 
-### Database connection issues
-- Verify PostgreSQL is accessible from Docker containers
-- Check connection string in backend/.env
-- Ensure user permissions are correct
+2. **CORS errors**
+   - Ensure CORS_ORIGIN matches your frontend URL
+   - Check if credentials are included in requests
 
-### Performance issues
-- Add indexes to frequently queried columns
-- Implement pagination for large task lists
-- Consider Redis for caching
+3. **WebSocket connection failed**
+   - Verify nginx is configured for WebSocket
+   - Check firewall allows WebSocket connections
 
-## Security Notes
+### Logs
 
-- Currently no authentication (designed for local/trusted network use)
-- Add nginx reverse proxy with SSL for internet exposure
-- Implement user authentication before public deployment
-- Use environment-specific secrets management
+Check logs for debugging:
+```bash
+# Docker logs
+docker-compose logs -f
+
+# PM2 logs
+pm2 logs projecthub-api
+```
+
+## 📞 Support
+
+For deployment issues:
+- Check the [FAQ](https://github.com/anubissbe/ProjectHub-Mcp/wiki/FAQ)
+- Open an [issue](https://github.com/anubissbe/ProjectHub-Mcp/issues)
+- Review [troubleshooting guide](https://github.com/anubissbe/ProjectHub-Mcp/wiki/Troubleshooting)
