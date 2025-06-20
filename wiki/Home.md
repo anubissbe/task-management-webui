@@ -48,7 +48,7 @@ Welcome to the comprehensive documentation for **ProjectHub-Mcp**!
 
 ## 🚀 Quick Links
 
-- **🌐 Live Instance**: [http://192.168.1.24:5173](http://192.168.1.24:5173) (Synology deployment)
+- **🐳 Deployment**: Docker containers (Frontend + Backend + PostgreSQL)
 - **📦 Container Images**: [ghcr.io/anubissbe/projecthub-mcp](https://github.com/anubissbe/ProjectHub-Mcp/pkgs)
 - **💻 GitHub Repository**: [ProjectHub-Mcp](https://github.com/anubissbe/ProjectHub-Mcp)
 - **🐛 Report Issues**: [GitHub Issues](https://github.com/anubissbe/ProjectHub-Mcp/issues)

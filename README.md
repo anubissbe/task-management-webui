@@ -6,15 +6,15 @@
 [![Node.js](https://img.shields.io/badge/Node.js-18+-green?logo=node.js)](https://nodejs.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue?logo=postgresql)](https://www.postgresql.org/)
 [![Docker](https://img.shields.io/badge/Docker-Ready-blue?logo=docker)](https://www.docker.com/)
-[![Status](https://img.shields.io/badge/Status-Production_Ready-brightgreen?style=for-the-badge)](http://192.168.1.24:5173)
+[![Status](https://img.shields.io/badge/Status-Production_Ready-brightgreen?style=for-the-badge)](https://github.com/anubissbe/ProjectHub-Mcp)
 
 > 🎯 A modern, feature-rich project management system with real-time collaboration, advanced analytics, and seamless MCP (Model Context Protocol) integration
 
-## 📊 Live Instance
+## 📊 Project Status
 
-🌐 **Production URL**: http://192.168.1.24:5173  
-🔌 **API Endpoint**: http://192.168.1.24:3001/api  
-📊 **Current Status**: 206 active tasks across 3 projects
+🚀 **Status**: Production Ready  
+📊 **Scale**: Handles hundreds of tasks and multiple projects  
+🔧 **Architecture**: Microservices with Docker deployment
 
 ## 🎯 Overview
 
@@ -129,17 +129,17 @@ Create a `.env` file in the root directory:
 
 ```bash
 # Database Configuration
-DATABASE_URL=postgresql://app_user:app_secure_2024@192.168.1.24:5433/mcp_learning
-POSTGRES_HOST=192.168.1.24
-POSTGRES_PORT=5433
-POSTGRES_USER=app_user
-POSTGRES_PASSWORD=app_secure_2024
-POSTGRES_DB=mcp_learning
+DATABASE_URL=postgresql://[username]:[password]@[host]:[port]/[database]
+POSTGRES_HOST=your-postgres-host
+POSTGRES_PORT=5432
+POSTGRES_USER=your-username
+POSTGRES_PASSWORD=your-password
+POSTGRES_DB=your-database
 
 # Application Configuration
 NODE_ENV=production
 PORT=3001
-FRONTEND_URL=http://192.168.1.24:5173
+FRONTEND_URL=http://localhost:5173
 
 # WebSocket Configuration
 WEBSOCKET_ENABLED=true
