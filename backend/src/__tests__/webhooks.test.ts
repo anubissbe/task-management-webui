@@ -1,7 +1,7 @@
 import request from 'supertest';
 import express from 'express';
 import { WebhookController } from '../controllers/webhookController';
-import { webhookService } from '../services/webhookService';
+import { webhookService, WebhookService } from '../services/webhookService';
 
 // Mock the webhook service
 jest.mock('../services/webhookService');
@@ -216,8 +216,7 @@ describe('Webhook Service', () => {
     });
 
     it('should reject invalid signature format', () => {
-      // Import the WebhookService class directly
-      const { WebhookService } = require('../services/webhookService');
+      // Test the static method directly
       expect(typeof WebhookService.verifySignature).toBe('function');
       
       // Test invalid signature format
