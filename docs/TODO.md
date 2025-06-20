@@ -8,8 +8,8 @@
 cd /opt/projects/projects/ProjectHub-Mcp
 
 # Production access (deployed)
-# Frontend: http://192.168.1.25:5173
-# Backend API: http://192.168.1.25:3001/api
+# Frontend: http://localhost:5173
+# Backend API: http://localhost:3001/api
 
 # Local development
 docker-compose up -d      # Start all services
@@ -130,8 +130,8 @@ Backend (Express.js + TypeScript)
 ```
 
 ### Deployment
-- ✅ **Production**: http://192.168.1.25:5173 (Live and operational)
-- ✅ **API**: http://192.168.1.25:3001/api (Healthy and responsive)
+- ✅ **Production**: Deployed with Docker containers
+- ✅ **API**: RESTful API with health endpoint
 - ✅ **Database**: PostgreSQL with complete data sync
 - ✅ **Performance**: Optimized builds with code splitting
 
@@ -154,7 +154,7 @@ Backend (Express.js + TypeScript)
 ## 📚 Documentation & Resources
 
 ### Access Points
-- **Live Application**: http://192.168.1.25:5173
+- **Deployment**: Docker containers
 - **API Documentation**: Available via health check endpoint
 - **Project State**: Updated with all new features
 - **Deployment Guide**: Scripts available in /scripts directory
@@ -168,7 +168,7 @@ Backend (Express.js + TypeScript)
 ./scripts/sync-postgres-to-remote.sh
 
 # View logs
-ssh drwho@192.168.1.25
+ssh user@your-server
 cd ~/projects/ProjectHub-Mcp
 docker compose logs -f
 ```
