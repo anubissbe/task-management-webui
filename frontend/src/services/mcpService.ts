@@ -5,7 +5,7 @@ export interface EntityData {
   name: string;
   type: 'task' | 'project' | 'user' | 'keyword';
   description?: string;
-  properties?: Record<string, any>;
+  properties?: Record<string, unknown>;
 }
 
 export interface TaskSuggestion {
@@ -14,14 +14,20 @@ export interface TaskSuggestion {
   description: string;
   confidence: number;
   source: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface SemanticSearchResult {
   id: string;
   content: string;
   score: number;
-  metadata?: Record<string, any>;
+  metadata?: {
+    project_name?: string;
+    status?: string;
+    priority?: string;
+    updated_at?: string;
+    [key: string]: unknown;
+  };
 }
 
 export interface AIProcessingResult {
@@ -200,7 +206,7 @@ export class McpService {
   /**
    * Get task recommendations based on current context
    */
-  async getTaskRecommendations(currentTaskId: string, _projectId: string): Promise<{
+  async getTaskRecommendations(currentTaskId: string): Promise<{
     nextTasks: TaskSuggestion[];
     relatedTasks: SemanticSearchResult[];
     blockedBy: string[];

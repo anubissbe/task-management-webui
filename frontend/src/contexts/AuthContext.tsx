@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback, ReactNode } from 'react';
 
 // Types
 export interface User {
@@ -72,7 +72,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   // API request helper with authentication
-  const apiRequest = async (endpoint: string, options: RequestInit = {}): Promise<any> => {
+  const apiRequest = useCallback(async (endpoint: string, options: RequestInit = {}): Promise<unknown> => {
     const token = getAccessToken();
     const url = `${API_BASE_URL}${endpoint}`;
     
@@ -101,7 +101,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
       throw new Error('Network error');
     }
-  };
+  }, []);
 
   // Clear error
   const clearError = () => {
@@ -117,7 +117,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const response = await apiRequest('/auth/login', {
         method: 'POST',
         body: JSON.stringify(credentials),
-      });
+      }) as { access_token: string; user: User };
 
       setAccessToken(response.access_token);
       setUser(response.user);
@@ -170,11 +170,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   // Refresh token function
-  const refreshToken = async (): Promise<void> => {
+  const refreshToken = useCallback(async (): Promise<void> => {
     try {
       const response = await apiRequest('/auth/refresh', {
         method: 'POST',
-      });
+      }) as { access_token: string };
 
       setAccessToken(response.access_token);
     } catch (err) {
@@ -183,26 +183,26 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(null);
       throw err;
     }
-  };
+  }, [apiRequest]);
 
   // Get user profile
-  const fetchUserProfile = async (): Promise<void> => {
+  const fetchUserProfile = useCallback(async (): Promise<void> => {
     try {
-      const response = await apiRequest('/auth/profile');
+      const response = await apiRequest('/auth/profile') as { user: User };
       setUser(response.user);
-    } catch (err) {
+    } catch {
       // If profile fetch fails, try to refresh token
       try {
         await refreshToken();
-        const response = await apiRequest('/auth/profile');
+        const response = await apiRequest('/auth/profile') as { user: User };
         setUser(response.user);
-      } catch (refreshErr) {
+      } catch {
         // Both profile fetch and refresh failed, logout
         removeAccessToken();
         setUser(null);
       }
     }
-  };
+  }, [apiRequest, refreshToken]);
 
   // Check authentication status on mount
   useEffect(() => {
@@ -212,7 +212,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (token) {
         try {
           await fetchUserProfile();
-        } catch (err) {
+        } catch {
           // Authentication failed, user will be logged out by fetchUserProfile
         }
       }
@@ -221,7 +221,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     };
 
     initializeAuth();
-  }, []);
+  }, [fetchUserProfile]);
 
   // Auto-refresh token every 14 minutes (1 minute before expiry)
   useEffect(() => {
@@ -230,14 +230,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const interval = setInterval(async () => {
       try {
         await refreshToken();
-      } catch (err) {
-        console.error('Auto-refresh failed:', err);
+      } catch {
+        console.error('Auto-refresh failed');
         // User will be logged out by refreshToken function
       }
     }, 14 * 60 * 1000); // 14 minutes
 
     return () => clearInterval(interval);
-  }, [user]);
+  }, [user, refreshToken]);
 
   const contextValue: AuthContextType = {
     user,

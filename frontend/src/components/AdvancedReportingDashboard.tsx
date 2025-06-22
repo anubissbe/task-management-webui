@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { ReportingService, Dashboard, ReportFilter, AdvancedMetrics } from '../services/reportingService';
-import ReportWidgetComponent from './ReportWidget';
-import ReportFilters from './ReportFilters';
-import DashboardBuilder from './DashboardBuilder';
+// TODO: Create these missing components
+// import ReportWidgetComponent from './ReportWidget';
+// import ReportFilters from './ReportFilters';
+// import DashboardBuilder from './DashboardBuilder';
 
 const AdvancedReportingDashboard: React.FC = () => {
   const [dashboards, setDashboards] = useState<Dashboard[]>([]);
   const [selectedDashboard, setSelectedDashboard] = useState<Dashboard | null>(null);
   const [advancedMetrics, setAdvancedMetrics] = useState<AdvancedMetrics | null>(null);
-  const [filters, setFilters] = useState<ReportFilter>({});
+  const [filters] = useState<ReportFilter>({}); // setFilters removed - TODO: implement when ReportFilters component is created
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'view' | 'edit' | 'create'>('view');
@@ -49,29 +50,31 @@ const AdvancedReportingDashboard: React.FC = () => {
     loadAdvancedMetrics();
   }, [loadAdvancedMetrics]);
 
-  const handleCreateDashboard = async (dashboardData: Omit<Dashboard, 'id' | 'createdAt' | 'updatedAt' | 'createdBy'>) => {
-    try {
-      const newDashboard = await ReportingService.createDashboard(dashboardData);
-      setDashboards([...dashboards, newDashboard]);
-      setSelectedDashboard(newDashboard);
-      setViewMode('view');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create dashboard');
-    }
-  };
+  // TODO: Implement when DashboardBuilder component is created
+  // const handleCreateDashboard = async (dashboardData: Omit<Dashboard, 'id' | 'createdAt' | 'updatedAt' | 'createdBy'>) => {
+  //   try {
+  //     const newDashboard = await ReportingService.createDashboard(dashboardData);
+  //     setDashboards([...dashboards, newDashboard]);
+  //     setSelectedDashboard(newDashboard);
+  //     setViewMode('view');
+  //   } catch (err) {
+  //     setError(err instanceof Error ? err.message : 'Failed to create dashboard');
+  //   }
+  // };
 
-  const handleUpdateDashboard = async (updates: Partial<Dashboard>) => {
-    if (!selectedDashboard) return;
-
-    try {
-      const updatedDashboard = await ReportingService.updateDashboard(selectedDashboard.id, updates);
-      setDashboards(dashboards.map(d => d.id === updatedDashboard.id ? updatedDashboard : d));
-      setSelectedDashboard(updatedDashboard);
-      setViewMode('view');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update dashboard');
-    }
-  };
+  // TODO: Implement when DashboardBuilder component is created
+  // const handleUpdateDashboard = async (updates: Partial<Dashboard>) => {
+  //   if (!selectedDashboard) return;
+  //
+  //   try {
+  //     const updatedDashboard = await ReportingService.updateDashboard(selectedDashboard.id, updates);
+  //     setDashboards(dashboards.map(d => d.id === updatedDashboard.id ? updatedDashboard : d));
+  //     setSelectedDashboard(updatedDashboard);
+  //     setViewMode('view');
+  //   } catch (err) {
+  //     setError(err instanceof Error ? err.message : 'Failed to update dashboard');
+  //   }
+  // };
 
   const handleDeleteDashboard = async (dashboardId: string) => {
     if (!confirm('Are you sure you want to delete this dashboard?')) return;
@@ -246,12 +249,19 @@ const AdvancedReportingDashboard: React.FC = () => {
 
       {/* Filters Panel */}
       {showFilters && (
-        <div className="mb-6">
-          <ReportFilters
-            filters={filters}
-            onChange={setFilters}
-            onClose={() => setShowFilters(false)}
-          />
+        <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-medium">Filters</h3>
+            <button
+              onClick={() => setShowFilters(false)}
+              className="text-gray-500 hover:text-gray-700"
+            >
+              ×
+            </button>
+          </div>
+          <p className="text-sm text-gray-600 mt-2">
+            TODO: Implement ReportFilters component
+          </p>
         </div>
       )}
 
@@ -313,19 +323,26 @@ const AdvancedReportingDashboard: React.FC = () => {
       {viewMode === 'view' && selectedDashboard ? (
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
           {selectedDashboard.widgets.map((widget) => (
-            <ReportWidgetComponent
+            <div
               key={widget.id}
-              widget={widget}
-              filters={filters}
-            />
+              className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow border"
+            >
+              <h3 className="text-lg font-medium mb-2">{widget.title}</h3>
+              <p className="text-sm text-gray-600">
+                TODO: Implement ReportWidgetComponent for {widget.type}
+              </p>
+            </div>
           ))}
         </div>
       ) : viewMode === 'create' || viewMode === 'edit' ? (
-        <DashboardBuilder
-          dashboard={viewMode === 'edit' ? selectedDashboard : undefined}
-          onSave={viewMode === 'edit' ? handleUpdateDashboard : handleCreateDashboard}
-          onCancel={() => setViewMode('view')}
-        />
+        <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow border">
+          <h3 className="text-lg font-medium mb-4">
+            {viewMode === 'edit' ? 'Edit Dashboard' : 'Create Dashboard'}
+          </h3>
+          <p className="text-sm text-gray-600">
+            TODO: Implement DashboardBuilder component
+          </p>
+        </div>
       ) : (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-8 text-center">
           <div className="w-16 h-16 mx-auto bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-4">
