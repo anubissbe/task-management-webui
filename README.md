@@ -39,13 +39,17 @@ ProjectHub-MCP is a comprehensive project and task management system built speci
 - **🔄 Workspace Switching**: Seamless context switching between workspaces
 - **📊 Workspace Analytics**: Per-workspace usage statistics and limits
 
-#### 📊 Advanced Analytics & Reporting
-- **📈 Analytics Dashboard**: Comprehensive charts for project progress, task distribution, and team productivity
-- **📊 Advanced Reporting**: Custom dashboard builder with drag-and-drop widgets
-- **📉 Velocity Tracking**: Sprint velocity, burndown charts, and performance metrics
-- **🔍 Predictive Analytics**: AI-powered insights and bottleneck detection
-- **📤 Export Reports**: PDF, Excel, CSV exports with scheduled delivery
-- **📋 KPI Dashboards**: Real-time team performance and project health metrics
+#### 📊 Advanced Analytics & Reporting (✨ NEW v4.3.0)
+- **📈 Interactive Dashboards**: Fully customizable dashboard builder with drag-and-drop widgets
+- **📊 Burndown Charts**: Real-time sprint progress tracking with ideal vs actual progress visualization
+- **📉 Velocity Tracking**: Team velocity analysis with trend predictions and confidence levels
+- **👥 Team Performance Metrics**: Comprehensive team comparison with KPI cards and radar charts
+- **🎯 Predictive Analytics**: AI-powered risk assessment and completion predictions
+- **📤 Multi-Format Export**: Professional PDF, Excel, and CSV reports with charts and raw data
+- **📋 KPI Dashboards**: Real-time performance monitoring with automated insights
+- **🔍 Advanced Filtering**: Filter reports by date ranges, teams, projects, and custom criteria
+- **📅 Scheduled Reports**: Automated report generation and email delivery
+- **📐 Widget Library**: 6+ widget types including charts, tables, metrics, and custom visualizations
 
 #### 🎨 User Experience
 - **⏱️ Pomodoro Timer**: Built-in time tracking with work/break intervals
@@ -174,6 +178,12 @@ SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_USER=your-email@gmail.com
 SMTP_PASSWORD=your-app-password
+
+# MCP Server URLs (for enhanced integrations)
+KNOWLEDGE_GRAPH_URL=http://localhost:8001
+RAG_URL=http://localhost:8002
+VECTOR_DB_URL=http://localhost:8003
+UNIFIED_DB_URL=http://localhost:8004
 ```
 
 ## 📁 Project Structure
@@ -302,19 +312,23 @@ ProjectHub-Mcp/
 | GET | `/api/tasks/:id/history` | Get task history |
 | GET | `/api/next-task` | Get next prioritized task |
 
-### Reporting & Analytics Endpoints
+### Reporting & Analytics Endpoints (✨ Enhanced v4.3.0)
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/api/reports/dashboards` | List user dashboards |
-| GET | `/api/reports/dashboards/:id` | Get dashboard details |
-| POST | `/api/reports/dashboards` | Create custom dashboard |
-| PUT | `/api/reports/dashboards/:id` | Update dashboard |
-| DELETE | `/api/reports/dashboards/:id` | Delete dashboard |
-| POST | `/api/reports/widget-data` | Get widget data |
-| POST | `/api/reports/export/:id` | Export dashboard report |
-| GET | `/api/reports/advanced-metrics` | Get advanced analytics |
-| GET | `/api/reports/team-performance` | Team performance metrics |
+| GET | `/api/reports/dashboards` | List user dashboards with widgets |
+| GET | `/api/reports/dashboards/:id` | Get dashboard details and configuration |
+| POST | `/api/reports/dashboards` | Create custom dashboard with widgets |
+| PUT | `/api/reports/dashboards/:id` | Update dashboard layout and widgets |
+| DELETE | `/api/reports/dashboards/:id` | Delete dashboard and all widgets |
+| GET | `/api/reports/advanced-metrics` | Get comprehensive analytics data |
+| GET | `/api/reports/burndown` | Get burndown chart data with progress tracking |
+| GET | `/api/reports/velocity-trends` | Get team velocity analysis and predictions |
+| GET | `/api/reports/team-performance` | Team comparison metrics and KPIs |
+| POST | `/api/reports/export/:id` | Export reports in PDF/Excel/CSV formats |
+| POST | `/api/reports/schedule/:id` | Schedule automated report delivery |
+| GET | `/api/reports/templates` | Get report templates for quick setup |
+| POST | `/api/reports/templates` | Create reusable report templates |
 
 ### Webhooks Endpoints
 
@@ -414,7 +428,7 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 
 ## 📋 Roadmap
 
-### ✅ Completed Features (v4.1.0)
+### ✅ Completed Features (v4.3.0)
 - ✅ Project and task CRUD operations
 - ✅ Kanban board with drag-and-drop
 - ✅ Real-time updates via WebSocket
@@ -426,12 +440,20 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 - ✅ **Enterprise webhook system** with HMAC security, retry logic, and delivery tracking
 - ✅ **Complete authentication system** with JWT, refresh tokens, and session management
 - ✅ **Team management** with role-based permissions and invitations
-- ✅ **Advanced reporting** with custom dashboards and analytics
+- ✅ **Workspace isolation** for multi-tenant support with complete data separation
 - ✅ **Granular permissions** for project-level access control
+- ✅ **Advanced reporting and analytics** (✨ NEW v4.3.0):
+  - ✅ Interactive dashboard builder with drag-and-drop widgets
+  - ✅ Burndown charts with real-time progress tracking
+  - ✅ Velocity tracking with trend analysis and predictions
+  - ✅ Team performance metrics with comprehensive KPI dashboards
+  - ✅ Multi-format export (PDF, Excel, CSV) with professional layouts
+  - ✅ Predictive analytics with risk assessment and insights
+  - ✅ Advanced filtering system for reports and analytics
 
-### 🚧 In Progress (v4.2.0)
-- 🔄 Workspace isolation for multi-tenant support
-- 🔄 Scheduled report generation and automated delivery
+### 🚧 In Progress (v4.4.0)
+- 🔄 Enhanced MCP integrations (knowledge-graph, RAG, vector-db)
+- 🔄 Email notifications system with customizable preferences
 - 🔄 Enhanced mobile responsiveness
 - 🔄 Advanced E2E testing suite
 
