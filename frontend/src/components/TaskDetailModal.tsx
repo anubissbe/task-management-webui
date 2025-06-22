@@ -4,6 +4,7 @@ import { TaskComments } from './TaskComments';
 import { FileAttachments } from './FileAttachments';
 import { ActivityFeed } from './ActivityFeed';
 import { PomodoroTimer } from './PomodoroTimer';
+import { AITaskInsights } from './AITaskInsights';
 
 interface TaskDetailModalProps {
   task: Task;
@@ -18,6 +19,7 @@ interface TaskDetailModalProps {
   activities?: ActivityEntry[];
   availableTasks?: Task[];
   currentUser: string;
+  workspaceId: string;
 }
 
 export function TaskDetailModal({ 
@@ -28,9 +30,10 @@ export function TaskDetailModal({
   onDependencyRemove,
   dependencies = [],
   availableTasks = [],
-  currentUser 
+  currentUser,
+  workspaceId
 }: TaskDetailModalProps) {
-  const [activeTab, setActiveTab] = useState<'details' | 'comments' | 'attachments' | 'activity' | 'dependencies'>('details');
+  const [activeTab, setActiveTab] = useState<'details' | 'comments' | 'attachments' | 'activity' | 'dependencies' | 'ai-insights'>('details');
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState({
     name: task.name,
@@ -178,6 +181,7 @@ export function TaskDetailModal({
     { id: 'attachments', label: 'Files', icon: '📎', count: mockAttachments.length },
     { id: 'activity', label: 'Activity', icon: '📈', count: mockActivities.length },
     { id: 'dependencies', label: 'Dependencies', icon: '🔗', count: dependencies.length },
+    { id: 'ai-insights', label: 'AI Insights', icon: '🧠', count: null },
   ] as const;
 
   return (
@@ -525,6 +529,23 @@ export function TaskDetailModal({
                     ))}
                   </div>
                 )}
+              </div>
+            )}
+
+            {activeTab === 'ai-insights' && (
+              <div className="space-y-4">
+                <AITaskInsights
+                  task={task}
+                  workspaceId={workspaceId}
+                  onTaskSelect={(taskId) => {
+                    console.log('Navigate to task:', taskId);
+                    // Handle task navigation here
+                  }}
+                  onCreateRelationship={(sourceId, targetId, type) => {
+                    console.log('Created relationship:', { sourceId, targetId, type });
+                    // Handle relationship creation here
+                  }}
+                />
               </div>
             )}
           </div>

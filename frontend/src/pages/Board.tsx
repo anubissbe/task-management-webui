@@ -13,6 +13,8 @@ import { TimeTrackingDashboard } from '../components/TimeTrackingDashboard';
 import { CreateTaskModal } from '../components/CreateTaskModal';
 import { EditTaskModal } from '../components/EditTaskModal';
 import { PageBanner } from '../components/PageBanner';
+import { SemanticTaskSearch } from '../components/SemanticTaskSearch';
+import { McpStatusDashboard } from '../components/McpStatusDashboard';
 
 const TASK_STATUSES = ['pending', 'in_progress', 'blocked', 'testing', 'completed', 'failed'];
 
@@ -434,6 +436,26 @@ export function Board() {
           onFiltersChange={setFilters}
           taskCounts={taskCounts}
         />
+
+        {/* Semantic Search */}
+        <div className="mb-6">
+          <SemanticTaskSearch
+            projects={projects}
+            onTaskSelect={(taskId) => {
+              const task = tasks.find(t => t.id === taskId);
+              if (task) {
+                setEditingTask(task);
+              }
+            }}
+            placeholder="Search tasks with AI-powered semantic search..."
+            className=""
+          />
+        </div>
+
+        {/* MCP Status Dashboard */}
+        <div className="mb-6">
+          <McpStatusDashboard showDetails={false} />
+        </div>
 
         {/* Analytics Panel */}
         {showAnalytics && project && (

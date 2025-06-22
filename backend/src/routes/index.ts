@@ -4,6 +4,7 @@ import { TaskController } from '../controllers/taskController';
 import webhookRoutes from './webhooks';
 import authRoutes from './auth';
 import workspaceRoutes from './workspace';
+import mcpRoutes from './mcp';
 import { authenticate } from '../middleware/auth';
 import { workspaceContext } from '../middleware/workspace';
 
@@ -45,5 +46,8 @@ router.get('/next-task', authenticate, workspaceContext, taskController.getNextT
 
 // Webhook routes
 router.use('/webhooks', webhookRoutes);
+
+// MCP Integration routes (protected by authentication and workspace context)
+router.use('/mcp', mcpRoutes);
 
 export default router;

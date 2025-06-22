@@ -9,6 +9,7 @@ const taskController_1 = require("../controllers/taskController");
 const webhooks_1 = __importDefault(require("./webhooks"));
 const auth_1 = __importDefault(require("./auth"));
 const workspace_1 = __importDefault(require("./workspace"));
+const mcp_1 = __importDefault(require("./mcp"));
 const auth_2 = require("../middleware/auth");
 const workspace_2 = require("../middleware/workspace");
 const router = (0, express_1.Router)();
@@ -43,4 +44,6 @@ router.get('/tasks/:id/test-results', auth_2.authenticate, workspace_2.workspace
 router.get('/next-task', auth_2.authenticate, workspace_2.workspaceContext, taskController.getNextTask);
 // Webhook routes
 router.use('/webhooks', webhooks_1.default);
+// MCP Integration routes (protected by authentication and workspace context)
+router.use('/mcp', mcp_1.default);
 exports.default = router;
