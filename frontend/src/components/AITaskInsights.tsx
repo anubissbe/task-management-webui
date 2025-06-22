@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Brain, Network, Lightbulb, Users, Link, ChevronDown, ChevronUp, Loader2 } from 'lucide-react';
 import { mcpService, EntityData, TaskSuggestion, SemanticSearchResult } from '../services/mcpService';
 import { Task } from '../types';
@@ -41,24 +41,25 @@ export const AITaskInsights: React.FC<AITaskInsightsProps> = ({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    loadTaskInsights();
-  }, [task.id, workspaceId]);
-
-  const loadTaskInsights = async () => {
+  const loadTaskInsights = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
       
       const result = await mcpService.getTaskInsights(task.id, workspaceId);
       setInsights(result);
-    } catch (err: any) {
-      setError(err.message || 'Failed to load AI insights');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to load AI insights';
+      setError(errorMessage);
       console.error('Error loading task insights:', err);
     } finally {
       setLoading(false);
     }
-  };
+  }, [task.id, workspaceId]);
+
+  useEffect(() => {
+    loadTaskInsights();
+  }, [loadTaskInsights]);
 
   const toggleSection = (section: keyof typeof expandedSections) => {
     setExpandedSections(prev => ({
@@ -69,13 +70,13 @@ export const AITaskInsights: React.FC<AITaskInsightsProps> = ({
 
   const handleCreateRelationship = async (targetTaskId: string, type: string) => {
     try {
-      await mcpService.createTaskRelationship(task.id, targetTaskId, type as any);
+      await mcpService.createTaskRelationship(task.id, targetTaskId, type as 'depends_on' | 'blocks' | 'relates_to');
       if (onCreateRelationship) {
         onCreateRelationship(task.id, targetTaskId, type);
       }
       // Refresh insights to show new relationships
       await loadTaskInsights();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Failed to create relationship:', err);
     }
   };

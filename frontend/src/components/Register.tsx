@@ -88,7 +88,7 @@ export const Register: React.FC<RegisterProps> = ({ onToggleMode }) => {
         last_name: formData.last_name,
       });
       // Navigation will be handled by the authentication state change
-    } catch (err) {
+    } catch {
       // Error is handled by AuthContext
     }
   };

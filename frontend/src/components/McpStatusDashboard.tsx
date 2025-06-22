@@ -32,8 +32,9 @@ export const McpStatusDashboard: React.FC<McpStatusDashboardProps> = ({
       const status = await mcpService.getHealthStatus();
       setHealthStatus(status);
       setLastChecked(new Date());
-    } catch (err: any) {
-      setError(err.message || 'Failed to check MCP services health');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to check MCP services health';
+      setError(errorMessage);
       console.error('Health check failed:', err);
     } finally {
       setLoading(false);

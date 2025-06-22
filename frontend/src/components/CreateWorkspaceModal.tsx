@@ -6,7 +6,7 @@ import { workspaceService } from '../services/workspaceService';
 interface CreateWorkspaceModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: (workspace: any) => void;
+  onSuccess: (workspace: { id: string; name: string; description?: string }) => void;
 }
 
 export default function CreateWorkspaceModal({ isOpen, onClose, onSuccess }: CreateWorkspaceModalProps) {
@@ -23,13 +23,18 @@ export default function CreateWorkspaceModal({ isOpen, onClose, onSuccess }: Cre
       setFormData({ name: '', description: '' });
       setErrors({});
     },
-    onError: (error: any) => {
-      if (error.response?.data?.details) {
-        const validationErrors: Record<string, string> = {};
-        error.response.data.details.forEach((detail: any) => {
-          validationErrors[detail.path[0]] = detail.message;
-        });
-        setErrors(validationErrors);
+    onError: (error: unknown) => {
+      if (error && typeof error === 'object' && 'response' in error) {
+        const apiError = error as { response?: { data?: { details?: Array<{ path: string[]; message: string }> } } };
+        if (apiError.response?.data?.details) {
+          const validationErrors: Record<string, string> = {};
+          apiError.response.data.details.forEach((detail) => {
+            validationErrors[detail.path[0]] = detail.message;
+          });
+          setErrors(validationErrors);
+        } else {
+          setErrors({ general: 'Failed to create workspace' });
+        }
       } else {
         setErrors({ general: 'Failed to create workspace' });
       }
