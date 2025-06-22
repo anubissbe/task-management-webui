@@ -12,13 +12,15 @@ export interface User {
   avatarUrl?: string;
   isActive: boolean;
   emailVerified: boolean;
+  currentWorkspaceId?: string;
 }
 
-// Extend Express Request to include user
+// Extend Express Request to include user and workspace
 declare global {
   namespace Express {
     interface Request {
       user?: User;
+      workspaceId?: string;
     }
   }
 }

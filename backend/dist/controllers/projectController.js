@@ -25,10 +25,14 @@ const updateProjectSchema = zod_1.z.object({
     acceptance_criteria: zod_1.z.string().optional()
 });
 class ProjectController {
-    async getAllProjects(_req, res) {
+    async getAllProjects(req, res) {
         try {
-            const projects = await projectService.getAllProjects();
-            console.log(`Retrieved ${projects.length} projects from database`);
+            if (!req.workspaceId) {
+                res.status(400).json({ error: 'Workspace context required' });
+                return;
+            }
+            const projects = await projectService.getAllProjects(req.workspaceId);
+            console.log(`Retrieved ${projects.length} projects from workspace ${req.workspaceId}`);
             res.json(projects);
         }
         catch (error) {
@@ -39,7 +43,11 @@ class ProjectController {
     async getProjectById(req, res) {
         try {
             const { id } = req.params;
-            const project = await projectService.getProjectById(id);
+            if (!req.workspaceId) {
+                res.status(400).json({ error: 'Workspace context required' });
+                return;
+            }
+            const project = await projectService.getProjectById(id, req.workspaceId);
             if (!project) {
                 res.status(404).json({ error: 'Project not found' });
                 return;
@@ -54,8 +62,15 @@ class ProjectController {
     }
     async createProject(req, res) {
         try {
+            if (!req.workspaceId) {
+                res.status(400).json({ error: 'Workspace context required' });
+                return;
+            }
             const data = createProjectSchema.parse(req.body);
-            const project = await projectService.createProject(data);
+            const project = await projectService.createProject({
+                ...data,
+                workspace_id: req.workspaceId
+            });
             // Trigger webhooks for project creation
             await (0, webhookController_1.triggerWebhooksForEvent)('project.created', project, undefined, project.id);
             res.status(201).json(project);
@@ -73,13 +88,17 @@ class ProjectController {
         try {
             const { id } = req.params;
             const data = updateProjectSchema.parse(req.body);
+            if (!req.workspaceId) {
+                res.status(400).json({ error: 'Workspace context required' });
+                return;
+            }
             // Get previous project state for webhook comparison
-            const previousProject = await projectService.getProjectById(id);
+            const previousProject = await projectService.getProjectById(id, req.workspaceId);
             if (!previousProject) {
                 res.status(404).json({ error: 'Project not found' });
                 return;
             }
-            const project = await projectService.updateProject(id, data);
+            const project = await projectService.updateProject(id, data, req.workspaceId);
             if (!project) {
                 res.status(404).json({ error: 'Project not found' });
                 return;
@@ -104,8 +123,12 @@ class ProjectController {
     async deleteProject(req, res) {
         try {
             const { id } = req.params;
+            if (!req.workspaceId) {
+                res.status(400).json({ error: 'Workspace context required' });
+                return;
+            }
             // Get project data before deletion for webhook
-            const project = await projectService.getProjectById(id);
+            const project = await projectService.getProjectById(id, req.workspaceId);
             if (!project) {
                 res.status(404).json({ error: 'Project not found' });
                 return;

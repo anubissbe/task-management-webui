@@ -1,12 +1,62 @@
 export type ProjectStatus = 'planning' | 'active' | 'paused' | 'completed' | 'cancelled';
 export type TaskStatus = 'pending' | 'in_progress' | 'blocked' | 'testing' | 'completed' | 'failed';
 export type TaskPriority = 'critical' | 'high' | 'medium' | 'low';
+export type WorkspaceRole = 'owner' | 'admin' | 'member';
+export type SubscriptionTier = 'free' | 'starter' | 'professional' | 'enterprise';
+
+export interface Workspace {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  logo_url?: string;
+  owner_id: string;
+  settings: {
+    features: {
+      team_management: boolean;
+      advanced_reporting: boolean;
+      webhooks: boolean;
+      custom_fields: boolean;
+    };
+    limits: {
+      max_projects: number;
+      max_users: number;
+      max_storage_gb: number;
+    };
+  };
+  subscription_tier: SubscriptionTier;
+  is_active: boolean;
+  created_at: Date;
+  updated_at: Date;
+}
+
+export interface WorkspaceMember {
+  id: string;
+  workspace_id: string;
+  user_id: string;
+  role: WorkspaceRole;
+  joined_at: Date;
+  invited_by?: string;
+}
+
+export interface WorkspaceInvitation {
+  id: string;
+  workspace_id: string;
+  email: string;
+  role: Exclude<WorkspaceRole, 'owner'>;
+  invited_by: string;
+  token: string;
+  expires_at: Date;
+  accepted_at?: Date;
+  created_at: Date;
+}
 
 export interface Project {
   id: string;
   name: string;
   description?: string;
   status: ProjectStatus;
+  workspace_id: string;
   metadata?: Record<string, any>;
   requirements?: string;
   acceptance_criteria?: string;

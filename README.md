@@ -35,7 +35,9 @@ ProjectHub-MCP is a comprehensive project and task management system built speci
 - **👤 User Roles**: Hierarchical permissions (Admin → Manager → Developer → Viewer)
 - **📧 Team Invitations**: Email-based team member invitations with token validation
 - **🛡️ Granular Permissions**: Project-level access control for teams and individuals
-- **🏠 Workspace Isolation**: Secure team-based project access
+- **🏠 Workspace Isolation**: Multi-tenant data separation with complete project isolation
+- **🔄 Workspace Switching**: Seamless context switching between workspaces
+- **📊 Workspace Analytics**: Per-workspace usage statistics and limits
 
 #### 📊 Advanced Analytics & Reporting
 - **📈 Analytics Dashboard**: Comprehensive charts for project progress, task distribution, and team productivity
@@ -160,8 +162,18 @@ NODE_ENV=production
 PORT=3001
 FRONTEND_URL=http://localhost:5173
 
+# JWT Authentication
+JWT_ACCESS_SECRET=your-very-secure-access-token-secret
+JWT_REFRESH_SECRET=your-very-secure-refresh-token-secret
+
 # WebSocket Configuration
 WEBSOCKET_ENABLED=true
+
+# Email Configuration (for invitations)
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your-email@gmail.com
+SMTP_PASSWORD=your-app-password
 ```
 
 ## 📁 Project Structure
@@ -220,6 +232,23 @@ ProjectHub-Mcp/
 - **GitHub Actions** - CI/CD pipeline
 
 ## 🌐 API Documentation
+
+### Workspace Management Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/workspaces` | List user's workspaces |
+| GET | `/api/workspaces/:id` | Get workspace details |
+| POST | `/api/workspaces` | Create new workspace |
+| PUT | `/api/workspaces/:id` | Update workspace |
+| DELETE | `/api/workspaces/:id` | Delete workspace (soft) |
+| GET | `/api/workspaces/:id/members` | Get workspace members |
+| POST | `/api/workspaces/:id/invite` | Invite member to workspace |
+| PUT | `/api/workspaces/:id/members/:userId/role` | Update member role |
+| DELETE | `/api/workspaces/:id/members/:userId` | Remove member |
+| POST | `/api/workspaces/:id/switch` | Switch active workspace |
+| GET | `/api/workspaces/:id/stats` | Get workspace statistics |
+| POST | `/api/workspaces/invitations/:token/accept` | Accept invitation |
 
 ### Authentication Endpoints
 
@@ -305,8 +334,13 @@ ProjectHub-Mcp/
 
 The application uses PostgreSQL with the following main tables:
 
+### Workspace Management
+- **workspaces** - Multi-tenant workspace definitions with settings and limits
+- **workspace_members** - Workspace membership with roles (owner, admin, member)
+- **workspace_invitations** - Pending workspace invitations with tokens
+
 ### Core Tables
-- **projects** - Project management with status tracking
+- **projects** - Project management with workspace isolation
 - **tasks** - Task details with priorities and time tracking
 - **task_dependencies** - Task relationships
 - **task_history** - Audit trail for changes
@@ -315,18 +349,18 @@ The application uses PostgreSQL with the following main tables:
 
 ### Authentication & User Management
 - **users** - User accounts with roles and preferences
-- **user_sessions** - JWT refresh token management
-- **user_preferences** - Personal settings and dashboard layouts
-- **activity_logs** - Comprehensive audit trail
+- **user_sessions** - JWT refresh token management with workspace context
+- **user_preferences** - Personal settings and per-workspace preferences
+- **activity_logs** - Comprehensive audit trail with workspace tracking
 
 ### Team Management
-- **teams** - Team definitions with metadata
+- **teams** - Team definitions with workspace association
 - **team_members** - Many-to-many team membership with roles
 - **team_invitations** - Email-based invitation system
 - **project_permissions** - Granular project access control
 
 ### Webhooks & Integration
-- **webhooks** - Webhook configuration and management
+- **webhooks** - Webhook configuration with optional workspace scope
 - **webhook_deliveries** - Delivery tracking with retry logic
 
 ## 🧪 Testing
