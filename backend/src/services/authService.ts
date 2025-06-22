@@ -1,6 +1,7 @@
 import { Request } from 'express';
 import { pool } from '../config/database';
 import { v4 as uuidv4 } from 'uuid';
+import crypto from 'crypto';
 
 export interface DatabaseUser {
   id: string;
@@ -311,6 +312,80 @@ export class AuthService {
       };
     } catch (error) {
       console.error('Error getting user stats:', error);
+      throw error;
+    }
+  }
+
+  static async generatePasswordResetToken(userId: string): Promise<string> {
+    try {
+      const resetToken = crypto.randomBytes(32).toString('hex');
+      const expiresAt = new Date();
+      expiresAt.setHours(expiresAt.getHours() + 1); // 1 hour expiry
+
+      // Store the reset token
+      await pool.query(`
+        INSERT INTO password_reset_tokens (
+          id, user_id, token, expires_at, created_at, is_used
+        ) VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP, false)
+        ON CONFLICT (user_id) 
+        DO UPDATE SET 
+          token = $3, 
+          expires_at = $4, 
+          created_at = CURRENT_TIMESTAMP,
+          is_used = false
+      `, [uuidv4(), userId, resetToken, expiresAt]);
+
+      return resetToken;
+    } catch (error) {
+      console.error('Error generating password reset token:', error);
+      throw error;
+    }
+  }
+
+  static async verifyPasswordResetToken(token: string): Promise<string | null> {
+    try {
+      const result = await pool.query(`
+        SELECT user_id, expires_at, is_used
+        FROM password_reset_tokens 
+        WHERE token = $1
+      `, [token]);
+
+      if (result.rows.length === 0) {
+        return null;
+      }
+
+      const { user_id, expires_at, is_used } = result.rows[0];
+
+      // Check if token is already used
+      if (is_used) {
+        return null;
+      }
+
+      // Check if token has expired
+      if (new Date() > new Date(expires_at)) {
+        return null;
+      }
+
+      // Mark token as used
+      await pool.query(
+        'UPDATE password_reset_tokens SET is_used = true WHERE token = $1',
+        [token]
+      );
+
+      return user_id;
+    } catch (error) {
+      console.error('Error verifying password reset token:', error);
+      throw error;
+    }
+  }
+
+  static async cleanupExpiredResetTokens(): Promise<void> {
+    try {
+      await pool.query(
+        'DELETE FROM password_reset_tokens WHERE expires_at < CURRENT_TIMESTAMP OR is_used = true'
+      );
+    } catch (error) {
+      console.error('Error cleaning up expired reset tokens:', error);
       throw error;
     }
   }

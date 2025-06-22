@@ -2,17 +2,20 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { z } from 'zod';
 
-// User interface
+// User interface (compatible with types/index.ts)
 export interface User {
   id: string;
   email: string;
-  firstName: string;
-  lastName: string;
+  username: string;
+  firstName?: string;
+  lastName?: string;
   role: 'admin' | 'manager' | 'developer' | 'viewer';
   avatarUrl?: string;
   isActive: boolean;
   emailVerified: boolean;
-  currentWorkspaceId?: string;
+  workspace_id?: string;
+  created_at: Date;
+  updated_at: Date;
 }
 
 // Extend Express Request to include user and workspace
@@ -101,11 +104,14 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
     req.user = {
       id: payload.userId,
       email: payload.email,
+      username: payload.email.split('@')[0], // Extract username from email
       firstName: 'User', // Will be fetched from DB in real implementation
       lastName: 'Name',
       role: payload.role,
       isActive: true,
-      emailVerified: true
+      emailVerified: true,
+      created_at: new Date(),
+      updated_at: new Date()
     };
 
     next();
@@ -158,7 +164,7 @@ export const hasRoleOrHigher = (userRole: string, requiredRole: string): boolean
 
 // Permission-based authorization
 export const requirePermission = (permission: string) => {
-  return (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     if (!req.user) {
       return res.status(401).json({ 
         error: 'Authentication required',
@@ -166,37 +172,155 @@ export const requirePermission = (permission: string) => {
       });
     }
 
-    // Check if user has the required permission
-    // This would typically check against a permissions table or user permissions
-    // For now, we'll use role-based checks
-    const rolePermissions: Record<string, string[]> = {
-      'admin': ['*'], // Admin has all permissions
-      'manager': [
-        'projects.read', 'projects.write', 'projects.delete',
-        'tasks.read', 'tasks.write', 'tasks.delete',
-        'teams.read', 'teams.write', 'users.read'
-      ],
-      'developer': [
-        'projects.read', 'projects.write',
-        'tasks.read', 'tasks.write'
-      ],
-      'viewer': [
-        'projects.read', 'tasks.read'
-      ]
-    };
+    try {
+      // Import AuthorizationService dynamically to avoid circular dependency
+      const { AuthorizationService } = await import('../services/authorizationService');
+      
+      const hasPermission = AuthorizationService.hasPermission(req.user, permission);
+      
+      // Audit the permission check
+      await AuthorizationService.auditPermissionCheck(
+        req.user.id,
+        permission.split('.')[0],
+        permission.split('.')[1],
+        hasPermission,
+        undefined,
+        { method: req.method, path: req.path }
+      );
 
-    const userPermissions = rolePermissions[req.user.role] || [];
-    
-    if (!userPermissions.includes('*') && !userPermissions.includes(permission)) {
-      return res.status(403).json({ 
-        error: 'Insufficient permissions',
-        code: 'INSUFFICIENT_PERMISSIONS',
-        required: permission,
-        role: req.user.role
+      if (!hasPermission) {
+        return res.status(403).json({ 
+          error: 'Insufficient permissions',
+          code: 'INSUFFICIENT_PERMISSIONS',
+          required: permission,
+          role: req.user.role
+        });
+      }
+
+      next();
+    } catch (error) {
+      console.error('Permission check error:', error);
+      return res.status(500).json({
+        error: 'Permission check failed',
+        code: 'PERMISSION_CHECK_ERROR'
+      });
+    }
+  };
+};
+
+// Project-specific permission check
+export const requireProjectPermission = (permission: string) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.user) {
+      return res.status(401).json({ 
+        error: 'Authentication required',
+        code: 'AUTH_REQUIRED'
       });
     }
 
-    next();
+    const projectId = req.params.projectId || req.params.id;
+    if (!projectId) {
+      return res.status(400).json({
+        error: 'Project ID required',
+        code: 'PROJECT_ID_REQUIRED'
+      });
+    }
+
+    try {
+      const { AuthorizationService } = await import('../services/authorizationService');
+      
+      const hasPermission = await AuthorizationService.hasProjectPermission(
+        req.user.id,
+        projectId,
+        permission
+      );
+      
+      // Audit the permission check
+      await AuthorizationService.auditPermissionCheck(
+        req.user.id,
+        permission.split('.')[0],
+        permission.split('.')[1],
+        hasPermission,
+        projectId,
+        { method: req.method, path: req.path }
+      );
+
+      if (!hasPermission) {
+        return res.status(403).json({ 
+          error: 'Insufficient project permissions',
+          code: 'INSUFFICIENT_PROJECT_PERMISSIONS',
+          required: permission,
+          projectId,
+          role: req.user.role
+        });
+      }
+
+      next();
+    } catch (error) {
+      console.error('Project permission check error:', error);
+      return res.status(500).json({
+        error: 'Permission check failed',
+        code: 'PERMISSION_CHECK_ERROR'
+      });
+    }
+  };
+};
+
+// Workspace-specific permission check
+export const requireWorkspacePermission = (permission: string) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.user) {
+      return res.status(401).json({ 
+        error: 'Authentication required',
+        code: 'AUTH_REQUIRED'
+      });
+    }
+
+    const workspaceId = req.params.workspaceId || req.user.workspace_id;
+    if (!workspaceId) {
+      return res.status(400).json({
+        error: 'Workspace ID required',
+        code: 'WORKSPACE_ID_REQUIRED'
+      });
+    }
+
+    try {
+      const { AuthorizationService } = await import('../services/authorizationService');
+      
+      const hasPermission = await AuthorizationService.hasWorkspacePermission(
+        req.user.id,
+        workspaceId,
+        permission
+      );
+      
+      // Audit the permission check
+      await AuthorizationService.auditPermissionCheck(
+        req.user.id,
+        permission.split('.')[0],
+        permission.split('.')[1],
+        hasPermission,
+        workspaceId,
+        { method: req.method, path: req.path }
+      );
+
+      if (!hasPermission) {
+        return res.status(403).json({ 
+          error: 'Insufficient workspace permissions',
+          code: 'INSUFFICIENT_WORKSPACE_PERMISSIONS',
+          required: permission,
+          workspaceId,
+          role: req.user.role
+        });
+      }
+
+      next();
+    } catch (error) {
+      console.error('Workspace permission check error:', error);
+      return res.status(500).json({
+        error: 'Permission check failed',
+        code: 'PERMISSION_CHECK_ERROR'
+      });
+    }
   };
 };
 
@@ -210,11 +334,14 @@ export const optionalAuth = async (req: Request, _res: Response, next: NextFunct
       req.user = {
         id: payload.userId,
         email: payload.email,
+        username: payload.email.split('@')[0],
         firstName: 'User',
         lastName: 'Name',
         role: payload.role,
         isActive: true,
-        emailVerified: true
+        emailVerified: true,
+        created_at: new Date(),
+        updated_at: new Date()
       };
     }
     

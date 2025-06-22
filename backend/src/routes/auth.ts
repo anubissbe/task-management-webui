@@ -30,6 +30,8 @@ const strictAuthLimiter = rateLimit({
 router.post('/login', authLimiter, AuthController.login);
 router.post('/register', authLimiter, AuthController.register);
 router.post('/refresh-token', authLimiter, AuthController.refreshToken);
+router.post('/password-reset', strictAuthLimiter, AuthController.requestPasswordReset);
+router.post('/reset-password', strictAuthLimiter, AuthController.resetPassword);
 
 // Routes that accept either authenticated or unauthenticated requests
 router.post('/logout', AuthController.logout);
@@ -40,12 +42,6 @@ router.post('/logout-all', authenticate, AuthController.logoutAll);
 router.post('/change-password', authenticate, strictAuthLimiter, AuthController.changePassword);
 
 // Health check endpoint for auth service
-router.get('/health', (_req, res) => {
-  res.json({
-    status: 'healthy',
-    service: 'auth',
-    timestamp: new Date().toISOString()
-  });
-});
+router.get('/health', AuthController.health);
 
 export default router;
