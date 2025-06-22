@@ -117,7 +117,7 @@ class WorkspaceService {
   }
 
   // Get workspace statistics
-  async getWorkspaceStats(id: string): Promise<any> {
+  async getWorkspaceStats(id: string): Promise<{ totalProjects: number; totalTasks: number; completedTasks: number; activeMembers: number }> {
     const response = await api.get(`/workspaces/${id}/stats`);
     return response.data;
   }

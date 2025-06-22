@@ -1,4 +1,17 @@
-import { apiRequest } from './api';
+import { api } from './api';
+
+// Temporary implementation of apiRequest to maintain compatibility
+const apiRequest = async (url: string, options?: { method?: string; body?: string }): Promise<unknown> => {
+  const method = options?.method?.toLowerCase() || 'get';
+  const config: Record<string, unknown> = {};
+  
+  if (options?.body) {
+    config.data = JSON.parse(options.body);
+  }
+  
+  const response = await (api as Record<string, (...args: unknown[]) => Promise<{ data: unknown }>>)[method](url, method === 'get' ? undefined : config.data, method === 'get' ? config : undefined);
+  return response.data;
+};
 
 export interface Team {
   id: string;
@@ -7,7 +20,7 @@ export interface Team {
   slug: string;
   avatar_url?: string;
   owner_id: string;
-  settings: Record<string, any>;
+  settings: Record<string, unknown>;
   is_active: boolean;
   created_at: string;
   updated_at: string;
@@ -54,7 +67,7 @@ export interface UpdateTeamRequest {
   name?: string;
   description?: string;
   avatar_url?: string;
-  settings?: Record<string, any>;
+  settings?: Record<string, unknown>;
   is_active?: boolean;
 }
 
@@ -168,13 +181,13 @@ export class TeamService {
     task_count: number;
     completed_tasks: number;
     active_projects: number;
-    recent_activity: any[];
+    recent_activity: Array<{ id: string; type: string; description: string; timestamp: string }>;
   }> {
     return apiRequest(`/teams/${teamId}/stats`);
   }
 
   // Team projects and permissions
-  static async getTeamProjects(teamId: string): Promise<any[]> {
+  static async getTeamProjects(teamId: string): Promise<Array<{ id: string; name: string; description?: string; status: string }>> {
     return apiRequest(`/teams/${teamId}/projects`);
   }
 
