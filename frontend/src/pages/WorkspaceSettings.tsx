@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { 
   Building2, 
@@ -7,10 +7,7 @@ import {
   Settings, 
   Trash2, 
   UserPlus, 
-  Shield,
-  Mail,
-  Copy,
-  Check
+  Shield
 } from 'lucide-react';
 import { workspaceService } from '../services/workspaceService';
 import InviteTeamMemberModal from '../components/InviteTeamMemberModal';
@@ -18,12 +15,12 @@ import toast from 'react-hot-toast';
 
 export function WorkspaceSettings() {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
+  // const navigate = useNavigate(); // TODO: Add navigation functionality
   const queryClient = useQueryClient();
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [editingName, setEditingName] = useState(false);
   const [workspaceName, setWorkspaceName] = useState('');
-  const [invitationCopied, setInvitationCopied] = useState<string | null>(null);
+  // const [invitationCopied, setInvitationCopied] = useState<string | null>(null); // TODO: Add copy functionality
 
   // Fetch workspace details
   const { data: workspace, isLoading: workspaceLoading } = useQuery({
@@ -79,13 +76,14 @@ export function WorkspaceSettings() {
     }
   };
 
-  const copyInvitationLink = (token: string) => {
-    const link = `${window.location.origin}/invite/${token}`;
-    navigator.clipboard.writeText(link);
-    setInvitationCopied(token);
-    setTimeout(() => setInvitationCopied(null), 2000);
-    toast.success('Invitation link copied!');
-  };
+  // TODO: Implement invitation link copy functionality
+  // const copyInvitationLink = (token: string) => {
+  //   const link = `${window.location.origin}/invite/${token}`;
+  //   navigator.clipboard.writeText(link);
+  //   setInvitationCopied(token);
+  //   setTimeout(() => setInvitationCopied(null), 2000);
+  //   toast.success('Invitation link copied!');
+  // };
 
   if (workspaceLoading || membersLoading) {
     return (
@@ -265,16 +263,16 @@ export function WorkspaceSettings() {
       {/* Invite Modal */}
       {showInviteModal && (
         <InviteTeamMemberModal
-          isOpen={showInviteModal}
           onClose={() => setShowInviteModal(false)}
-          onInvite={async (email, role) => {
-            await workspaceService.inviteMember(id!, { email, role });
+          onSubmit={async (email: string, role: 'admin' | 'member' | 'viewer') => {
+            // Convert 'viewer' to 'member' for workspace API compatibility
+            const workspaceRole: 'admin' | 'member' = role === 'viewer' ? 'member' : role;
+            await workspaceService.inviteMember(id!, { email, role: workspaceRole });
             queryClient.invalidateQueries({ queryKey: ['workspace-members', id] });
             setShowInviteModal(false);
             toast.success('Invitation sent successfully');
           }}
           teamName={workspace.name}
-          isWorkspace={true}
         />
       )}
     </div>

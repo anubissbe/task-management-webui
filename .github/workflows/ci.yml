@@ -370,7 +370,7 @@ jobs:
   # Temporarily disabled - TODO: Re-enable once all other CI issues are resolved
   # performance:
   #   name: ⚡ Performance Tests
-  #   runs-on: [self-hosted, runnerhub]
+  #   runs-on: ubuntu-latest
   #   needs: [docker-security]
 
   # Deployment (only on main branch)
