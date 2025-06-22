@@ -8,8 +8,10 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3001
-      - DATABASE_URL=postgresql://app_user:app_secure_2024@localhost:5433/mcp_learning?schema=project_management
-      - CORS_ORIGIN=http://192.168.1.24:5173
+      - DATABASE_URL=${DATABASE_URL}
+      - CORS_ORIGIN=${FRONTEND_URL:-http://localhost:5173}
+      - JWT_ACCESS_SECRET=${JWT_ACCESS_SECRET}
+      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}
     restart: unless-stopped
 
   frontend:
@@ -18,6 +20,6 @@ services:
     ports:
       - "5173:80"
     environment:
-      - VITE_API_URL=http://192.168.1.24:3001/api
-      - VITE_WS_URL=ws://192.168.1.24:3001
+      - VITE_API_URL=${API_URL:-http://localhost:3001/api}
+      - VITE_WS_URL=${WS_URL:-ws://localhost:3001}
     restart: unless-stopped

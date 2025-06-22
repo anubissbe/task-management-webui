@@ -17,6 +17,18 @@ Authorization: Bearer <access_token>
 - Use the `/auth/refresh-token` endpoint to get new access tokens
 - Sessions are automatically cleaned up on logout
 
+### Workspace Context
+
+Most API endpoints also require workspace context, which can be provided via:
+
+1. **Header**: `X-Workspace-Id: <workspace_id>`
+2. **Query Parameter**: `?workspace_id=<workspace_id>`
+3. **User's Current Workspace**: Automatically used if no explicit workspace specified
+
+```
+X-Workspace-Id: 123e4567-e89b-12d3-a456-426614174000
+```
+
 ## 🚀 API Endpoints
 
 ### Authentication API
@@ -92,6 +104,189 @@ Get current user profile information.
     "lastLogin": "2024-01-15T10:30:00Z",
     "createdAt": "2024-01-01T00:00:00Z"
   }
+}
+```
+
+### Workspace Management API
+
+#### GET `/api/workspaces`
+List all workspaces for the authenticated user.
+
+**Response:**
+```json
+[
+  {
+    "id": "workspace-uuid",
+    "name": "My Workspace",
+    "slug": "my-workspace-1234567890",
+    "description": "Primary workspace for development",
+    "logo_url": null,
+    "owner_id": "user-uuid",
+    "settings": {
+      "features": {
+        "team_management": true,
+        "advanced_reporting": true,
+        "webhooks": true,
+        "custom_fields": false
+      },
+      "limits": {
+        "max_projects": 100,
+        "max_users": 50,
+        "max_storage_gb": 10
+      }
+    },
+    "subscription_tier": "professional",
+    "is_active": true,
+    "created_at": "2024-01-01T00:00:00Z",
+    "updated_at": "2024-01-01T00:00:00Z"
+  }
+]
+```
+
+#### GET `/api/workspaces/:id`
+Get a specific workspace by ID.
+
+**Response:** Same as single workspace object above.
+
+#### POST `/api/workspaces`
+Create a new workspace.
+
+**Request Body:**
+```json
+{
+  "name": "New Workspace",
+  "description": "Description of the workspace"
+}
+```
+
+**Response:** Created workspace object.
+
+#### PUT `/api/workspaces/:id`
+Update workspace details (requires admin or owner role).
+
+**Request Body:**
+```json
+{
+  "name": "Updated Name",
+  "description": "Updated description",
+  "logo_url": "https://example.com/logo.png",
+  "settings": {
+    "features": {
+      "custom_fields": true
+    }
+  }
+}
+```
+
+**Response:** Updated workspace object.
+
+#### DELETE `/api/workspaces/:id`
+Soft delete a workspace (requires owner role).
+
+**Response:** 204 No Content
+
+#### GET `/api/workspaces/:id/members`
+Get all members of a workspace.
+
+**Response:**
+```json
+[
+  {
+    "id": "member-uuid",
+    "workspace_id": "workspace-uuid",
+    "user_id": "user-uuid",
+    "role": "owner",
+    "joined_at": "2024-01-01T00:00:00Z",
+    "invited_by": null,
+    "user": {
+      "email": "owner@example.com",
+      "firstName": "Jane",
+      "lastName": "Doe",
+      "avatarUrl": null
+    }
+  }
+]
+```
+
+#### POST `/api/workspaces/:id/invite`
+Invite a member to the workspace (requires admin or owner role).
+
+**Request Body:**
+```json
+{
+  "email": "newmember@example.com",
+  "role": "member"
+}
+```
+
+**Response:**
+```json
+{
+  "message": "Invitation sent successfully",
+  "invitation": {
+    "id": "invite-uuid",
+    "email": "newmember@example.com",
+    "role": "member",
+    "expires_at": "2024-01-08T00:00:00Z"
+  }
+}
+```
+
+#### PUT `/api/workspaces/:id/members/:userId/role`
+Update a member's role (requires admin or owner role).
+
+**Request Body:**
+```json
+{
+  "role": "admin"
+}
+```
+
+**Response:** Updated member object.
+
+#### DELETE `/api/workspaces/:id/members/:userId`
+Remove a member from the workspace (requires admin or owner role).
+
+**Response:** 204 No Content
+
+#### POST `/api/workspaces/:id/switch`
+Switch the user's current workspace.
+
+**Response:**
+```json
+{
+  "message": "Workspace switched successfully",
+  "workspace_id": "workspace-uuid"
+}
+```
+
+#### GET `/api/workspaces/:id/stats`
+Get workspace statistics.
+
+**Response:**
+```json
+{
+  "id": "workspace-uuid",
+  "name": "My Workspace",
+  "subscription_tier": "professional",
+  "total_users": 12,
+  "total_projects": 8,
+  "total_teams": 3,
+  "active_projects": 5,
+  "completed_projects": 3,
+  "created_at": "2024-01-01T00:00:00Z"
+}
+```
+
+#### POST `/api/workspaces/invitations/:token/accept`
+Accept a workspace invitation.
+
+**Response:**
+```json
+{
+  "message": "Successfully joined workspace",
+  "workspace_id": "workspace-uuid",
+  "role": "member"
 }
 ```
 
