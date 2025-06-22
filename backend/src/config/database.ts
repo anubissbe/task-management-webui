@@ -1,4 +1,4 @@
-import { Pool } from 'pg';
+import { Pool, QueryResult } from 'pg';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -14,6 +14,26 @@ pool.on('error', (err) => {
   console.error('Unexpected error on idle client', err);
   process.exit(-1);
 });
+
+export class DatabaseService {
+  private pool: Pool;
+
+  constructor() {
+    this.pool = pool;
+  }
+
+  async query(text: string, params?: any[]): Promise<QueryResult> {
+    try {
+      const client = await this.pool.connect();
+      const result = await client.query(text, params);
+      client.release();
+      return result;
+    } catch (error) {
+      console.error('Database query error:', error);
+      throw error;
+    }
+  }
+}
 
 export async function testConnection(): Promise<void> {
   try {

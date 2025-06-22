@@ -45,8 +45,8 @@ export class UserService {
   ): Promise<{ users: UserWithStats[]; total: number; pages: number }> {
     try {
       const offset = (page - 1) * limit;
-      let whereConditions = [];
-      let params: any[] = [];
+      const whereConditions: string[] = [];
+      const params: any[] = [];
       let paramCount = 0;
 
       if (search) {

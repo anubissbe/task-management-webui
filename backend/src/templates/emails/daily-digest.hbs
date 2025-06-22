@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{subject}}</title>
+    <style>
+        /* Reset and base styles */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; background-color: #f8fafc; }
+        
+        /* Container */
+        .container { max-width: 600px; margin: 0 auto; background: white; }
+        .content { padding: 40px 30px; }
+        
+        /* Header - purple/digest theme */
+        .header { background: linear-gradient(135deg, #805ad5 0%, #553c9a 100%); color: white; padding: 30px; text-align: center; }
+        .header h1 { font-size: 24px; margin-bottom: 8px; }
+        .header p { opacity: 0.9; font-size: 16px; }
+        
+        /* Main content */
+        .main-content { margin: 30px 0; }
+        .greeting { font-size: 18px; margin-bottom: 20px; color: #2d3748; }
+        
+        /* Summary stats */
+        .summary-stats { display: flex; justify-content: space-between; margin: 30px 0; }
+        .stat-card { background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; text-align: center; flex: 1; margin: 0 5px; }
+        .stat-number { font-size: 24px; font-weight: 700; color: #805ad5; margin-bottom: 5px; }
+        .stat-label { font-size: 12px; color: #4a5568; text-transform: uppercase; font-weight: 600; }
+        
+        /* Section */
+        .section { margin: 30px 0; }
+        .section-title { font-size: 18px; font-weight: 600; color: #2d3748; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e2e8f0; }
+        
+        /* Task list */
+        .task-list { margin: 15px 0; }
+        .task-item { background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 15px; margin-bottom: 10px; }
+        .task-item:last-child { margin-bottom: 0; }
+        .task-name { font-weight: 600; color: #2d3748; margin-bottom: 5px; }
+        .task-project { font-size: 14px; color: #4a5568; }
+        
+        /* Empty state */
+        .empty-state { text-align: center; padding: 30px; color: #718096; font-style: italic; }
+        
+        /* Project updates */
+        .update-item { background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 15px; margin-bottom: 10px; }
+        .update-project { font-weight: 600; color: #2d3748; margin-bottom: 5px; }
+        .update-changes { font-size: 14px; color: #4a5568; }
+        
+        /* Action button */
+        .action-section { text-align: center; margin: 35px 0; }
+        .btn { display: inline-block; background: #805ad5; color: white; text-decoration: none; padding: 14px 28px; border-radius: 6px; font-weight: 600; transition: background 0.3s; }
+        .btn:hover { background: #553c9a; }
+        
+        /* Footer */
+        .footer { background: #2d3748; color: #a0aec0; padding: 30px; text-align: center; font-size: 14px; }
+        .footer a { color: #81e6d9; text-decoration: none; }
+        .footer .divider { margin: 15px 0; height: 1px; background: #4a5568; }
+        
+        /* Responsive */
+        @media only screen and (max-width: 600px) {
+            .content { padding: 20px; }
+            .summary-stats { flex-direction: column; }
+            .stat-card { margin: 5px 0; }
+            .btn { padding: 12px 24px; font-size: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>📊 Daily Digest</h1>
+            <p>Your {{timeRange}} productivity summary</p>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content">
+            <div class="main-content">
+                <div class="greeting">
+                    Good morning {{userName}},
+                </div>
+                
+                <p>Here's your daily summary for <strong>{{workspaceName}}</strong>. Keep up the great work!</p>
+                
+                <!-- Summary Stats -->
+                <div class="summary-stats">
+                    <div class="stat-card">
+                        <div class="stat-number">{{summary.completedTasks}}</div>
+                        <div class="stat-label">Tasks Completed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">{{summary.totalTasks}}</div>
+                        <div class="stat-label">Total Tasks</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">{{summary.projectsActive}}</div>
+                        <div class="stat-label">Active Projects</div>
+                    </div>
+                </div>
+                
+                <!-- Completed Tasks Section -->
+                <div class="section">
+                    <div class="section-title">✅ Tasks You Completed</div>
+                    {{#if tasksCompleted.length}}
+                        <div class="task-list">
+                            {{#each tasksCompleted}}
+                            <div class="task-item">
+                                <div class="task-name">{{name}}</div>
+                                <div class="task-project">{{project_name}}</div>
+                            </div>
+                            {{/each}}
+                        </div>
+                    {{else}}
+                        <div class="empty-state">No tasks completed yesterday. Today's a new day to make progress!</div>
+                    {{/if}}
+                </div>
+                
+                <!-- New Assignments Section -->
+                <div class="section">
+                    <div class="section-title">📋 New Task Assignments</div>
+                    {{#if tasksAssigned.length}}
+                        <div class="task-list">
+                            {{#each tasksAssigned}}
+                            <div class="task-item">
+                                <div class="task-name">{{name}}</div>
+                                <div class="task-project">{{project_name}}</div>
+                            </div>
+                            {{/each}}
+                        </div>
+                    {{else}}
+                        <div class="empty-state">No new task assignments. Focus on your current tasks!</div>
+                    {{/if}}
+                </div>
+                
+                <!-- Upcoming Deadlines Section -->
+                {{#if upcomingDeadlines.length}}
+                <div class="section">
+                    <div class="section-title">⏰ Upcoming Deadlines</div>
+                    <div class="task-list">
+                        {{#each upcomingDeadlines}}
+                        <div class="task-item">
+                            <div class="task-name">{{name}}</div>
+                            <div class="task-project">{{project_name}} • Due soon</div>
+                        </div>
+                        {{/each}}
+                    </div>
+                </div>
+                {{/if}}
+                
+                <!-- Project Updates Section -->
+                {{#if projectUpdates.length}}
+                <div class="section">
+                    <div class="section-title">🚀 Project Updates</div>
+                    {{#each projectUpdates}}
+                    <div class="update-item">
+                        <div class="update-project">{{project.name}}</div>
+                        <div class="update-changes">
+                            {{#each updates}}
+                            • {{this}}<br>
+                            {{/each}}
+                        </div>
+                    </div>
+                    {{/each}}
+                </div>
+                {{/if}}
+                
+                <!-- Action Button -->
+                <div class="action-section">
+                    <a href="{{dashboardUrl}}" class="btn">View Dashboard</a>
+                </div>
+                
+                <p>💡 <strong>Tip:</strong> Starting your day by reviewing your tasks can help you prioritize and stay focused. Have a productive day!</p>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p>This email was sent from <strong>ProjectHub-MCP</strong></p>
+            <div class="divider"></div>
+            <p>
+                <a href="{{unsubscribeUrl}}">Unsubscribe from daily digest</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.pool = void 0;
+exports.DatabaseService = exports.pool = void 0;
 exports.testConnection = testConnection;
 const pg_1 = require("pg");
 const dotenv_1 = __importDefault(require("dotenv"));
@@ -18,6 +18,25 @@ exports.pool.on('error', (err) => {
     console.error('Unexpected error on idle client', err);
     process.exit(-1);
 });
+class DatabaseService {
+    pool;
+    constructor() {
+        this.pool = exports.pool;
+    }
+    async query(text, params) {
+        try {
+            const client = await this.pool.connect();
+            const result = await client.query(text, params);
+            client.release();
+            return result;
+        }
+        catch (error) {
+            console.error('Database query error:', error);
+            throw error;
+        }
+    }
+}
+exports.DatabaseService = DatabaseService;
 async function testConnection() {
     try {
         const client = await exports.pool.connect();

@@ -11,6 +11,7 @@ const auth_1 = __importDefault(require("./auth"));
 const workspace_1 = __importDefault(require("./workspace"));
 const mcp_1 = __importDefault(require("./mcp"));
 const reports_1 = require("./reports");
+const notifications_1 = __importDefault(require("./notifications"));
 const auth_2 = require("../middleware/auth");
 const workspace_2 = require("../middleware/workspace");
 const router = (0, express_1.Router)();
@@ -49,4 +50,6 @@ router.use('/webhooks', webhooks_1.default);
 router.use('/mcp', mcp_1.default);
 // Reporting routes (protected by authentication and workspace context)
 router.use('/reports', reports_1.reportRoutes);
+// Notification routes (protected by authentication and workspace context)
+router.use('/notifications', notifications_1.default);
 exports.default = router;
