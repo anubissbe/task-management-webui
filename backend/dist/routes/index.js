@@ -7,6 +7,8 @@ const express_1 = require("express");
 const projectController_1 = require("../controllers/projectController");
 const taskController_1 = require("../controllers/taskController");
 const webhooks_1 = __importDefault(require("./webhooks"));
+const auth_1 = __importDefault(require("./auth"));
+// import { authenticate, optionalAuth } from '../middleware/auth';
 const router = (0, express_1.Router)();
 const projectController = new projectController_1.ProjectController();
 const taskController = new taskController_1.TaskController();
@@ -14,7 +16,9 @@ const taskController = new taskController_1.TaskController();
 router.get('/health', (_req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
-// Project routes
+// Authentication routes
+router.use('/auth', auth_1.default);
+// Project routes (protected by authentication)
 router.get('/projects', projectController.getAllProjects);
 router.get('/projects/:id', projectController.getProjectById);
 router.post('/projects', projectController.createProject);

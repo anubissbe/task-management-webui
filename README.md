@@ -23,17 +23,34 @@ ProjectHub-MCP is a comprehensive project and task management system built speci
 
 ### ✨ Key Features
 
+#### 🎯 Core Project Management
 - **📋 Project Management**: Full CRUD operations with status tracking (planning, active, paused, completed, cancelled)
 - **✅ Task Management**: Create, update, and track tasks with priorities, time estimates, and dependencies
 - **📊 Kanban Board**: Drag-and-drop interface with real-time updates via WebSocket
-- **📈 Analytics Dashboard**: Comprehensive charts for project progress, task distribution, and team productivity
 - **🔗 Webhook Integration**: Enterprise-grade webhook system with retry logic, HMAC security, and delivery tracking
+
+#### 👥 Team Collaboration & Workspaces
+- **🏢 Team Management**: Create and manage teams with role-based permissions
+- **🔐 Advanced Authentication**: JWT-based auth with refresh tokens and session management
+- **👤 User Roles**: Hierarchical permissions (Admin → Manager → Developer → Viewer)
+- **📧 Team Invitations**: Email-based team member invitations with token validation
+- **🛡️ Granular Permissions**: Project-level access control for teams and individuals
+- **🏠 Workspace Isolation**: Secure team-based project access
+
+#### 📊 Advanced Analytics & Reporting
+- **📈 Analytics Dashboard**: Comprehensive charts for project progress, task distribution, and team productivity
+- **📊 Advanced Reporting**: Custom dashboard builder with drag-and-drop widgets
+- **📉 Velocity Tracking**: Sprint velocity, burndown charts, and performance metrics
+- **🔍 Predictive Analytics**: AI-powered insights and bottleneck detection
+- **📤 Export Reports**: PDF, Excel, CSV exports with scheduled delivery
+- **📋 KPI Dashboards**: Real-time team performance and project health metrics
+
+#### 🎨 User Experience
 - **⏱️ Pomodoro Timer**: Built-in time tracking with work/break intervals
 - **📅 Calendar View**: Visualize tasks and deadlines in a calendar format
 - **📱 Responsive Design**: Optimized for desktop, tablet, and mobile devices
 - **🌓 Dark Mode**: Full dark/light theme support with persistence
 - **🔄 Real-time Updates**: WebSocket integration for live collaboration
-- **📤 Export Functionality**: Export tasks and reports in various formats
 - **🔍 Advanced Search**: Filter and search tasks across all projects
 
 ## 🏗️ Architecture
@@ -204,6 +221,34 @@ ProjectHub-Mcp/
 
 ## 🌐 API Documentation
 
+### Authentication Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/auth/login` | User login with email/password |
+| POST | `/api/auth/register` | Register new user account |
+| POST | `/api/auth/logout` | Logout current session |
+| POST | `/api/auth/logout-all` | Logout from all devices |
+| POST | `/api/auth/refresh-token` | Refresh access token |
+| GET | `/api/auth/me` | Get current user profile |
+| POST | `/api/auth/change-password` | Change user password |
+| GET | `/api/auth/health` | Authentication service health |
+
+### Team Management Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/teams` | List user's teams |
+| GET | `/api/teams/:id` | Get team details |
+| POST | `/api/teams` | Create new team |
+| PUT | `/api/teams/:id` | Update team |
+| DELETE | `/api/teams/:id` | Delete team |
+| GET | `/api/teams/:id/members` | Get team members |
+| POST | `/api/teams/:id/invite` | Invite team member |
+| PUT | `/api/teams/:id/members/:userId` | Update member role |
+| DELETE | `/api/teams/:id/members/:userId` | Remove team member |
+| GET | `/api/teams/:id/stats` | Get team statistics |
+
 ### Projects Endpoints
 
 | Method | Endpoint | Description |
@@ -228,6 +273,20 @@ ProjectHub-Mcp/
 | GET | `/api/tasks/:id/history` | Get task history |
 | GET | `/api/next-task` | Get next prioritized task |
 
+### Reporting & Analytics Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/reports/dashboards` | List user dashboards |
+| GET | `/api/reports/dashboards/:id` | Get dashboard details |
+| POST | `/api/reports/dashboards` | Create custom dashboard |
+| PUT | `/api/reports/dashboards/:id` | Update dashboard |
+| DELETE | `/api/reports/dashboards/:id` | Delete dashboard |
+| POST | `/api/reports/widget-data` | Get widget data |
+| POST | `/api/reports/export/:id` | Export dashboard report |
+| GET | `/api/reports/advanced-metrics` | Get advanced analytics |
+| GET | `/api/reports/team-performance` | Team performance metrics |
+
 ### Webhooks Endpoints
 
 | Method | Endpoint | Description |
@@ -246,12 +305,29 @@ ProjectHub-Mcp/
 
 The application uses PostgreSQL with the following main tables:
 
+### Core Tables
 - **projects** - Project management with status tracking
 - **tasks** - Task details with priorities and time tracking
 - **task_dependencies** - Task relationships
 - **task_history** - Audit trail for changes
 - **test_results** - Test execution tracking
 - **task_insights** - Learning insights from completed tasks
+
+### Authentication & User Management
+- **users** - User accounts with roles and preferences
+- **user_sessions** - JWT refresh token management
+- **user_preferences** - Personal settings and dashboard layouts
+- **activity_logs** - Comprehensive audit trail
+
+### Team Management
+- **teams** - Team definitions with metadata
+- **team_members** - Many-to-many team membership with roles
+- **team_invitations** - Email-based invitation system
+- **project_permissions** - Granular project access control
+
+### Webhooks & Integration
+- **webhooks** - Webhook configuration and management
+- **webhook_deliveries** - Delivery tracking with retry logic
 
 ## 🧪 Testing
 
@@ -304,28 +380,34 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 
 ## 📋 Roadmap
 
-### ✅ Completed Features
-- Project and task CRUD operations
-- Kanban board with drag-and-drop
-- Real-time updates via WebSocket
-- Dark mode support
-- Analytics dashboard
-- Pomodoro timer
-- Calendar view
-- Export functionality
-- **Enterprise webhook system** with HMAC security, retry logic, and delivery tracking
+### ✅ Completed Features (v4.1.0)
+- ✅ Project and task CRUD operations
+- ✅ Kanban board with drag-and-drop
+- ✅ Real-time updates via WebSocket
+- ✅ Dark mode support
+- ✅ Analytics dashboard
+- ✅ Pomodoro timer
+- ✅ Calendar view
+- ✅ Export functionality
+- ✅ **Enterprise webhook system** with HMAC security, retry logic, and delivery tracking
+- ✅ **Complete authentication system** with JWT, refresh tokens, and session management
+- ✅ **Team management** with role-based permissions and invitations
+- ✅ **Advanced reporting** with custom dashboards and analytics
+- ✅ **Granular permissions** for project-level access control
 
-### 🚧 In Progress
-- Advanced reporting features
-- Team collaboration tools
-- Mobile app development
-- AI-powered task suggestions
+### 🚧 In Progress (v4.2.0)
+- 🔄 Workspace isolation for multi-tenant support
+- 🔄 Scheduled report generation and automated delivery
+- 🔄 Enhanced mobile responsiveness
+- 🔄 Advanced E2E testing suite
 
-### 📅 Future Plans
-- Multi-language support
-- Advanced automation rules
-- Third-party integrations
-- Performance optimizations
+### 📅 Future Plans (v5.0+)
+- 📱 Native mobile applications (iOS/Android)
+- 🤖 AI-powered task suggestions and automation
+- 🌍 Multi-language support (i18n)
+- 🔗 Third-party integrations (Slack, Microsoft Teams, Jira)
+- 📊 Advanced performance analytics and optimization
+- 🎨 Customizable themes and branding
 
 ## 📄 License
 
