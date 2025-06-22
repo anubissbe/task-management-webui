@@ -3,6 +3,17 @@ export type TaskStatus = 'pending' | 'in_progress' | 'blocked' | 'testing' | 'co
 export type TaskPriority = 'critical' | 'high' | 'medium' | 'low';
 export type WorkspaceRole = 'owner' | 'admin' | 'member';
 export type SubscriptionTier = 'free' | 'starter' | 'professional' | 'enterprise';
+export type UserRole = 'admin' | 'manager' | 'developer' | 'viewer';
+
+export interface User {
+  id: string;
+  email: string;
+  username: string;
+  role: UserRole;
+  workspace_id?: string;
+  created_at: Date;
+  updated_at: Date;
+}
 
 export interface Workspace {
   id: string;

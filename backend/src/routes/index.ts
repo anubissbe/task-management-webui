@@ -6,6 +6,7 @@ import authRoutes from './auth';
 import workspaceRoutes from './workspace';
 import mcpRoutes from './mcp';
 import { reportRoutes } from './reports';
+import notificationRoutes from './notifications';
 import { authenticate } from '../middleware/auth';
 import { workspaceContext } from '../middleware/workspace';
 
@@ -53,5 +54,8 @@ router.use('/mcp', mcpRoutes);
 
 // Reporting routes (protected by authentication and workspace context)
 router.use('/reports', reportRoutes);
+
+// Notification routes (protected by authentication and workspace context)
+router.use('/notifications', notificationRoutes);
 
 export default router;

@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TaskController = void 0;
 const taskService_1 = require("../services/taskService");
 const webhookController_1 = require("./webhookController");
+const notificationService_1 = require("../services/notificationService");
 const zod_1 = require("zod");
 const taskService = new taskService_1.TaskService();
 // Validation schemas
@@ -13,7 +14,8 @@ const createTaskSchema = zod_1.z.object({
     priority: zod_1.z.enum(['critical', 'high', 'medium', 'low']).optional(),
     parent_task_id: zod_1.z.string().uuid().optional(),
     test_criteria: zod_1.z.string().optional(),
-    estimated_hours: zod_1.z.number().positive().optional()
+    estimated_hours: zod_1.z.number().positive().optional(),
+    assigned_to: zod_1.z.string().uuid().optional()
 });
 const updateTaskSchema = zod_1.z.object({
     name: zod_1.z.string().min(1).max(255).optional(),
@@ -25,7 +27,8 @@ const updateTaskSchema = zod_1.z.object({
     actual_hours: zod_1.z.number().positive().optional(),
     implementation_notes: zod_1.z.string().optional(),
     test_criteria: zod_1.z.string().optional(),
-    verification_steps: zod_1.z.string().optional()
+    verification_steps: zod_1.z.string().optional(),
+    assigned_to: zod_1.z.string().uuid().optional()
 });
 const updateStatusSchema = zod_1.z.object({
     status: zod_1.z.enum(['pending', 'in_progress', 'blocked', 'testing', 'completed', 'failed']),
@@ -83,6 +86,63 @@ class TaskController {
             const task = await taskService.createTask(data);
             // Trigger webhooks for task creation
             await (0, webhookController_1.triggerWebhooksForEvent)('task.created', task, undefined, task.project_id);
+            // Trigger notification for task assignment if assigned_to is set
+            if (data.assigned_to && req.user) {
+                try {
+                    // Create mock objects for notification (in production, these would be fetched from database)
+                    const mockAssignedUser = {
+                        id: data.assigned_to,
+                        email: 'user@example.com', // Would be fetched from user table
+                        username: 'User',
+                        role: 'developer',
+                        created_at: new Date(),
+                        updated_at: new Date()
+                    };
+                    const mockProject = {
+                        id: task.project_id,
+                        name: 'Project',
+                        description: 'Project description',
+                        status: 'active',
+                        workspace_id: req.headers['x-workspace-id'],
+                        created_at: new Date(),
+                        updated_at: new Date()
+                    };
+                    const mockWorkspace = {
+                        id: req.headers['x-workspace-id'],
+                        name: 'Workspace',
+                        slug: 'workspace',
+                        owner_id: req.user.id,
+                        settings: {
+                            features: {
+                                team_management: true,
+                                advanced_reporting: true,
+                                webhooks: true,
+                                custom_fields: false
+                            },
+                            limits: {
+                                max_projects: 100,
+                                max_users: 50,
+                                max_storage_gb: 10
+                            }
+                        },
+                        subscription_tier: 'professional',
+                        is_active: true,
+                        created_at: new Date(),
+                        updated_at: new Date()
+                    };
+                    const extendedUser = {
+                        ...req.user,
+                        username: req.user.firstName + ' ' + req.user.lastName,
+                        created_at: new Date(),
+                        updated_at: new Date()
+                    };
+                    await notificationService_1.notificationService.triggerTaskAssignmentNotification(task, mockAssignedUser, extendedUser, mockProject, mockWorkspace);
+                }
+                catch (notificationError) {
+                    console.error('Failed to send task assignment notification:', notificationError);
+                    // Don't fail the request if notification fails
+                }
+            }
             res.status(201).json(task);
         }
         catch (error) {

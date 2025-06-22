@@ -13,6 +13,7 @@ import { BoardSelector } from './pages/BoardSelector';
 import { EnhancedAnalytics } from './pages/EnhancedAnalytics';
 import { WebhookManagement } from './components/WebhookManagement';
 import { WorkspaceSettings } from './pages/WorkspaceSettings';
+import NotificationSettings from './pages/NotificationSettings';
 // import { TestPage } from './TestPage';
 
 const queryClient = new QueryClient({
@@ -58,6 +59,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <WorkspaceSettings />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="settings/notifications" 
+                element={
+                  <ProtectedRoute>
+                    <NotificationSettings />
                   </ProtectedRoute>
                 } 
               />

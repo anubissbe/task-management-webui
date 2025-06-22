@@ -17,6 +17,7 @@ export interface User {
 
 // Extend Express Request to include user and workspace
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Express {
     interface Request {
       user?: User;
@@ -59,7 +60,7 @@ export class JwtUtils {
     try {
       const decoded = jwt.verify(token, this.ACCESS_TOKEN_SECRET) as any;
       return jwtPayloadSchema.parse(decoded);
-    } catch (error) {
+    } catch {
       throw new Error('Invalid access token');
     }
   }
@@ -68,7 +69,7 @@ export class JwtUtils {
     try {
       const decoded = jwt.verify(token, this.REFRESH_TOKEN_SECRET) as any;
       return jwtPayloadSchema.parse(decoded);
-    } catch (error) {
+    } catch {
       throw new Error('Invalid refresh token');
     }
   }
@@ -218,7 +219,7 @@ export const optionalAuth = async (req: Request, _res: Response, next: NextFunct
     }
     
     next();
-  } catch (error) {
+  } catch {
     // For optional auth, we don't return an error, just continue without user
     next();
   }
