@@ -227,7 +227,7 @@ export class McpService {
       const blockedBy = suggestions
         .filter(s => s.type === 'dependency' && s.metadata?.blocks)
         .map(s => s.metadata?.taskId)
-        .filter(Boolean);
+        .filter((taskId): taskId is string => typeof taskId === 'string');
 
       return {
         nextTasks,
