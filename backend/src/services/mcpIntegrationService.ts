@@ -35,10 +35,10 @@ export interface TaskSuggestion {
 }
 
 export class McpIntegrationService {
-  private readonly knowledgeGraphUrl = 'http://192.168.1.24:8001';
-  private readonly ragUrl = 'http://192.168.1.24:8002';
-  private readonly vectorDbUrl = 'http://192.168.1.24:8003';
-  private readonly unifiedDbUrl = 'http://192.168.1.24:8004';
+  private readonly knowledgeGraphUrl = process.env.KNOWLEDGE_GRAPH_URL || 'http://localhost:8001';
+  private readonly ragUrl = process.env.RAG_URL || 'http://localhost:8002';
+  private readonly vectorDbUrl = process.env.VECTOR_DB_URL || 'http://localhost:8003';
+  private readonly unifiedDbUrl = process.env.UNIFIED_DB_URL || 'http://localhost:8004';
 
   // Knowledge Graph Integration
   async extractEntitiesFromTask(task: Task): Promise<EntityData[]> {

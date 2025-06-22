@@ -5,6 +5,7 @@ import webhookRoutes from './webhooks';
 import authRoutes from './auth';
 import workspaceRoutes from './workspace';
 import mcpRoutes from './mcp';
+import { reportRoutes } from './reports';
 import { authenticate } from '../middleware/auth';
 import { workspaceContext } from '../middleware/workspace';
 
@@ -49,5 +50,8 @@ router.use('/webhooks', webhookRoutes);
 
 // MCP Integration routes (protected by authentication and workspace context)
 router.use('/mcp', mcpRoutes);
+
+// Reporting routes (protected by authentication and workspace context)
+router.use('/reports', reportRoutes);
 
 export default router;
