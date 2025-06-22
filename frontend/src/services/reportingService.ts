@@ -110,23 +110,17 @@ export class ReportingService {
   }
 
   static async createDashboard(dashboard: Omit<Dashboard, 'id' | 'createdAt' | 'updatedAt' | 'createdBy'>): Promise<Dashboard> {
-    return api.get('/reports/dashboards', {
-      method: 'POST',
-      body: JSON.stringify(dashboard)
-    });
+    const response = await api.post('/reports/dashboards', dashboard);
+    return response.data;
   }
 
   static async updateDashboard(id: string, updates: Partial<Dashboard>): Promise<Dashboard> {
-    return api.get(`/reports/dashboards/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(updates)
-    });
+    const response = await api.put(`/reports/dashboards/${id}`, updates);
+    return response.data;
   }
 
   static async deleteDashboard(id: string): Promise<void> {
-    return api.get(`/reports/dashboards/${id}`, {
-      method: 'DELETE'
-    });
+    await api.delete(`/reports/dashboards/${id}`);
   }
 
   // Widget data fetching
