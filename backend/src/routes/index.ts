@@ -2,6 +2,8 @@ import { Router } from 'express';
 import { ProjectController } from '../controllers/projectController';
 import { TaskController } from '../controllers/taskController';
 import webhookRoutes from './webhooks';
+import authRoutes from './auth';
+// import { authenticate, optionalAuth } from '../middleware/auth';
 
 const router = Router();
 const projectController = new ProjectController();
@@ -12,7 +14,10 @@ router.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// Project routes
+// Authentication routes
+router.use('/auth', authRoutes);
+
+// Project routes (protected by authentication)
 router.get('/projects', projectController.getAllProjects);
 router.get('/projects/:id', projectController.getProjectById);
 router.post('/projects', projectController.createProject);

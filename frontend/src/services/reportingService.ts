@@ -1,0 +1,325 @@
+import { apiRequest } from './api';
+
+export interface ReportFilter {
+  dateRange?: {
+    start: string;
+    end: string;
+  };
+  projectIds?: string[];
+  teamIds?: string[];
+  userIds?: string[];
+  status?: string[];
+  priority?: string[];
+  customFilters?: Record<string, any>;
+}
+
+export interface ChartData {
+  labels: string[];
+  datasets: {
+    label: string;
+    data: number[];
+    backgroundColor?: string | string[];
+    borderColor?: string | string[];
+    borderWidth?: number;
+    type?: string;
+  }[];
+}
+
+export interface ReportWidget {
+  id: string;
+  type: 'chart' | 'metric' | 'table' | 'list';
+  title: string;
+  subtitle?: string;
+  config: {
+    chartType?: 'line' | 'bar' | 'pie' | 'doughnut' | 'area' | 'scatter';
+    dataSource: string;
+    aggregation?: 'count' | 'sum' | 'avg' | 'min' | 'max';
+    groupBy?: string;
+    filters?: ReportFilter;
+    timeGranularity?: 'hour' | 'day' | 'week' | 'month' | 'quarter' | 'year';
+  };
+  position: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  };
+  data?: any;
+}
+
+export interface Dashboard {
+  id: string;
+  name: string;
+  description?: string;
+  widgets: ReportWidget[];
+  filters: ReportFilter;
+  isPublic: boolean;
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AdvancedMetrics {
+  velocityTrend: {
+    period: string;
+    tasksCompleted: number;
+    storyPoints: number;
+    burndownData: { date: string; remaining: number; ideal: number }[];
+  }[];
+  performanceMetrics: {
+    teamId: string;
+    teamName: string;
+    completionRate: number;
+    averageTaskTime: number;
+    qualityScore: number;
+    collaborationIndex: number;
+  }[];
+  predictiveAnalytics: {
+    estimatedCompletion: string;
+    riskFactors: { factor: string; impact: 'low' | 'medium' | 'high'; probability: number }[];
+    recommendations: string[];
+  };
+  bottleneckAnalysis: {
+    stage: string;
+    averageTime: number;
+    taskCount: number;
+    efficiency: number;
+  }[];
+}
+
+export interface ExportOptions {
+  format: 'pdf' | 'excel' | 'csv' | 'json';
+  includeCharts: boolean;
+  includeRawData: boolean;
+  dateRange?: {
+    start: string;
+    end: string;
+  };
+  templateId?: string;
+}
+
+export class ReportingService {
+  // Dashboard management
+  static async getDashboards(): Promise<Dashboard[]> {
+    return apiRequest('/reports/dashboards');
+  }
+
+  static async getDashboard(id: string): Promise<Dashboard> {
+    return apiRequest(`/reports/dashboards/${id}`);
+  }
+
+  static async createDashboard(dashboard: Omit<Dashboard, 'id' | 'createdAt' | 'updatedAt' | 'createdBy'>): Promise<Dashboard> {
+    return apiRequest('/reports/dashboards', {
+      method: 'POST',
+      body: JSON.stringify(dashboard)
+    });
+  }
+
+  static async updateDashboard(id: string, updates: Partial<Dashboard>): Promise<Dashboard> {
+    return apiRequest(`/reports/dashboards/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(updates)
+    });
+  }
+
+  static async deleteDashboard(id: string): Promise<void> {
+    return apiRequest(`/reports/dashboards/${id}`, {
+      method: 'DELETE'
+    });
+  }
+
+  // Widget data fetching
+  static async getWidgetData(widget: ReportWidget, filters?: ReportFilter): Promise<any> {
+    const requestData = {
+      ...widget.config,
+      filters: { ...widget.config.filters, ...filters }
+    };
+
+    return apiRequest('/reports/widget-data', {
+      method: 'POST',
+      body: JSON.stringify(requestData)
+    });
+  }
+
+  // Predefined reports
+  static async getProjectSummary(projectId: string, dateRange?: { start: string; end: string }): Promise<any> {
+    const params = new URLSearchParams({
+      projectId,
+      ...(dateRange && { start: dateRange.start, end: dateRange.end })
+    });
+
+    return apiRequest(`/reports/project-summary?${params}`);
+  }
+
+  static async getTeamPerformance(teamId?: string, dateRange?: { start: string; end: string }): Promise<any> {
+    const params = new URLSearchParams({
+      ...(teamId && { teamId }),
+      ...(dateRange && { start: dateRange.start, end: dateRange.end })
+    });
+
+    return apiRequest(`/reports/team-performance?${params}`);
+  }
+
+  static async getTimeTracking(filters?: ReportFilter): Promise<any> {
+    return apiRequest('/reports/time-tracking', {
+      method: 'POST',
+      body: JSON.stringify({ filters })
+    });
+  }
+
+  static async getTaskAnalytics(filters?: ReportFilter): Promise<ChartData> {
+    return apiRequest('/reports/task-analytics', {
+      method: 'POST',
+      body: JSON.stringify({ filters })
+    });
+  }
+
+  // Advanced analytics
+  static async getAdvancedMetrics(filters?: ReportFilter): Promise<AdvancedMetrics> {
+    return apiRequest('/reports/advanced-metrics', {
+      method: 'POST',
+      body: JSON.stringify({ filters })
+    });
+  }
+
+  static async getBurndownChart(projectId: string, sprintId?: string): Promise<ChartData> {
+    const params = new URLSearchParams({
+      projectId,
+      ...(sprintId && { sprintId })
+    });
+
+    return apiRequest(`/reports/burndown?${params}`);
+  }
+
+  static async getVelocityChart(teamId?: string, periods = 6): Promise<ChartData> {
+    const params = new URLSearchParams({
+      periods: periods.toString(),
+      ...(teamId && { teamId })
+    });
+
+    return apiRequest(`/reports/velocity?${params}`);
+  }
+
+  static async getCumulativeFlow(projectId: string, dateRange?: { start: string; end: string }): Promise<ChartData> {
+    const params = new URLSearchParams({
+      projectId,
+      ...(dateRange && { start: dateRange.start, end: dateRange.end })
+    });
+
+    return apiRequest(`/reports/cumulative-flow?${params}`);
+  }
+
+  // Export functionality
+  static async exportReport(dashboardId: string, options: ExportOptions): Promise<Blob> {
+    const response = await fetch(`/api/reports/export/${dashboardId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('access_token')}`
+      },
+      body: JSON.stringify(options)
+    });
+
+    if (!response.ok) {
+      throw new Error('Export failed');
+    }
+
+    return response.blob();
+  }
+
+  static async scheduleReport(dashboardId: string, schedule: {
+    frequency: 'daily' | 'weekly' | 'monthly';
+    recipients: string[];
+    format: 'pdf' | 'excel';
+    dayOfWeek?: number; // For weekly (0-6)
+    dayOfMonth?: number; // For monthly (1-31)
+    hour?: number; // 0-23
+  }): Promise<void> {
+    return apiRequest(`/reports/schedule/${dashboardId}`, {
+      method: 'POST',
+      body: JSON.stringify(schedule)
+    });
+  }
+
+  // Template management
+  static async getReportTemplates(): Promise<any[]> {
+    return apiRequest('/reports/templates');
+  }
+
+  static async createReportTemplate(template: {
+    name: string;
+    description?: string;
+    widgets: ReportWidget[];
+    category: string;
+  }): Promise<any> {
+    return apiRequest('/reports/templates', {
+      method: 'POST',
+      body: JSON.stringify(template)
+    });
+  }
+
+  // Real-time data
+  static async subscribeToRealtimeUpdates(dashboardId: string, callback: (data: any) => void): Promise<() => void> {
+    // Implementation would depend on WebSocket setup
+    // For now, return a cleanup function
+    return () => {};
+  }
+
+  // Utility functions
+  static generateDateRange(period: 'last7days' | 'last30days' | 'thisMonth' | 'lastMonth' | 'thisQuarter' | 'thisYear'): { start: string; end: string } {
+    const now = new Date();
+    const start = new Date();
+    const end = new Date();
+
+    switch (period) {
+      case 'last7days':
+        start.setDate(now.getDate() - 7);
+        break;
+      case 'last30days':
+        start.setDate(now.getDate() - 30);
+        break;
+      case 'thisMonth':
+        start.setDate(1);
+        break;
+      case 'lastMonth':
+        start.setMonth(now.getMonth() - 1);
+        start.setDate(1);
+        end.setDate(0); // Last day of previous month
+        break;
+      case 'thisQuarter':
+        const quarter = Math.floor(now.getMonth() / 3);
+        start.setMonth(quarter * 3);
+        start.setDate(1);
+        break;
+      case 'thisYear':
+        start.setMonth(0);
+        start.setDate(1);
+        break;
+    }
+
+    return {
+      start: start.toISOString().split('T')[0],
+      end: end.toISOString().split('T')[0]
+    };
+  }
+
+  static getDefaultColors(): string[] {
+    return [
+      '#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6',
+      '#06B6D4', '#84CC16', '#F97316', '#EC4899', '#6366F1'
+    ];
+  }
+
+  static formatMetric(value: number, type: 'number' | 'percentage' | 'currency' | 'time'): string {
+    switch (type) {
+      case 'percentage':
+        return `${(value * 100).toFixed(1)}%`;
+      case 'currency':
+        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
+      case 'time':
+        return `${Math.floor(value / 60)}h ${value % 60}m`;
+      default:
+        return new Intl.NumberFormat('en-US').format(value);
+    }
+  }
+}

@@ -1,84 +1,68 @@
-# Dependencies
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-.pnp
-.pnp.js
+# ==============================================
+# ProjectHub-MCP .gitignore
+# ==============================================
 
-# Production builds
-dist/
-dist-ssr/
-build/
-*.local
-
-# Environment files
+# Environment Variables
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
-.env*.local
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-!.vscode/settings.json
-.idea/
+# Dependency directories
+node_modules/
+*/node_modules/
+frontend/node_modules/
+backend/node_modules/
+tests/node_modules/
+
+# Build outputs
+build/
+dist/
+*/build/
+*/dist/
+frontend/build/
+frontend/dist/
+backend/build/
+backend/dist/
+
+# Runtime and temp files
+*.log
+logs/
+*.tmp
+*.temp
+.cache/
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+Thumbs.db
+
+# IDE and editor files
+.vscode/
+.idea/
 *.swp
 *.swo
 *~
+.project
+.classpath
 
-# Testing
+# Coverage and test reports
 coverage/
 .nyc_output/
-*.lcov
-.coverage
-htmlcov/
-.pytest_cache/
 test-results/
-playwright-report/
-playwright/.cache/
+test-reports/
+*.lcov
+junit.xml
 
-# Logs
-logs/
-*.log
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
-
-# Database
+# Database files
 *.sqlite
 *.sqlite3
 *.db
-postgres_data/
 
-# Temporary files
-*.tmp
-*.temp
-.tmp/
-.temp/
-temp/
-tmp/
-cache/
+# Backup files
+*.bak
+*.backup
+backup_*.sql
 
-# OS files
+# OS generated files
 .DS_Store
 .DS_Store?
 ._*
@@ -86,61 +70,116 @@ cache/
 .Trashes
 ehthumbs.db
 Thumbs.db
-desktop.ini
 
 # Docker
+.docker/
 docker-compose.override.yml
 
-# Backup files
-*.bak
-*.backup
-*~
-*.swp
-*.swo
+# Security
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+secrets/
+private/
 
-# TypeScript
-*.tsbuildinfo
+# Local development
+.local/
+.tmp/
+uploads/
+storage/
+
+# Package manager files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Optional npm cache directory
 .npm
 
-# Parcel
-.cache
-.parcel-cache
-
-# ESLint
+# Optional eslint cache
 .eslintcache
 
-# Stylelint
-.stylelintcache
+# Storybook build outputs
+storybook-static
 
-# Optional: Uncomment if you want to ignore lock files
-# package-lock.json
-# yarn.lock
-# pnpm-lock.yaml
+# Temporary folders
+tmp/
+temp/
 
-# Debug files
-debug-*.png
-*.log.json
+# Editor backup files
+*~
+.#*
+\#*#
+.#*
+.*.swp
+.*.swo
+
+# TypeScript incremental compilation
+*.tsbuildinfo
+
+# Playwright
+/test-results/
+/playwright-report/
+/playwright/.cache/
 
 # Miscellaneous
-.grunt
-.lock-wscript
-.node_repl_history
-.npm
-.yarn-integrity
-
-# Archive and temporary files
-_archive/
-*.rar
-*.zip
+*.tgz
 *.tar.gz
-test-*.txt
-*-test-*.txt
-scale-test-*.txt
 
-# Frontend build artifacts
-frontend/assets/
+# ==============================================
+# Project-specific ignores
+# ==============================================
 
-# Keep these test files and screenshots
-# They are documentation
-!docs/images/*.png
-!tests/screenshots/*.png
+# Migration scripts (if they contain sensitive data)
+# migrations/seed-*.sql
+
+# Local configuration overrides
+config.local.json
+settings.local.json
+
+# User-uploaded files
+uploads/*
+!uploads/.gitkeep
+
+# Generated documentation
+docs/api/generated/
+
+# Local database dumps
+*.dump
+dump_*.sql
+
+# ==============================================
+# Never commit these file types
+# ==============================================
+
+# Passwords, tokens, and secrets
+*password*
+*secret*
+*token*
+*key*
+*credentials*
+
+# Except for examples and templates
+!.env.example
+!example-*.json
+!template-*.json
+!*example.js
+!*template.js
+
+# Production configurations
+docker-compose.prod.yml
+docker-compose.production.yml
+
+# Monitoring and analytics
+.vscode/settings.json
+.history/
