@@ -67,6 +67,12 @@ export interface DigestData {
   };
 }
 
+export interface PasswordResetData {
+  user: User;
+  resetToken: string;
+  resetUrl: string;
+}
+
 export class EmailService {
   private transporter!: nodemailer.Transporter;
   private templatesCache: Map<string, handlebars.TemplateDelegate> = new Map();
@@ -331,6 +337,30 @@ export class EmailService {
 
     return this.sendEmail({
       to: digestData.user.email,
+      subject: emailTemplate.subject,
+      text: emailTemplate.text,
+      html: emailTemplate.html,
+    });
+  }
+
+  // Password reset notification
+  public async sendPasswordResetEmail(data: PasswordResetData): Promise<boolean> {
+    if (!data.user || !data.resetToken || !data.resetUrl) {
+      console.error('Missing required data for password reset notification');
+      return false;
+    }
+
+    const templateData = {
+      subject: 'Password Reset - ProjectHub',
+      userName: data.user.username,
+      resetToken: data.resetToken,
+      resetUrl: data.resetUrl,
+    };
+
+    const emailTemplate = await this.renderTemplate('password-reset', templateData);
+
+    return this.sendEmail({
+      to: data.user.email,
       subject: emailTemplate.subject,
       text: emailTemplate.text,
       html: emailTemplate.html,

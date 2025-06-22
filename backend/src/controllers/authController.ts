@@ -27,6 +27,15 @@ const changePasswordSchema = z.object({
   newPassword: z.string().min(8, 'New password must be at least 8 characters')
 });
 
+const passwordResetRequestSchema = z.object({
+  email: z.string().email('Invalid email format')
+});
+
+const passwordResetSchema = z.object({
+  token: z.string().min(1, 'Reset token is required'),
+  newPassword: z.string().min(8, 'New password must be at least 8 characters')
+});
+
 
 export class AuthController {
   static async login(req: Request, res: Response) {
@@ -394,6 +403,159 @@ export class AuthController {
     }
   }
 
-  // Additional methods for password reset would go here
-  // requestPasswordReset, resetPassword, etc.
+  static async requestPasswordReset(req: Request, res: Response) {
+    try {
+      const { email } = passwordResetRequestSchema.parse(req.body);
+
+      // Get user by email
+      const user = await AuthService.getUserByEmail(email);
+      
+      // Always return success to prevent email enumeration
+      // regardless of whether the user exists
+      if (!user) {
+        return res.json({ 
+          message: 'If an account with that email exists, we have sent a password reset link.' 
+        });
+      }
+
+      // Generate password reset token
+      const resetToken = await AuthService.generatePasswordResetToken(user.id);
+
+      // Send password reset email (if email service is available)
+      try {
+        // Import EmailService dynamically to avoid circular dependency
+        const { EmailService } = await import('../services/emailService');
+        
+        const emailService = new EmailService();
+        await emailService.sendPasswordResetEmail({
+          user: {
+            id: user.id,
+            email: user.email,
+            username: `${user.first_name} ${user.last_name}`,
+            role: user.role as any,
+            workspace_id: undefined,
+            created_at: user.created_at,
+            updated_at: user.updated_at
+          },
+          resetToken,
+          resetUrl: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/auth/reset-password?token=${resetToken}`
+        });
+      } catch (emailError) {
+        console.error('Failed to send password reset email:', emailError);
+        // Don't throw error - return success anyway for security
+      }
+
+      res.json({ 
+        message: 'If an account with that email exists, we have sent a password reset link.' 
+      });
+
+    } catch (error) {
+      console.error('Password reset request error:', error);
+      
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({
+          error: 'Validation failed',
+          details: error.errors
+        });
+      }
+
+      res.status(500).json({
+        error: 'Internal server error',
+        code: 'INTERNAL_ERROR'
+      });
+    }
+  }
+
+  static async resetPassword(req: Request, res: Response) {
+    try {
+      const { token, newPassword } = passwordResetSchema.parse(req.body);
+
+      // Verify and consume the reset token
+      const userId = await AuthService.verifyPasswordResetToken(token);
+      if (!userId) {
+        return res.status(400).json({
+          error: 'Invalid or expired reset token',
+          code: 'INVALID_RESET_TOKEN'
+        });
+      }
+
+      // Get user to ensure they still exist
+      const user = await AuthService.getUserById(userId);
+      if (!user) {
+        return res.status(404).json({
+          error: 'User not found',
+          code: 'USER_NOT_FOUND'
+        });
+      }
+
+      // Hash new password
+      const saltRounds = 12;
+      const newPasswordHash = await bcrypt.hash(newPassword, saltRounds);
+
+      // Update password
+      await AuthService.updatePassword(user.id, newPasswordHash);
+
+      // Deactivate all user sessions for security
+      await AuthService.deactivateAllUserSessions(user.id);
+
+      // Log the password reset activity
+      await AuthService.logActivity(
+        user.id,
+        'password_reset',
+        'user',
+        user.id,
+        { method: 'reset_token' },
+        req
+      );
+
+      res.json({ message: 'Password reset successfully' });
+
+    } catch (error) {
+      console.error('Password reset error:', error);
+      
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({
+          error: 'Validation failed',
+          details: error.errors
+        });
+      }
+
+      res.status(500).json({
+        error: 'Internal server error',
+        code: 'INTERNAL_ERROR'
+      });
+    }
+  }
+
+  static async health(_req: Request, res: Response) {
+    try {
+      // Basic health check for authentication service
+      const healthStatus = {
+        status: 'healthy',
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
+        version: process.env.npm_package_version || '1.0.0',
+        database: 'connected',
+        jwt: 'operational'
+      };
+
+      // Test database connection
+      try {
+        await AuthService.getUserById('health-check-test-id');
+        healthStatus.database = 'connected';
+      } catch {
+        healthStatus.database = 'disconnected';
+        healthStatus.status = 'degraded';
+      }
+
+      res.json(healthStatus);
+    } catch (error) {
+      console.error('Health check error:', error);
+      res.status(500).json({
+        status: 'unhealthy',
+        timestamp: new Date().toISOString(),
+        error: 'Health check failed'
+      });
+    }
+  }
 }

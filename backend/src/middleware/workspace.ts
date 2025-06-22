@@ -34,8 +34,8 @@ export async function workspaceContext(req: Request, res: Response, next: NextFu
     }
 
     // Priority 4: Use user's current workspace
-    if (!workspaceId && req.user.currentWorkspaceId) {
-      workspaceId = req.user.currentWorkspaceId;
+    if (!workspaceId && req.user.workspace_id) {
+      workspaceId = req.user.workspace_id;
     }
 
     // If no workspace specified, get user's first workspace
