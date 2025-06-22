@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { TeamService, Team, TeamMember } from '../services/teamService';
 import CreateTeamModal from './CreateTeamModal';
@@ -15,19 +15,7 @@ const TeamManagement: React.FC = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showInviteModal, setShowInviteModal] = useState(false);
 
-  // Load user's teams
-  useEffect(() => {
-    loadTeams();
-  }, []);
-
-  // Load team members when selected team changes
-  useEffect(() => {
-    if (selectedTeam) {
-      loadTeamMembers();
-    }
-  }, [selectedTeam]);
-
-  const loadTeams = async () => {
+  const loadTeams = useCallback(async () => {
     try {
       setLoading(true);
       const myTeams = await TeamService.getMyTeams();
@@ -41,9 +29,9 @@ const TeamManagement: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedTeam]);
 
-  const loadTeamMembers = async () => {
+  const loadTeamMembers = useCallback(async () => {
     if (!selectedTeam) return;
 
     try {
@@ -52,30 +40,34 @@ const TeamManagement: React.FC = () => {
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load team members');
     }
-  };
+  }, [selectedTeam]);
+
+  // Load user's teams
+  useEffect(() => {
+    loadTeams();
+  }, [loadTeams]);
+
+  // Load team members when selected team changes
+  useEffect(() => {
+    if (selectedTeam) {
+      loadTeamMembers();
+    }
+  }, [selectedTeam, loadTeamMembers]);
 
   const handleCreateTeam = async (teamData: { name: string; description?: string; slug: string }) => {
-    try {
-      const newTeam = await TeamService.createTeam(teamData);
-      setTeams([...teams, newTeam]);
-      setSelectedTeam(newTeam);
-      setShowCreateModal(false);
-    } catch (err) {
-      throw err; // Let the modal handle the error
-    }
+    const newTeam = await TeamService.createTeam(teamData);
+    setTeams([...teams, newTeam]);
+    setSelectedTeam(newTeam);
+    setShowCreateModal(false);
   };
 
   const handleInviteMember = async (email: string, role: 'admin' | 'member' | 'viewer') => {
     if (!selectedTeam) return;
 
-    try {
-      await TeamService.inviteTeamMember(selectedTeam.id, { email, role });
-      setShowInviteModal(false);
-      // Refresh team members list
-      await loadTeamMembers();
-    } catch (err) {
-      throw err; // Let the modal handle the error
-    }
+    await TeamService.inviteTeamMember(selectedTeam.id, { email, role });
+    setShowInviteModal(false);
+    // Refresh team members list
+    await loadTeamMembers();
   };
 
   const handleUpdateMemberRole = async (userId: string, role: 'admin' | 'member' | 'viewer') => {

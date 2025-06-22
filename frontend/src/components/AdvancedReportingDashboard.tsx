@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { ReportingService, Dashboard, ReportWidget, ReportFilter, AdvancedMetrics } from '../services/reportingService';
+import { ReportingService, Dashboard, ReportFilter, AdvancedMetrics } from '../services/reportingService';
 import ReportWidgetComponent from './ReportWidget';
 import ReportFilters from './ReportFilters';
 import DashboardBuilder from './DashboardBuilder';
@@ -14,17 +14,7 @@ const AdvancedReportingDashboard: React.FC = () => {
   const [viewMode, setViewMode] = useState<'view' | 'edit' | 'create'>('view');
   const [showFilters, setShowFilters] = useState(false);
 
-  // Load dashboards on component mount
-  useEffect(() => {
-    loadDashboards();
-  }, []);
-
-  // Load advanced metrics when filters change
-  useEffect(() => {
-    loadAdvancedMetrics();
-  }, [filters]);
-
-  const loadDashboards = async () => {
+  const loadDashboards = useCallback(async () => {
     try {
       setLoading(true);
       const dashboardList = await ReportingService.getDashboards();
@@ -38,16 +28,26 @@ const AdvancedReportingDashboard: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedDashboard]);
 
-  const loadAdvancedMetrics = async () => {
+  const loadAdvancedMetrics = useCallback(async () => {
     try {
       const metrics = await ReportingService.getAdvancedMetrics(filters);
       setAdvancedMetrics(metrics);
     } catch (err) {
       console.error('Failed to load advanced metrics:', err);
     }
-  };
+  }, [filters]);
+
+  // Load dashboards on component mount
+  useEffect(() => {
+    loadDashboards();
+  }, [loadDashboards]);
+
+  // Load advanced metrics when filters change
+  useEffect(() => {
+    loadAdvancedMetrics();
+  }, [loadAdvancedMetrics]);
 
   const handleCreateDashboard = async (dashboardData: Omit<Dashboard, 'id' | 'createdAt' | 'updatedAt' | 'createdBy'>) => {
     try {

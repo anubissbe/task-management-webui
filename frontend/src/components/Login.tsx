@@ -27,7 +27,7 @@ export const Login: React.FC<LoginProps> = ({ onToggleMode, onForgotPassword }) 
     try {
       await login(formData);
       // Navigation will be handled by the authentication state change
-    } catch (err) {
+    } catch {
       // Error is handled by AuthContext
     }
   };
