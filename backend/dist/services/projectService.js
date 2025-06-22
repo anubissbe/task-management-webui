@@ -3,9 +3,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProjectService = void 0;
 const database_1 = require("../config/database");
 class ProjectService {
-    async getAllProjects() {
+    async getAllProjects(workspaceId) {
         const query = `
       SELECT * FROM project_management.projects
+      WHERE workspace_id = $1
       ORDER BY 
         CASE status 
           WHEN 'active' THEN 1
@@ -16,30 +17,31 @@ class ProjectService {
         END,
         created_at DESC
     `;
-        const result = await database_1.pool.query(query);
+        const result = await database_1.pool.query(query, [workspaceId]);
         return result.rows;
     }
-    async getProjectById(id) {
-        const query = 'SELECT * FROM project_management.projects WHERE id = $1';
-        const result = await database_1.pool.query(query, [id]);
+    async getProjectById(id, workspaceId) {
+        const query = 'SELECT * FROM project_management.projects WHERE id = $1 AND workspace_id = $2';
+        const result = await database_1.pool.query(query, [id, workspaceId]);
         return result.rows[0] || null;
     }
     async createProject(data) {
         const query = `
       INSERT INTO project_management.projects 
-      (name, description, requirements, acceptance_criteria, status)
-      VALUES ($1, $2, $3, $4, 'planning')
+      (name, description, requirements, acceptance_criteria, status, workspace_id)
+      VALUES ($1, $2, $3, $4, 'planning', $5)
       RETURNING *
     `;
         const result = await database_1.pool.query(query, [
             data.name,
             data.description,
             data.requirements,
-            data.acceptance_criteria
+            data.acceptance_criteria,
+            data.workspace_id
         ]);
         return result.rows[0];
     }
-    async updateProject(id, data) {
+    async updateProject(id, data, workspaceId) {
         // If trying to mark as completed, check if all tasks are done
         if (data.status === 'completed') {
             const taskStats = await database_1.pool.query(`
@@ -63,7 +65,7 @@ class ProjectService {
             }
         }
         if (updates.length === 0) {
-            return this.getProjectById(id);
+            return this.getProjectById(id, workspaceId);
         }
         // Add completed_at timestamp if marking as completed
         if (data.status === 'completed') {

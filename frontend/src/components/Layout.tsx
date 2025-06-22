@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { ThemeToggle } from './ThemeToggle';
 import { useAuth } from '../contexts/AuthContext';
+import WorkspaceSelector from './WorkspaceSelector';
 import clsx from 'clsx';
 
 export const Layout: React.FC = () => {
@@ -111,6 +112,7 @@ export const Layout: React.FC = () => {
               </div>
             </div>
             <div className="flex items-center space-x-4">
+              <WorkspaceSelector />
               <ThemeToggle />
               
               {/* User Profile Menu */}

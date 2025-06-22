@@ -41,7 +41,19 @@ api.interceptors.request.use(
     if (config.baseURL !== dynamicUrl) {
       config.baseURL = dynamicUrl;
     }
-    // Add auth token here if needed
+    
+    // Add auth token if available
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    
+    // Add workspace context if available
+    const workspaceId = localStorage.getItem('current_workspace_id');
+    if (workspaceId && !config.headers['X-Workspace-Id']) {
+      config.headers['X-Workspace-Id'] = workspaceId;
+    }
+    
     return config;
   },
   (error) => {

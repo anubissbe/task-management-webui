@@ -2,9 +2,10 @@ import { pool } from '../config/database';
 import { Project, ProjectStats } from '../types';
 
 export class ProjectService {
-  async getAllProjects(): Promise<Project[]> {
+  async getAllProjects(workspaceId: string): Promise<Project[]> {
     const query = `
       SELECT * FROM project_management.projects
+      WHERE workspace_id = $1
       ORDER BY 
         CASE status 
           WHEN 'active' THEN 1
@@ -16,13 +17,13 @@ export class ProjectService {
         created_at DESC
     `;
     
-    const result = await pool.query(query);
+    const result = await pool.query(query, [workspaceId]);
     return result.rows;
   }
 
-  async getProjectById(id: string): Promise<Project | null> {
-    const query = 'SELECT * FROM project_management.projects WHERE id = $1';
-    const result = await pool.query(query, [id]);
+  async getProjectById(id: string, workspaceId: string): Promise<Project | null> {
+    const query = 'SELECT * FROM project_management.projects WHERE id = $1 AND workspace_id = $2';
+    const result = await pool.query(query, [id, workspaceId]);
     return result.rows[0] || null;
   }
 
@@ -31,11 +32,12 @@ export class ProjectService {
     description?: string;
     requirements?: string;
     acceptance_criteria?: string;
+    workspace_id: string;
   }): Promise<Project> {
     const query = `
       INSERT INTO project_management.projects 
-      (name, description, requirements, acceptance_criteria, status)
-      VALUES ($1, $2, $3, $4, 'planning')
+      (name, description, requirements, acceptance_criteria, status, workspace_id)
+      VALUES ($1, $2, $3, $4, 'planning', $5)
       RETURNING *
     `;
     
@@ -43,13 +45,14 @@ export class ProjectService {
       data.name,
       data.description,
       data.requirements,
-      data.acceptance_criteria
+      data.acceptance_criteria,
+      data.workspace_id
     ]);
     
     return result.rows[0];
   }
 
-  async updateProject(id: string, data: Partial<Project>): Promise<Project | null> {
+  async updateProject(id: string, data: Partial<Project>, workspaceId: string): Promise<Project | null> {
     // If trying to mark as completed, check if all tasks are done
     if (data.status === 'completed') {
       const taskStats = await pool.query(`
@@ -77,7 +80,7 @@ export class ProjectService {
     }
 
     if (updates.length === 0) {
-      return this.getProjectById(id);
+      return this.getProjectById(id, workspaceId);
     }
 
     // Add completed_at timestamp if marking as completed

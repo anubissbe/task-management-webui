@@ -12,6 +12,7 @@ import { Board } from './pages/Board';
 import { BoardSelector } from './pages/BoardSelector';
 import { EnhancedAnalytics } from './pages/EnhancedAnalytics';
 import { WebhookManagement } from './components/WebhookManagement';
+import { WorkspaceSettings } from './pages/WorkspaceSettings';
 // import { TestPage } from './TestPage';
 
 const queryClient = new QueryClient({
@@ -49,6 +50,14 @@ function App() {
                 element={
                   <ProtectedRoute requiredRole="developer">
                     <WebhookManagement />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="workspace/:id/settings" 
+                element={
+                  <ProtectedRoute>
+                    <WorkspaceSettings />
                   </ProtectedRoute>
                 } 
               />
