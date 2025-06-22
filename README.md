@@ -51,6 +51,18 @@ ProjectHub-MCP is a comprehensive project and task management system built speci
 - **📅 Scheduled Reports**: Automated report generation and email delivery
 - **📐 Widget Library**: 6+ widget types including charts, tables, metrics, and custom visualizations
 
+#### 📧 Email Notifications System (✨ NEW v4.4.0)
+- **📬 SMTP Email Service**: Complete email delivery system with nodemailer and template caching
+- **🎨 Responsive Templates**: 5 professional HTML email templates for all notification types
+- **⚙️ User Preferences**: Comprehensive notification settings with timezone and scheduling support
+- **⏰ Automated Scheduling**: Cron-based digest delivery and intelligent due date reminders
+- **🛡️ Rate Limiting**: Database-backed spam prevention with configurable limits per notification type
+- **🔗 Unsubscribe System**: Token-based unsubscribe with user-friendly HTML pages
+- **🧪 Live Testing**: Complete notification settings UI with real-time email testing
+- **🔌 Deep Integration**: Automatic triggers in task assignments and project updates
+- **📊 Monitoring**: Comprehensive logging, health checks, and delivery statistics
+- **🔒 Security**: Environment-based configuration with no sensitive data exposure
+
 #### 🎨 User Experience
 - **⏱️ Pomodoro Timer**: Built-in time tracking with work/break intervals
 - **📅 Calendar View**: Visualize tasks and deadlines in a calendar format
@@ -330,6 +342,18 @@ ProjectHub-Mcp/
 | GET | `/api/reports/templates` | Get report templates for quick setup |
 | POST | `/api/reports/templates` | Create reusable report templates |
 
+### Email Notifications Endpoints (✨ NEW v4.4.0)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/notifications/preferences` | Get user notification preferences and settings |
+| PUT | `/api/notifications/preferences` | Update notification preferences (timezone, digest settings) |
+| POST | `/api/notifications/test` | Send test notification (development only) |
+| GET | `/api/notifications/health` | Email service health check and status |
+| GET | `/api/notifications/stats` | Rate limiting statistics and delivery metrics |
+| GET | `/api/notifications/unsubscribe` | Handle unsubscribe requests with token validation |
+| POST | `/api/notifications/trigger-digest` | Manually trigger digest emails (admin only) |
+
 ### Webhooks Endpoints
 
 | Method | Endpoint | Description |
@@ -451,9 +475,19 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
   - ✅ Predictive analytics with risk assessment and insights
   - ✅ Advanced filtering system for reports and analytics
 
-### 🚧 In Progress (v4.4.0)
+### ✅ Latest Features (v4.4.0) 
+- ✅ **Email notifications system** with customizable preferences (✨ NEW v4.4.0):
+  - ✅ SMTP email service with template rendering and caching
+  - ✅ 5 responsive HTML email templates (assignments, reminders, updates, digests)
+  - ✅ User notification preferences with timezone support
+  - ✅ Automated cron-based scheduling for digests and reminders
+  - ✅ Database-backed rate limiting system for spam prevention
+  - ✅ Token-based unsubscribe system with user-friendly pages
+  - ✅ Complete notification settings UI with live testing
+  - ✅ Integration with task and project management workflows
+
+### 🚧 In Progress (v4.5.0)
 - 🔄 Enhanced MCP integrations (knowledge-graph, RAG, vector-db)
-- 🔄 Email notifications system with customizable preferences
 - 🔄 Enhanced mobile responsiveness
 - 🔄 Advanced E2E testing suite
 
