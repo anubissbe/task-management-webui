@@ -1,5 +1,16 @@
 import { api } from './api';
 
+export type DateRange = 'thisWeek' | 'thisMonth' | 'thisQuarter' | 'thisYear' | 'last30Days' | 'last90Days';
+
+export interface TeamPerformance {
+  teamId: string;
+  teamName: string;
+  completionRate: number;
+  averageTaskTime: number;
+  tasksCompleted: number;
+  velocity: number;
+}
+
 export interface ReportFilter {
   dateRange?: {
     start: string;
@@ -25,22 +36,28 @@ export interface ChartData {
   }[];
 }
 
+export type WidgetType = 'chart' | 'metric' | 'table' | 'list' | 'burndown' | 'velocity' | 'taskDistribution' | 'teamPerformance' | 'kpi';
+
 export interface ReportWidget {
   id: string;
-  type: 'chart' | 'metric' | 'table' | 'list';
+  type: WidgetType;
   title: string;
   subtitle?: string;
   config: {
     chartType?: 'line' | 'bar' | 'pie' | 'doughnut' | 'area' | 'scatter';
-    dataSource: string;
+    dataSource?: string;
     aggregation?: 'count' | 'sum' | 'avg' | 'min' | 'max';
     groupBy?: string;
     filters?: ReportFilter;
     timeGranularity?: 'hour' | 'day' | 'week' | 'month' | 'quarter' | 'year';
+    metric?: string;
+    chartStyle?: string;
   };
   position: {
     x: number;
     y: number;
+  };
+  size: {
     width: number;
     height: number;
   };
@@ -52,8 +69,10 @@ export interface Dashboard {
   name: string;
   description?: string;
   widgets: ReportWidget[];
-  filters: ReportFilter;
+  layout: string;
+  filters?: ReportFilter;
   isPublic: boolean;
+  settings: Record<string, unknown>;
   createdBy: string;
   createdAt: string;
   updatedAt: string;
@@ -61,18 +80,19 @@ export interface Dashboard {
 
 export interface AdvancedMetrics {
   velocityTrend: {
-    period: string;
-    tasksCompleted: number;
+    sprint: string;
     storyPoints: number;
-    burndownData: { date: string; remaining: number; ideal: number }[];
+    committedPoints?: number;
   }[];
   performanceMetrics: {
     teamId: string;
     teamName: string;
     completionRate: number;
     averageTaskTime: number;
-    qualityScore: number;
-    collaborationIndex: number;
+    tasksCompleted: number;
+    velocity: number;
+    qualityScore?: number;
+    collaborationIndex?: number;
   }[];
   predictiveAnalytics: {
     estimatedCompletion: string;
@@ -230,10 +250,7 @@ export class ReportingService {
     dayOfMonth?: number; // For monthly (1-31)
     hour?: number; // 0-23
   }): Promise<void> {
-    return api.get(`/reports/schedule/${dashboardId}`, {
-      method: 'POST',
-      body: JSON.stringify(schedule)
-    });
+    return api.post(`/reports/schedule/${dashboardId}`, schedule);
   }
 
   // Template management
@@ -247,10 +264,7 @@ export class ReportingService {
     widgets: ReportWidget[];
     category: string;
   }): Promise<{ success: boolean; reportId: string; downloadUrl?: string }> {
-    return api.get('/reports/templates', {
-      method: 'POST',
-      body: JSON.stringify(template)
-    });
+    return api.post('/reports/templates', template);
   }
 
   // Real-time data
@@ -318,5 +332,22 @@ export class ReportingService {
       default:
         return new Intl.NumberFormat('en-US').format(value);
     }
+  }
+
+  static async getBurndownData(params: {
+    projectId: string;
+    sprintId?: string;
+    dateRange?: DateRange | 'currentSprint' | 'custom';
+  }): Promise<{
+    dates: string[];
+    idealProgress: number[];
+    actualProgress: number[];
+    totalPoints: number;
+    remainingPoints: number;
+    completedPoints: number;
+    isOnTrack: boolean;
+  }> {
+    const response = await api.get('/reports/burndown', { params });
+    return response.data;
   }
 }
