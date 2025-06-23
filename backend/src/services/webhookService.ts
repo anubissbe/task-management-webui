@@ -53,9 +53,14 @@ export class WebhookService {
       const hostname = parsedUrl.hostname.toLowerCase();
       
       // Block localhost and loopback addresses
-      if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1') {
+      if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1' || hostname === '[::1]') {
           return false;
         }
+        
+      // Block IPv6 loopback
+      if (hostname === '::' || hostname === '0:0:0:0:0:0:0:0' || hostname === '0:0:0:0:0:0:0:1') {
+        return false;
+      }
         
       // Block private IP ranges (RFC 1918)
       const ipPattern = /^(\d{1,3}\.){3}\d{1,3}$/;
@@ -160,12 +165,20 @@ export class WebhookService {
         headers['X-Hub-Signature-256'] = this.generateSignature(payloadString, webhook.secret);
       }
 
-      // Make HTTP request
+      // Make HTTP request with enhanced security
       const response: AxiosResponse = await axios.post(webhook.url, payload, {
         headers,
         timeout: this.config.requestTimeout,
         validateStatus: (status) => status >= 200 && status < 300,
-        maxRedirects: 3
+        maxRedirects: 3,
+        // Security: Disable proxy to prevent SSRF via proxy
+        proxy: false,
+        // Security: Follow redirects but validate each one
+        beforeRedirect: (options: any) => {
+          if (!this.validateWebhookUrl(options.href)) {
+            throw new Error('Invalid redirect URL');
+          }
+        }
       });
 
       // Success
@@ -175,7 +188,7 @@ export class WebhookService {
         : JSON.stringify(response.data).substring(0, 1000);
       delivery.delivered_at = new Date();
 
-      console.log(`Webhook delivered successfully: ${webhook.name} (${webhook.id})`);
+      console.log('Webhook delivered successfully:', webhook.name, `(${webhook.id})`);
       
       return delivery;
 
@@ -190,7 +203,7 @@ export class WebhookService {
           : JSON.stringify(error.response.data).substring(0, 1000);
       }
 
-      console.error(`Webhook delivery failed: ${webhook.name} (${webhook.id})`, error.message);
+      console.error('Webhook delivery failed:', webhook.name, `(${webhook.id})`, error.message);
 
       // Schedule retry if attempts remaining
       if (retryCount < webhook.max_retries) {
@@ -215,7 +228,7 @@ export class WebhookService {
       this.config.maxRetryDelay
     );
 
-    console.log(`Scheduling webhook retry ${retryCount}/${webhook.max_retries} in ${delay}ms: ${webhook.name}`);
+    console.log('Scheduling webhook retry', `${retryCount}/${webhook.max_retries}`, 'in', `${delay}ms:`, webhook.name);
 
     const timeoutId = setTimeout(async () => {
       this.deliveryQueue.delete(deliveryId);
@@ -306,7 +319,15 @@ export class WebhookService {
         headers,
         timeout: this.config.requestTimeout,
         validateStatus: () => true, // Accept any status for testing
-        maxRedirects: 3
+        maxRedirects: 3,
+        // Security: Disable proxy to prevent SSRF via proxy
+        proxy: false,
+        // Security: Follow redirects but validate each one
+        beforeRedirect: (options: any) => {
+          if (!this.validateWebhookUrl(options.href)) {
+            throw new Error('Invalid redirect URL');
+          }
+        }
       });
 
       const latency = Date.now() - startTime;

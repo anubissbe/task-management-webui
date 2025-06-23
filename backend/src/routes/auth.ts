@@ -42,6 +42,6 @@ router.post('/logout-all', authenticate, AuthController.logoutAll);
 router.post('/change-password', authenticate, strictAuthLimiter, AuthController.changePassword);
 
 // Health check endpoint for auth service
-router.get('/health', AuthController.health);
+router.get('/health', authLimiter, AuthController.health);
 
 export default router;
