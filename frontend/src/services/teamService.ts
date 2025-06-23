@@ -1,7 +1,7 @@
 import { api } from './api';
 
 // Temporary implementation of apiRequest to maintain compatibility
-const apiRequest = async (url: string, options?: { method?: string; body?: string }): Promise<unknown> => {
+const apiRequest = async <T = any>(url: string, options?: { method?: string; body?: string }): Promise<T> => {
   const method = options?.method?.toLowerCase() || 'get';
   const config: Record<string, unknown> = {};
   
@@ -9,7 +9,7 @@ const apiRequest = async (url: string, options?: { method?: string; body?: strin
     config.data = JSON.parse(options.body);
   }
   
-  const response = await (api as Record<string, (...args: unknown[]) => Promise<{ data: unknown }>>)[method](url, method === 'get' ? undefined : config.data, method === 'get' ? config : undefined);
+  const response = await (api as Record<string, (...args: unknown[]) => Promise<{ data: T }>>)[method](url, method === 'get' ? undefined : config.data, method === 'get' ? config : undefined);
   return response.data;
 };
 
