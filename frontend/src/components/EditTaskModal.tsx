@@ -66,7 +66,8 @@ export function EditTaskModal({ task, onClose, onTaskUpdated }: EditTaskModalPro
     try {
       await taskService.deleteTask(task.id);
       onClose();
-      window.location.reload(); // Simple refresh to update the board
+      // Task deletion should be handled by parent component's state management
+      // instead of window.location.reload()
     } catch (err) {
       setError((err as Error).message || 'Failed to delete task');
     } finally {
