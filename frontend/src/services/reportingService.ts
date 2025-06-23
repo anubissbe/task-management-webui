@@ -150,10 +150,8 @@ export class ReportingService {
       filters: { ...widget.config.filters, ...filters }
     };
 
-    return api.get('/reports/widget-data', {
-      method: 'POST',
-      body: JSON.stringify(requestData)
-    });
+    const response = await api.post('/reports/widget-data', requestData);
+    return response.data;
   }
 
   // Predefined reports
@@ -176,25 +174,19 @@ export class ReportingService {
   }
 
   static async getTimeTracking(filters?: ReportFilter): Promise<{ totalHours: number; billableHours: number; breakdown: Array<{ date: string; hours: number }> }> {
-    return api.get('/reports/time-tracking', {
-      method: 'POST',
-      body: JSON.stringify({ filters })
-    });
+    const response = await api.post('/reports/time-tracking', { filters });
+    return response.data;
   }
 
   static async getTaskAnalytics(filters?: ReportFilter): Promise<ChartData> {
-    return api.get('/reports/task-analytics', {
-      method: 'POST',
-      body: JSON.stringify({ filters })
-    });
+    const response = await api.post('/reports/task-analytics', { filters });
+    return response.data;
   }
 
   // Advanced analytics
   static async getAdvancedMetrics(filters?: ReportFilter): Promise<AdvancedMetrics> {
-    return api.get('/reports/advanced-metrics', {
-      method: 'POST',
-      body: JSON.stringify({ filters })
-    });
+    const response = await api.post('/reports/advanced-metrics', { filters });
+    return response.data;
   }
 
   static async getBurndownChart(projectId: string, sprintId?: string): Promise<ChartData> {
