@@ -25,7 +25,7 @@ services:
     restart: unless-stopped
 
   backend:
-    image: ghcr.io/anubissbe/projecthub-mcp-backend:latest
+    image: anubissbe/projecthub-mcp-backend:latest
     container_name: projecthub-mcp-backend
     ports:
       - "${BACKEND_PORT:-3001}:3001"
@@ -48,7 +48,7 @@ services:
       retries: 3
 
   frontend:
-    image: ghcr.io/anubissbe/projecthub-mcp-frontend:latest
+    image: anubissbe/projecthub-mcp-frontend:latest
     container_name: projecthub-mcp-frontend
     ports:
       - "${FRONTEND_PORT:-5173}:80"
