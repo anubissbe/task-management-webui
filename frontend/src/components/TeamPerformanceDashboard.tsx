@@ -15,7 +15,7 @@ import {
   ChartOptions
 } from 'chart.js';
 import { ReportingService, TeamPerformance, ReportFilter } from '../services/reportingService';
-import { useWorkspace } from '../contexts/WorkspaceContext';
+import { useWorkspace } from '../hooks/useWorkspace';
 import { Users, TrendingUp, Clock, CheckCircle, AlertTriangle, Award } from 'lucide-react';
 
 ChartJS.register(

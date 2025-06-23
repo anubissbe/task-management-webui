@@ -3,6 +3,7 @@ import handlebars from 'handlebars';
 import fs from 'fs';
 import path from 'path';
 import { promisify } from 'util';
+import sanitizeHtml from 'sanitize-html';
 import { User, Task, Project, Workspace } from '../types';
 
 const readFileAsync = promisify(fs.readFile);
@@ -151,22 +152,16 @@ export class EmailService {
     const template = await this.loadTemplate(templateName);
     const html = template(data);
     
-    // Generate plain text version by removing HTML tags safely
-    // First decode HTML entities
-    const decodedHtml = html
-      .replace(/&amp;/g, '&')
-      .replace(/&lt;/g, '<')
-      .replace(/&gt;/g, '>')
-      .replace(/&quot;/g, '"')
-      .replace(/&#039;/g, "'");
-    
-    // Then remove all HTML tags and normalize whitespace
-    const text = decodedHtml
-      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '') // Remove script tags and content
-      .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '') // Remove style tags and content
-      .replace(/<[^>]+>/g, '') // Remove remaining HTML tags
-      .replace(/\s+/g, ' ') // Normalize whitespace
-      .trim();
+    // Generate plain text version by safely removing HTML tags using sanitize-html
+    // This properly handles all HTML entities, tags, and potential security issues
+    const text = sanitizeHtml(html, {
+      allowedTags: [], // Remove all HTML tags
+      allowedAttributes: {}, // Remove all attributes
+      textFilter: (text) => {
+        // Normalize whitespace and decode HTML entities properly
+        return text.replace(/\s+/g, ' ').trim();
+      }
+    });
     
     return {
       subject: data.subject || 'Notification from ProjectHub-MCP',
