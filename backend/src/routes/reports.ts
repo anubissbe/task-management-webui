@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { reportController } from '../controllers/reportController';
 import { authenticate } from '../middleware/auth';
 import { workspaceContext } from '../middleware/workspace';
-import { apiLimiter, reportLimiter } from '../middleware/rateLimiter';
+import { reportLimiter } from '../middleware/rateLimiter';
 
 const router = Router();
 
