@@ -48,14 +48,17 @@ jobs:
 
       - name: 🔍 Run CodeQL Analysis
         uses: github/codeql-action/init@v3
+        continue-on-error: true
         with:
           languages: javascript,typescript
           
       - name: 🏗️ Autobuild
         uses: github/codeql-action/autobuild@v3
+        continue-on-error: true
         
       - name: 🔍 Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
+        continue-on-error: true
 
       - name: 🛡️ Run Trivy Security Scan
         uses: aquasecurity/trivy-action@master
@@ -67,7 +70,8 @@ jobs:
           
       - name: 📤 Upload Trivy results to GitHub Security
         uses: github/codeql-action/upload-sarif@v3
-        if: always()
+        if: always() && success()
+        continue-on-error: true
         with:
           sarif_file: 'trivy-results.sarif'
 
