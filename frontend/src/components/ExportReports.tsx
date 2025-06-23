@@ -112,7 +112,7 @@ export function ExportReports({ project, tasks, activities = [], onClose }: Expo
       ...tasks.map(task => {
         const row = [
           task.id,
-          `"${task.name.replace(/"/g, '""')}"`,
+          `"${task.name ? task.name.replace(/"/g, '""') : ''}"`,
           `"${(task.description || '').replace(/"/g, '""')}"`,
           task.status,
           task.priority,
@@ -179,6 +179,13 @@ export function ExportReports({ project, tasks, activities = [], onClose }: Expo
   };
 
   const generatePDFHTML = (tasks: Task[]): string => {
+    // Escape HTML to prevent XSS
+    const escapeHtml = (str: string): string => {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    };
+
     const taskStats = {
       total: tasks.length,
       completed: tasks.filter(t => t.status === 'completed').length,
@@ -193,7 +200,7 @@ export function ExportReports({ project, tasks, activities = [], onClose }: Expo
     <html>
     <head>
       <meta charset="utf-8">
-      <title>${project.name} - Task Report</title>
+      <title>${escapeHtml(project.name)} - Task Report</title>
       <style>
         body { font-family: Arial, sans-serif; margin: 40px; color: #333; }
         .header { border-bottom: 2px solid #3B82F6; padding-bottom: 20px; margin-bottom: 30px; }
@@ -225,7 +232,7 @@ export function ExportReports({ project, tasks, activities = [], onClose }: Expo
     </head>
     <body>
       <div class="header">
-        <h1>${project.name} - Task Report</h1>
+        <h1>${escapeHtml(project.name)} - Task Report</h1>
         <div class="subtitle">Generated on ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</div>
         <div class="subtitle">Total Tasks: ${tasks.length} | Completion Rate: ${completionRate}%</div>
       </div>
@@ -254,20 +261,20 @@ export function ExportReports({ project, tasks, activities = [], onClose }: Expo
         ${tasks.map(task => `
           <div class="task-item">
             <div class="task-header">
-              <h3 class="task-title">${task.name}</h3>
+              <h3 class="task-title">${escapeHtml(task.name)}</h3>
               <div>
-                <span class="status-badge status-${task.status}">${task.status.replace('_', ' ')}</span>
+                <span class="status-badge status-${escapeHtml(task.status)}">${escapeHtml(task.status.replace('_', ' '))}</span>
               </div>
             </div>
             <div class="task-meta">
-              <strong>Priority:</strong> <span class="priority-${task.priority}">${task.priority}</span> |
+              <strong>Priority:</strong> <span class="priority-${escapeHtml(task.priority)}">${escapeHtml(task.priority)}</span> |
               <strong>Created:</strong> ${new Date(task.created_at).toLocaleDateString()} |
-              ${task.assigned_to ? `<strong>Assigned to:</strong> ${task.assigned_to} |` : ''}
+              ${task.assigned_to ? `<strong>Assigned to:</strong> ${escapeHtml(task.assigned_to)} |` : ''}
               ${task.estimated_hours ? `<strong>Estimated:</strong> ${task.estimated_hours}h |` : ''}
               ${task.actual_hours ? `<strong>Actual:</strong> ${task.actual_hours}h |` : ''}
-              <strong>ID:</strong> ${task.id}
+              <strong>ID:</strong> ${escapeHtml(task.id)}
             </div>
-            ${task.description ? `<div style="margin-top: 10px; color: #4B5563;">${task.description}</div>` : ''}
+            ${task.description ? `<div style="margin-top: 10px; color: #4B5563;">${escapeHtml(task.description)}</div>` : ''}
           </div>
         `).join('')}
       </div>

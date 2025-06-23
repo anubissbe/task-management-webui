@@ -276,8 +276,25 @@ export function FileAttachments({
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => {
-                    // Download file - this would be implemented based on your file storage
-                    window.open(attachment.upload_path, '_blank');
+                    // Download file - validate URL before opening
+                    try {
+                      const url = new URL(attachment.upload_path, window.location.origin);
+                      // Only allow HTTP(S) URLs from the same origin or trusted domains
+                      if (url.protocol === 'http:' || url.protocol === 'https:') {
+                        // Create a temporary anchor element for secure download
+                        const a = document.createElement('a');
+                        a.href = url.href;
+                        a.download = attachment.filename;
+                        a.rel = 'noopener noreferrer';
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                      } else {
+                        console.error('Invalid URL protocol');
+                      }
+                    } catch (error) {
+                      console.error('Invalid URL:', error);
+                    }
                   }}
                   className="p-2 text-gray-500 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/20 rounded transition-colors"
                   title="Download"
