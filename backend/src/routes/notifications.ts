@@ -2,16 +2,18 @@ import { Router } from 'express';
 import { authenticate } from '../middleware/auth';
 import { workspaceContext } from '../middleware/workspace';
 import NotificationController from '../controllers/notificationController';
+import { apiLimiter, generalLimiter } from '../middleware/rateLimiter';
 
 const router = Router();
 
 // Public unsubscribe endpoint (no auth required)
-router.get('/unsubscribe', NotificationController.unsubscribe);
+router.get('/unsubscribe', generalLimiter, NotificationController.unsubscribe);
 
 // Health check endpoint (no auth required)
-router.get('/health', NotificationController.getNotificationHealth);
+router.get('/health', generalLimiter, NotificationController.getNotificationHealth);
 
-// Apply authentication to remaining routes
+// Apply rate limiting and authentication to remaining routes
+router.use(apiLimiter);
 router.use(authenticate);
 router.use(workspaceContext);
 

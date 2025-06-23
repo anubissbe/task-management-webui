@@ -2,10 +2,12 @@ import { Router } from 'express';
 import { reportController } from '../controllers/reportController';
 import { authenticate } from '../middleware/auth';
 import { workspaceContext } from '../middleware/workspace';
+import { apiLimiter, reportLimiter } from '../middleware/rateLimiter';
 
 const router = Router();
 
-// Apply authentication and workspace context to all routes
+// Apply rate limiting, authentication and workspace context to all routes
+router.use(reportLimiter);
 router.use(authenticate);
 router.use(workspaceContext);
 
