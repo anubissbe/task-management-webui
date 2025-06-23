@@ -1,6 +1,6 @@
 # Troubleshooting Guide
 
-This comprehensive troubleshooting guide helps you diagnose and resolve common issues with the Task Management WebUI.
+This comprehensive troubleshooting guide helps you diagnose and resolve common issues with ProjectHub-MCP v4.5.1, the production-ready enterprise project management system.
 
 ## 🤔 General Troubleshooting Steps
 
@@ -344,14 +344,16 @@ CORS_ORIGIN=https://yourdomain.com
 # "CORS enabled for: https://yourdomain.com"
 ```
 
-### Authentication Issues (Future Feature)
+### Authentication Issues
 
-**Note**: Authentication is not implemented in v1.0.0, but when available:
+**Note**: Authentication is fully implemented in v4.5.1 with comprehensive features.
 
 **Common Issues**:
-- JWT token expiration
-- Invalid credentials
-- Session management
+- JWT token expiration - Check token validity and refresh
+- Invalid credentials - Verify username/password or API keys
+- Session management - Clear browser storage and re-login
+- Role permissions - Verify user has proper access rights
+- API key issues - Check key rotation and permissions
 
 ## 📊 Database Issues
 
@@ -752,7 +754,7 @@ cat docker-compose.yml
 
 ### Where to Get Help
 
-1. **GitHub Issues**: [Create an issue](https://github.com/anubissbe/task-management-webui/issues)
+1. **GitHub Issues**: [Create an issue](https://github.com/anubissbe/ProjectHub-Mcp/issues)
 2. **Documentation**: Check other wiki pages
 3. **Community**: GitHub Discussions
 4. **FAQ**: Check [Frequently Asked Questions](FAQ)

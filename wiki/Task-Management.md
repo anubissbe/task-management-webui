@@ -1,6 +1,6 @@
 # Task Management
 
-This guide covers all aspects of task management within the Task Management WebUI, including creating, organizing, tracking, and completing tasks effectively.
+This guide covers all aspects of task management within ProjectHub-MCP v4.5.1, including creating, organizing, tracking, and completing tasks effectively in this enterprise-grade project management system.
 
 ## 🆕 Creating Tasks
 

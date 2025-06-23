@@ -1,6 +1,6 @@
 # User Interface Overview
 
-The Task Management WebUI provides a modern, intuitive interface designed for efficient project and task management. This guide covers all major UI components and navigation patterns.
+ProjectHub-MCP v4.5.1 provides a modern, intuitive interface designed for efficient enterprise project and task management. This guide covers all major UI components and navigation patterns in the production-ready system.
 
 ## 🏠 Main Navigation
 

@@ -15,6 +15,28 @@
   <img src="docs/images/homepage.png" alt="ProjectHub-MCP Dashboard" width="800"/>
 </div>
 
+## 📸 Screenshots
+
+<div align="center">
+
+### 🏠 Homepage & Project Overview
+<img src="docs/images/homepage.png" alt="Homepage - Light Mode" width="400"/>
+<img src="docs/images/homepage-dark.png" alt="Homepage - Dark Mode" width="400"/>
+
+### 📋 Kanban Board & Task Management
+<img src="docs/images/kanban.png" alt="Kanban Board" width="400"/>
+<img src="docs/images/board.png" alt="Project Board View" width="400"/>
+
+### 📊 Analytics & Reporting
+<img src="docs/images/analytics.png" alt="Analytics Dashboard" width="400"/>
+<img src="docs/images/list.png" alt="Task List View" width="400"/>
+
+### 📱 Mobile & Responsive Design
+<img src="docs/images/mobile-view.png" alt="Mobile View" width="200"/>
+<img src="docs/images/calendar.png" alt="Calendar View" width="300"/>
+
+</div>
+
 ## 📊 Project Status
 
 🚀 **Status**: Production Ready & Feature Complete  

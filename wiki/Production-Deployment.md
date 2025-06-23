@@ -1,6 +1,6 @@
 # Production Deployment
 
-This comprehensive guide covers deploying the Task Management WebUI to production environments, including cloud platforms, on-premises servers, and containerized deployments.
+This comprehensive guide covers deploying ProjectHub-MCP v4.5.1 to production environments, including cloud platforms, on-premises servers, and containerized deployments for this enterprise-grade project management system.
 
 ## 🌍 Deployment Overview
 
@@ -314,8 +314,8 @@ sudo apt install docker.io docker-compose-plugin
 sudo usermod -aG docker ubuntu
 
 # Clone repository
-git clone https://github.com/anubissbe/task-management-webui.git
-cd task-management-webui
+git clone https://github.com/anubissbe/ProjectHub-Mcp.git
+cd ProjectHub-Mcp
 
 # Configure environment
 cp .env.example .env
@@ -341,12 +341,12 @@ DATABASE_URL=postgresql://username:password@rds-endpoint:5432/database
 
 **app.yaml**:
 ```yaml
-name: task-management-webui
+name: projecthub-mcp
 services:
 - name: frontend
   source_dir: frontend
   github:
-    repo: anubissbe/task-management-webui
+    repo: anubissbe/ProjectHub-Mcp
     branch: main
   build_command: npm run build
   output_dir: dist
@@ -359,7 +359,7 @@ services:
 - name: backend
   source_dir: backend
   github:
-    repo: anubissbe/task-management-webui
+    repo: anubissbe/ProjectHub-Mcp
     branch: main
   build_command: npm run build
   run_command: npm start
@@ -471,7 +471,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: your-registry/task-management-backend:latest
+        image: ghcr.io/anubissbe/projecthub-mcp-backend:v4.5.1
         ports:
         - containerPort: 3001
         envFrom:
@@ -519,7 +519,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: your-registry/task-management-frontend:latest
+        image: ghcr.io/anubissbe/projecthub-mcp-frontend:v4.5.1
         ports:
         - containerPort: 80
         livenessProbe:
@@ -813,11 +813,13 @@ jobs:
     - name: Build and push images
       run: |
         docker buildx build --platform linux/amd64,linux/arm64 \
-          -t ${{ secrets.DOCKER_USERNAME }}/task-management-frontend:latest \
+          -t ghcr.io/anubissbe/projecthub-mcp-frontend:v4.5.1 \
+          -t ghcr.io/anubissbe/projecthub-mcp-frontend:latest \
           --push ./frontend
         
         docker buildx build --platform linux/amd64,linux/arm64 \
-          -t ${{ secrets.DOCKER_USERNAME }}/task-management-backend:latest \
+          -t ghcr.io/anubissbe/projecthub-mcp-backend:v4.5.1 \
+          -t ghcr.io/anubissbe/projecthub-mcp-backend:latest \
           --push ./backend
     
     - name: Deploy to server
@@ -827,7 +829,7 @@ jobs:
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.SSH_KEY }}
         script: |
-          cd /opt/task-management-webui
+          cd /opt/ProjectHub-Mcp
           git pull origin main
           docker compose -f docker-compose.prod.yml pull
           docker compose -f docker-compose.prod.yml up -d
