@@ -31,6 +31,7 @@ services:
       - PORT=3001
       - DATABASE_URL=postgresql://test_user:test_pass@postgres:5432/test_db
       - CORS_ORIGIN=http://localhost:5173
+      - JWT_SECRET=test-jwt-secret-key-for-ci
     networks:
       - projecthub-mcp-network
     depends_on:
