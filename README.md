@@ -175,33 +175,57 @@ graph TB
 
 ### Prerequisites
 
-- **Docker & Docker Compose** (Recommended)
-- **Node.js 18+** (for local development)
-- **PostgreSQL 16+** (or managed database service)
-- **Git**
+- **Docker & Docker Compose** (Required)
+- **5 minutes of your time** ⏱️
 
-### 🐳 Production Deployment (Docker)
+### 🐳 Instant Deployment (Pre-built Containers)
 
 ```bash
-# 1. Clone the repository
-git clone https://github.com/anubissbe/ProjectHub-Mcp.git
-cd ProjectHub-Mcp
+# 1. Create project directory
+mkdir projecthub-mcp && cd projecthub-mcp
 
-# 2. Configure environment variables
-cp .env.example .env
-# Edit .env with your configuration (see Configuration section)
+# 2. Download production-ready configuration
+curl -L https://raw.githubusercontent.com/anubissbe/ProjectHub-Mcp/main/docker-compose.prod.yml -o docker-compose.yml
 
-# 3. Start all services
+# 3. Create environment file (simplified for quick start)
+curl -L https://raw.githubusercontent.com/anubissbe/ProjectHub-Mcp/main/.env.quickstart -o .env
+
+# 4. Configure your environment (minimal required changes)
+nano .env  # Change JWT_SECRET and DB_PASSWORD at minimum
+
+# 5. Start all services (automatically pulls pre-built images)
 docker-compose up -d
+# This will pull:
+# - Frontend: ghcr.io/anubissbe/projecthub-mcp-frontend:latest
+# - Backend: ghcr.io/anubissbe/projecthub-mcp-backend:latest  
+# - Database: postgres:17-alpine
+# - Cache: redis:8-alpine
 
-# 4. Access the application
+# 6. Access your application
+echo "🎉 ProjectHub-MCP is ready!"
 echo "Frontend: http://localhost:5173"
 echo "Backend API: http://localhost:3001/api"
 echo "Health Check: http://localhost:3001/api/health"
 
-# 5. Create your first admin user
-# Visit the registration page and create an account
+# 7. Create your first admin user
+echo "👤 Visit http://localhost:5173 and register your admin account"
 ```
+
+**That's it!** No building, no compilation - just download and run!
+
+#### 🚀 Why This Is Better:
+- **⚡ Instant Setup**: No need to install Node.js, build tools, or wait for compilation
+- **🔄 Auto-Updated**: Images are automatically built from the latest code via GitHub Actions
+- **🛡️ Production-Ready**: Pre-built images are optimized and security-scanned
+- **📦 Consistent**: Same images used in development, staging, and production
+- **💾 Smaller Download**: Only download what you need, when you need it
+
+#### 📋 Container Details:
+The Docker Compose configuration automatically pulls these production-ready images:
+- **Frontend**: React app built with Vite, served by Nginx
+- **Backend**: Node.js API server with all dependencies
+- **Database**: PostgreSQL 17 with optimized configuration
+- **Cache**: Redis for session storage and caching (optional)
 
 ### 🛠️ Local Development
 
