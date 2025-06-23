@@ -9,6 +9,7 @@ import { reportRoutes } from './reports';
 import notificationRoutes from './notifications';
 import { authenticate } from '../middleware/auth';
 import { workspaceContext } from '../middleware/workspace';
+import { apiLimiter } from '../middleware/rateLimiter';
 
 const router = Router();
 const projectController = new ProjectController();
@@ -26,25 +27,25 @@ router.use('/auth', authRoutes);
 router.use('/workspaces', workspaceRoutes);
 
 // Project routes (protected by authentication and workspace context)
-router.get('/projects', authenticate, workspaceContext, projectController.getAllProjects);
-router.get('/projects/:id', authenticate, workspaceContext, projectController.getProjectById);
-router.post('/projects', authenticate, workspaceContext, projectController.createProject);
-router.put('/projects/:id', authenticate, workspaceContext, projectController.updateProject);
-router.delete('/projects/:id', authenticate, workspaceContext, projectController.deleteProject);
-router.get('/projects/:id/stats', authenticate, workspaceContext, projectController.getProjectStats);
+router.get('/projects', apiLimiter, authenticate, workspaceContext, projectController.getAllProjects);
+router.get('/projects/:id', apiLimiter, authenticate, workspaceContext, projectController.getProjectById);
+router.post('/projects', apiLimiter, authenticate, workspaceContext, projectController.createProject);
+router.put('/projects/:id', apiLimiter, authenticate, workspaceContext, projectController.updateProject);
+router.delete('/projects/:id', apiLimiter, authenticate, workspaceContext, projectController.deleteProject);
+router.get('/projects/:id/stats', apiLimiter, authenticate, workspaceContext, projectController.getProjectStats);
 
 // Task routes (protected by authentication and workspace context)
-router.get('/projects/:projectId/tasks', authenticate, workspaceContext, taskController.getTasksByProject);
-router.get('/tasks/:id', authenticate, workspaceContext, taskController.getTaskById);
-router.get('/tasks/:id/subtasks', authenticate, workspaceContext, taskController.getSubtasks);
-router.post('/tasks', authenticate, workspaceContext, taskController.createTask);
-router.put('/tasks/:id', authenticate, workspaceContext, taskController.updateTask);
-router.patch('/tasks/:id/status', authenticate, workspaceContext, taskController.updateTaskStatus);
-router.delete('/tasks/:id', authenticate, workspaceContext, taskController.deleteTask);
-router.get('/tasks/:id/history', authenticate, workspaceContext, taskController.getTaskHistory);
-router.post('/tasks/:id/test-results', authenticate, workspaceContext, taskController.addTestResult);
-router.get('/tasks/:id/test-results', authenticate, workspaceContext, taskController.getTestResults);
-router.get('/next-task', authenticate, workspaceContext, taskController.getNextTask);
+router.get('/projects/:projectId/tasks', apiLimiter, authenticate, workspaceContext, taskController.getTasksByProject);
+router.get('/tasks/:id', apiLimiter, authenticate, workspaceContext, taskController.getTaskById);
+router.get('/tasks/:id/subtasks', apiLimiter, authenticate, workspaceContext, taskController.getSubtasks);
+router.post('/tasks', apiLimiter, authenticate, workspaceContext, taskController.createTask);
+router.put('/tasks/:id', apiLimiter, authenticate, workspaceContext, taskController.updateTask);
+router.patch('/tasks/:id/status', apiLimiter, authenticate, workspaceContext, taskController.updateTaskStatus);
+router.delete('/tasks/:id', apiLimiter, authenticate, workspaceContext, taskController.deleteTask);
+router.get('/tasks/:id/history', apiLimiter, authenticate, workspaceContext, taskController.getTaskHistory);
+router.post('/tasks/:id/test-results', apiLimiter, authenticate, workspaceContext, taskController.addTestResult);
+router.get('/tasks/:id/test-results', apiLimiter, authenticate, workspaceContext, taskController.getTestResults);
+router.get('/next-task', apiLimiter, authenticate, workspaceContext, taskController.getNextTask);
 
 // Webhook routes
 router.use('/webhooks', webhookRoutes);

@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 import axios, { AxiosResponse } from 'axios';
 import { v4 as uuidv4 } from 'uuid';
+import { URL } from 'url';
 import { Webhook, WebhookDelivery, WebhookEvent, WebhookPayload, Task, Project } from '../types';
 
 interface WebhookServiceConfig {
@@ -37,7 +38,7 @@ export class WebhookService {
   }
 
   /**
-   * Validate webhook URL format and security
+   * Validate webhook URL format and security to prevent SSRF attacks
    */
   private validateWebhookUrl(url: string): boolean {
     try {
@@ -48,21 +49,42 @@ export class WebhookService {
         return false;
       }
       
-      // Prevent localhost and private IP ranges in production
-      if (process.env.NODE_ENV === 'production') {
-        const hostname = parsedUrl.hostname.toLowerCase();
-        
-        // Block localhost
-        if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      // Enhanced security checks
+      const hostname = parsedUrl.hostname.toLowerCase();
+      
+      // Block localhost and loopback addresses
+      if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1') {
           return false;
         }
         
-        // Block private IP ranges (basic check)
-        if (hostname.startsWith('192.168.') || 
-            hostname.startsWith('10.') || 
-            hostname.startsWith('172.')) {
+      // Block private IP ranges (RFC 1918)
+      const ipPattern = /^(\d{1,3}\.){3}\d{1,3}$/;
+      if (ipPattern.test(hostname)) {
+        const parts = hostname.split('.').map(Number);
+        if (
+          (parts[0] === 10) || // 10.0.0.0/8
+          (parts[0] === 172 && parts[1] >= 16 && parts[1] <= 31) || // 172.16.0.0/12
+          (parts[0] === 192 && parts[1] === 168) || // 192.168.0.0/16
+          (parts[0] === 169 && parts[1] === 254) // 169.254.0.0/16 (link-local)
+        ) {
           return false;
         }
+      }
+      
+      // Block internal domains
+      const blockedDomains = ['.internal', '.corp', '.private', '.local', '.localhost'];
+      if (blockedDomains.some(domain => hostname.endsWith(domain))) {
+        return false;
+      }
+      
+      // Block metadata service endpoints (AWS, GCP, Azure)
+      const metadataEndpoints = [
+        '169.254.169.254', // AWS/GCP
+        'metadata.google.internal', // GCP
+        'metadata.azure.com' // Azure
+      ];
+      if (metadataEndpoints.includes(hostname)) {
+        return false;
       }
       
       return true;
