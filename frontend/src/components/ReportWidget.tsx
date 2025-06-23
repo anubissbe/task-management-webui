@@ -70,7 +70,6 @@ const ReportWidget: React.FC<ReportWidgetProps> = ({
   onDelete,
   isEditing = false
 }) => {
-  const chartRef = useRef<ChartJS<keyof ChartTypeRegistry, (number | [number, number] | Point | BubbleDataPoint | null)[], unknown> | null>(null);
 
   // Transform data based on widget type
   const getChartData = (): ChartData<'line' | 'bar' | 'pie' | 'doughnut'> => {
