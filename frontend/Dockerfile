@@ -16,7 +16,7 @@ COPY . .
 RUN npm run build
 
 # Production stage
-FROM nginx:alpine
+FROM nginx:1.28.0-alpine3.21-slim
 
 # Install wget for health checks
 RUN apk add --no-cache wget
