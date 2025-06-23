@@ -20,7 +20,6 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  DOCKER_HUB_USERNAME: ${{ vars.DOCKER_HUB_USERNAME || 'anubissbe' }}
   IMAGE_NAME: projecthub-mcp
 
 permissions:
@@ -272,8 +271,8 @@ jobs:
       - name: 🔑 Log in to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ env.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
           
       - name: 🏷️ Extract metadata
         id: meta
@@ -281,7 +280,7 @@ jobs:
         with:
           images: |
             ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}-${{ matrix.service }}
-            ${{ env.DOCKER_HUB_USERNAME }}/${{ env.IMAGE_NAME }}-${{ matrix.service }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}-${{ matrix.service }}
           tags: |
             type=ref,event=branch
             type=ref,event=pr
@@ -399,8 +398,8 @@ jobs:
           echo -e "\n## 🐳 Docker Images" >> CHANGELOG_RELEASE.md
           echo "- \`ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}-frontend:${{ steps.version.outputs.version_number }}\`" >> CHANGELOG_RELEASE.md
           echo "- \`ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}-backend:${{ steps.version.outputs.version_number }}\`" >> CHANGELOG_RELEASE.md
-          echo "- \`${{ env.DOCKER_HUB_USERNAME }}/${{ env.IMAGE_NAME }}-frontend:${{ steps.version.outputs.version_number }}\`" >> CHANGELOG_RELEASE.md
-          echo "- \`${{ env.DOCKER_HUB_USERNAME }}/${{ env.IMAGE_NAME }}-backend:${{ steps.version.outputs.version_number }}\`" >> CHANGELOG_RELEASE.md
+          echo "- \`${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}-frontend:${{ steps.version.outputs.version_number }}\`" >> CHANGELOG_RELEASE.md
+          echo "- \`${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}-backend:${{ steps.version.outputs.version_number }}\`" >> CHANGELOG_RELEASE.md
           
       - name: 📦 Create release archives
         run: |
