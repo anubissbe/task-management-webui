@@ -225,10 +225,6 @@ jobs:
         working-directory: ./tests
         run: npm ci
         
-      - name: 🎭 Install Playwright browsers
-        working-directory: ./tests
-        run: npx playwright install chromium
-        
       - name: 🧪 Run E2E tests
         working-directory: ./tests
         run: npm test
