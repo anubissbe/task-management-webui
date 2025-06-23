@@ -365,7 +365,7 @@ const TeamPerformanceDashboard: React.FC<TeamPerformanceDashboardProps> = ({ fil
             Velocity Trends
           </h3>
           <div className="h-80">
-            <Line data={trendChartData} options={chartOptions} />
+            <Line data={trendChartData} options={chartOptions as ChartOptions<'line'>} />
           </div>
         </div>
       )}
