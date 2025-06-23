@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Save, Bell, Mail, Clock, Calendar, Users, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Save, Bell, Mail, Clock, AlertCircle, CheckCircle2 } from 'lucide-react';
 
 interface NotificationPreferences {
   taskAssignment: boolean;
@@ -169,7 +169,7 @@ export default function NotificationSettings() {
     }
   };
 
-  const updatePreference = (key: keyof NotificationPreferences, value: any) => {
+  const updatePreference = (key: keyof NotificationPreferences, value: boolean | string | number[]) => {
     setPreferences(prev => ({
       ...prev,
       [key]: value
