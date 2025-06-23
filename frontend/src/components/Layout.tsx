@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { ThemeToggle } from './ThemeToggle';
 import { useAuth } from '../contexts/AuthContext';
 import WorkspaceSelector from './WorkspaceSelector';
@@ -7,6 +7,7 @@ import clsx from 'clsx';
 
 export const Layout: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const logoRef = useRef<HTMLDivElement>(null);
   const { user, logout } = useAuth();
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -22,12 +23,12 @@ export const Layout: React.FC = () => {
     const logoElement = logoRef.current;
     if (logoElement) {
       const handleLogoClick = () => {
-        window.location.href = '/';
+        navigate('/');
       };
       logoElement.addEventListener('click', handleLogoClick);
       return () => logoElement.removeEventListener('click', handleLogoClick);
     }
-  }, []);
+  }, [navigate]);
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-50 via-orange-50/5 to-gray-50 dark:from-black dark:via-orange-950/10 dark:to-gray-950">

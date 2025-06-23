@@ -96,16 +96,25 @@ export const ExportTasks: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            ${filteredTasks.map(task => `
+            ${filteredTasks.map(task => {
+              // Escape HTML to prevent XSS
+              const escapeHtml = (str: string) => {
+                const div = document.createElement('div');
+                div.textContent = str;
+                return div.innerHTML;
+              };
+              
+              return `
               <tr>
-                <td>${task.name}</td>
-                <td class="status-${task.status}">${task.status}</td>
-                <td class="priority-${task.priority}">${task.priority}</td>
+                <td>${escapeHtml(task.name)}</td>
+                <td class="status-${escapeHtml(task.status)}">${escapeHtml(task.status)}</td>
+                <td class="priority-${escapeHtml(task.priority)}">${escapeHtml(task.priority)}</td>
                 <td>${format(new Date(task.created_at), 'MMM dd, yyyy')}</td>
                 <td>${task.estimated_hours || '-'}</td>
                 <td>${task.actual_hours || '-'}</td>
               </tr>
-            `).join('')}
+            `;
+            }).join('')}
           </tbody>
         </table>
       </body>
