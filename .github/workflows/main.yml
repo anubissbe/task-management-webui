@@ -17,6 +17,8 @@ on:
           - patch
           - minor
           - major
+  schedule:
+    - cron: '0 0 * * 0' # Every Sunday at midnight UTC for dependency updates
 
 env:
   REGISTRY: ghcr.io
@@ -495,7 +497,3 @@ jobs:
           branch: deps/weekly-update
           delete-branch: true
 
-# Schedule weekly dependency updates
-on:
-  schedule:
-    - cron: '0 0 * * 0' # Every Sunday at midnight UTC
