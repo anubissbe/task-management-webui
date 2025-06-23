@@ -178,54 +178,43 @@ graph TB
 - **Docker & Docker Compose** (Required)
 - **5 minutes of your time** ⏱️
 
-### 🐳 Instant Deployment (Pre-built Containers)
+### 🐳 Docker Deployment (Recommended)
 
 ```bash
-# 1. Create project directory
-mkdir projecthub-mcp && cd projecthub-mcp
+# 1. Clone the repository
+git clone https://github.com/anubissbe/ProjectHub-Mcp.git
+cd ProjectHub-Mcp
 
-# 2. Download production-ready configuration
-curl -L https://raw.githubusercontent.com/anubissbe/ProjectHub-Mcp/main/docker-compose.prod.yml -o docker-compose.yml
-
-# 3. Create environment file (simplified for quick start)
-curl -L https://raw.githubusercontent.com/anubissbe/ProjectHub-Mcp/main/.env.quickstart -o .env
-
-# 4. Configure your environment (minimal required changes)
+# 2. Configure environment variables
+cp .env.quickstart .env
 nano .env  # Change JWT_SECRET and DB_PASSWORD at minimum
 
-# 5. Start all services (automatically pulls pre-built images)
+# 3. Start all services with Docker Compose
 docker-compose up -d
-# This will pull:
-# - Frontend: ghcr.io/anubissbe/projecthub-mcp-frontend:latest
-# - Backend: ghcr.io/anubissbe/projecthub-mcp-backend:latest  
-# - Database: postgres:17-alpine
-# - Cache: redis:8-alpine
 
-# 6. Access your application
+# 4. Access your application
 echo "🎉 ProjectHub-MCP is ready!"
 echo "Frontend: http://localhost:5173"
 echo "Backend API: http://localhost:3001/api"
 echo "Health Check: http://localhost:3001/api/health"
 
-# 7. Create your first admin user
+# 5. Create your first admin user
 echo "👤 Visit http://localhost:5173 and register your admin account"
 ```
 
-**That's it!** No building, no compilation - just download and run!
+#### 🚀 Coming Soon - Pre-built Images:
+We're working on publishing pre-built Docker images to make setup even easier:
+- **⚡ Instant Setup**: No building required, just pull and run
+- **🔄 Auto-Updated**: Images automatically built from latest code
+- **🛡️ Production-Ready**: Optimized and security-scanned images
+- **📦 Multi-platform**: Support for AMD64 and ARM64 architectures
 
-#### 🚀 Why This Is Better:
-- **⚡ Instant Setup**: No need to install Node.js, build tools, or wait for compilation
-- **🔄 Auto-Updated**: Images are automatically built from the latest code via GitHub Actions
-- **🛡️ Production-Ready**: Pre-built images are optimized and security-scanned
-- **📦 Consistent**: Same images used in development, staging, and production
-- **💾 Smaller Download**: Only download what you need, when you need it
-
-#### 📋 Container Details:
-The Docker Compose configuration automatically pulls these production-ready images:
+#### 📋 Current Setup:
+The Docker Compose configuration builds and runs:
 - **Frontend**: React app built with Vite, served by Nginx
-- **Backend**: Node.js API server with all dependencies
+- **Backend**: Node.js API server with all dependencies  
 - **Database**: PostgreSQL 17 with optimized configuration
-- **Cache**: Redis for session storage and caching (optional)
+- **Cache**: Redis for session storage and caching
 
 ### 🛠️ Local Development
 
