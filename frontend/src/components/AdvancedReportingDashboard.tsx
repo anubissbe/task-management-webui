@@ -43,7 +43,7 @@ const AdvancedReportingDashboard: React.FC = () => {
           : undefined,
         teamIds: filters.teamMemberIds,
         status: filters.taskStatuses,
-        priority: filters.priorities?.length === 1 ? filters.priorities[0] : undefined
+        priority: filters.priorities
       };
       const metrics = await ReportingService.getAdvancedMetrics(reportFilter);
       setAdvancedMetrics(metrics);
@@ -125,7 +125,9 @@ const AdvancedReportingDashboard: React.FC = () => {
         format,
         includeCharts: true,
         includeRawData: format !== 'pdf',
-        dateRange: filters.dateRange
+        dateRange: filters.dateRange && filters.dateRange !== 'custom' && typeof filters.dateRange === 'string' 
+          ? ReportingService.generateDateRange(filters.dateRange as 'last7days' | 'last30days' | 'thisMonth' | 'lastMonth' | 'thisQuarter' | 'thisYear')
+          : undefined
       });
 
       // Create download link
