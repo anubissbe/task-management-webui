@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -11,10 +11,7 @@ import {
   Tooltip,
   Legend,
   ChartData,
-  ChartOptions,
-  ChartTypeRegistry,
-  Point,
-  BubbleDataPoint
+  ChartOptions
 } from 'chart.js';
 import { Line, Bar, Pie, Doughnut } from 'react-chartjs-2';
 import { ReportWidget as ReportWidgetType } from '../services/reportingService';
