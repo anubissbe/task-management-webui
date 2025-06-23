@@ -3,7 +3,7 @@ version: '3.8'
 services:
   postgres:
     image: postgres:17
-    container_name: task-management-postgres
+    container_name: projecthub-mcp-postgres
     environment:
       - POSTGRES_USER=test_user
       - POSTGRES_PASSWORD=test_pass
@@ -11,7 +11,7 @@ services:
     ports:
       - "5432:5432"
     networks:
-      - task-management-network
+      - projecthub-mcp-network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U test_user -d test_db"]
       interval: 5s
@@ -23,7 +23,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: task-management-backend
+    container_name: projecthub-mcp-backend
     ports:
       - "3001:3001"
     environment:
@@ -32,7 +32,7 @@ services:
       - DATABASE_URL=postgresql://test_user:test_pass@postgres:5432/test_db
       - CORS_ORIGIN=http://localhost:5173
     networks:
-      - task-management-network
+      - projecthub-mcp-network
     depends_on:
       postgres:
         condition: service_healthy
@@ -47,14 +47,14 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: task-management-frontend
+    container_name: projecthub-mcp-frontend
     ports:
       - "5173:5173"
     environment:
       - VITE_API_URL=http://localhost:3001/api
       - VITE_WS_URL=http://localhost:3001
     networks:
-      - task-management-network
+      - projecthub-mcp-network
     depends_on:
       backend:
         condition: service_healthy
@@ -66,5 +66,5 @@ services:
       start_period: 30s
 
 networks:
-  task-management-network:
+  projecthub-mcp-network:
     driver: bridge
