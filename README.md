@@ -202,8 +202,23 @@ echo "Health Check: http://localhost:3001/api/health"
 echo "👤 Visit http://localhost:5173 and register your admin account"
 ```
 
-#### 🚀 Coming Soon - Pre-built Images:
-We're working on publishing pre-built Docker images to make setup even easier:
+#### 🚀 Pre-built Images (Coming Soon):
+Once the images are published to Docker Hub, you can use this simplified approach:
+
+```bash
+# Quick start with pre-built images (available after first CI/CD run)
+mkdir projecthub-mcp && cd projecthub-mcp
+curl -L https://raw.githubusercontent.com/anubissbe/ProjectHub-Mcp/main/docker-compose.images.yml -o docker-compose.yml
+curl -L https://raw.githubusercontent.com/anubissbe/ProjectHub-Mcp/main/.env.quickstart -o .env
+nano .env  # Just change JWT_SECRET and DB_PASSWORD
+docker-compose up -d
+```
+
+**Docker Hub Images**:
+- `anubissbe/projecthub-mcp-frontend:latest`
+- `anubissbe/projecthub-mcp-backend:latest`
+
+**Features**:
 - **⚡ Instant Setup**: No building required, just pull and run
 - **🔄 Auto-Updated**: Images automatically built from latest code
 - **🛡️ Production-Ready**: Optimized and security-scanned images
