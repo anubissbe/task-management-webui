@@ -1,7 +1,7 @@
 import { api } from './api';
 
 // Temporary implementation of apiRequest to maintain compatibility
-const apiRequest = async <T = any>(url: string, options?: { method?: string; body?: string }): Promise<T> => {
+const apiRequest = async <T = unknown>(url: string, options?: { method?: string; body?: string }): Promise<T> => {
   const method = options?.method?.toLowerCase() || 'get';
   const config: Record<string, unknown> = {};
   
