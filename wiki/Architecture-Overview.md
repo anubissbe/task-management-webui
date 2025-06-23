@@ -1,6 +1,6 @@
 # Architecture Overview
 
-This document provides a comprehensive overview of the Task Management WebUI architecture, including system design, technology stack, and architectural decisions.
+This document provides a comprehensive overview of the ProjectHub-MCP v4.5.1 architecture, including system design, technology stack, and architectural decisions for this production-ready enterprise project management system.
 
 ## 🏗️ System Architecture
 
@@ -51,7 +51,7 @@ Database (PostgreSQL)
 ### Frontend Stack
 | Technology | Version | Purpose |
 |------------|---------|---------|
-| **React** | 19.1.0 | UI framework |
+| **React** | 19.1.0 | Modern UI framework with concurrent features |
 | **TypeScript** | 5.8.3 | Type safety |
 | **Vite** | 6.3.5 | Build tool and dev server |
 | **Tailwind CSS** | 3.4.17 | Styling and design system |
@@ -77,8 +77,8 @@ Database (PostgreSQL)
 ### Database Stack
 | Technology | Version | Purpose |
 |------------|---------|---------|
-| **PostgreSQL** | 17 | Primary database |
-| **pgvector** | 0.5.1 | Vector similarity search |
+| **PostgreSQL** | 17 | Primary database with advanced indexing |
+| **pgvector** | 0.5.1 | Vector similarity search for AI features |
 
 ### Infrastructure Stack
 | Technology | Version | Purpose |

@@ -34,22 +34,33 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   backend:
-    image: anubissbe/projecthub-mcp-backend:latest
+    image: ghcr.io/anubissbe/projecthub-mcp-backend:v4.5.1
     ports:
       - "3001:3001"
     environment:
       DATABASE_URL: postgresql://projecthub:changeme123@postgres:5432/projecthub_db?schema=project_management
       NODE_ENV: production
       CORS_ORIGIN: http://localhost:5173
+      APP_VERSION: 4.5.1
     depends_on:
       - postgres
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   frontend:
-    image: anubissbe/projecthub-mcp-frontend:latest
+    image: ghcr.io/anubissbe/projecthub-mcp-frontend:v4.5.1
     ports:
       - "5173:80"
     depends_on:
       - backend
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
 volumes:
   postgres_data:
@@ -72,21 +83,32 @@ version: '3.8'
 
 services:
   backend:
-    image: anubissbe/projecthub-mcp-backend:latest
+    image: ghcr.io/anubissbe/projecthub-mcp-backend:v4.5.1
     container_name: projecthub-backend
     network_mode: "host"  # Required for Synology
     environment:
       NODE_ENV: production
       DATABASE_URL: postgresql://user:pass@your-server-ip:5433/db?schema=project_management
       CORS_ORIGIN: http://your-server-ip:5173
+      APP_VERSION: 4.5.1
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   frontend:
-    image: anubissbe/projecthub-mcp-frontend:latest
+    image: ghcr.io/anubissbe/projecthub-mcp-frontend:v4.5.1
     container_name: projecthub-frontend
     ports:
       - "5173:80"
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 ```
 
 ### Verify Installation

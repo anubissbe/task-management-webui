@@ -1,6 +1,6 @@
 # AI Development Tools Configuration
 
-This guide covers how to configure and use various AI coding assistants with the Task Management WebUI project, including Claude Code, Cline, Continue, and other popular AI development tools.
+This guide covers how to configure and use various AI coding assistants with the ProjectHub-MCP v4.5.1 project, including Claude Code, Cline, Continue, and other popular AI development tools for this enterprise-grade project management system.
 
 ## 🤖 Overview
 
@@ -24,13 +24,13 @@ npm install -g @anthropic-ai/claude-code
 **Project Configuration**:
 ```bash
 # Navigate to project root
-cd /path/to/task-management-webui
+cd /path/to/ProjectHub-Mcp
 
 # Create Claude configuration (if using CLI)
 cat > .claude-config.json << 'EOF'
 {
-  "projectName": "Task Management WebUI",
-  "description": "Modern task management application with React, TypeScript, Node.js, and PostgreSQL",
+  "projectName": "ProjectHub-MCP",
+  "description": "Enterprise-grade project management system with React, TypeScript, Node.js, and PostgreSQL",
   "framework": "fullstack",
   "technologies": [
     "React 19",

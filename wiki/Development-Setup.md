@@ -1,6 +1,6 @@
 # Development Setup
 
-This guide covers setting up a complete development environment for the Task Management WebUI project, including tools, dependencies, and workflow setup.
+This guide covers setting up a complete development environment for the ProjectHub-MCP v4.5.1 project, including tools, dependencies, and workflow setup for this production-ready enterprise project management system.
 
 ## 💻 Prerequisites
 
@@ -65,11 +65,11 @@ git config --global user.email "your.email@example.com"
 **1. Fork and Clone**
 ```bash
 # Fork the repository on GitHub first, then:
-git clone https://github.com/YOUR_USERNAME/task-management-webui.git
-cd task-management-webui
+git clone https://github.com/YOUR_USERNAME/ProjectHub-Mcp.git
+cd ProjectHub-Mcp
 
 # Add upstream remote
-git remote add upstream https://github.com/anubissbe/task-management-webui.git
+git remote add upstream https://github.com/anubissbe/ProjectHub-Mcp.git
 
 # Verify remotes
 git remote -v
@@ -607,7 +607,7 @@ npx tsc --noEmit
 
 ### Getting Help
 
-1. Check [GitHub Issues](https://github.com/anubissbe/task-management-webui/issues)
+1. Check [GitHub Issues](https://github.com/anubissbe/ProjectHub-Mcp/issues)
 2. Review [Troubleshooting Guide](Troubleshooting)
 3. Join project discussions
 4. Create detailed bug reports with:

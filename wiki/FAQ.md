@@ -1,6 +1,6 @@
 # Frequently Asked Questions (FAQ)
 
-This FAQ covers common questions about the Task Management WebUI, including setup, usage, troubleshooting, and best practices.
+This FAQ covers common questions about ProjectHub-MCP v4.5.1, including setup, usage, troubleshooting, and best practices for this production-ready enterprise project management system.
 
 ## 🚀 Getting Started
 
@@ -11,9 +11,10 @@ This FAQ covers common questions about the Task Management WebUI, including setu
 - **Browser**: Chrome 90+, Firefox 88+, Safari 14+, Edge 90+
 
 ### Q: How do I install the application?
-**A:** The quickest way is using our pre-built release:
+**A:** The quickest way is using our pre-built containers:
 ```bash
-curl -L https://github.com/anubissbe/task-management-webui/releases/download/v1.0.0/task-management-webui-v1.0.0-full.tar.gz | tar -xz
+# Using the latest stable release
+curl -L https://github.com/anubissbe/ProjectHub-Mcp/releases/download/v4.5.1/docker-compose.yml
 docker compose up -d
 ```
 See the [Installation Guide](Installation-Guide) for detailed instructions.
@@ -31,13 +32,27 @@ See the [Installation Guide](Installation-Guide) for detailed instructions.
 ## 👥 User Management
 
 ### Q: How do I create user accounts?
-**A:** Currently, the application runs in single-user mode for simplicity. Multi-user authentication is planned for future releases. You can track this feature request in our [GitHub Issues](https://github.com/anubissbe/task-management-webui/issues).
+**A:** ProjectHub-MCP v4.5.1 includes full multi-user support with role-based access control:
+- User registration and authentication
+- Role management (Admin, Manager, Developer, Viewer)
+- Project-level permissions
+- Team collaboration features
+- Audit logging for all user actions
 
 ### Q: Can multiple people use the same instance?
-**A:** Yes, multiple people can use the same instance simultaneously. Real-time updates ensure everyone sees changes instantly. However, there's no user-specific data separation currently.
+**A:** Yes! ProjectHub-MCP v4.5.1 is designed for team collaboration with:
+- Real-time synchronization across all users
+- User-specific dashboards and preferences
+- Team activity feeds and notifications
+- Concurrent editing with conflict resolution
 
 ### Q: How do I set user permissions?
-**A:** Role-based access control is not implemented yet. This feature is planned for v2.0. Currently, all users have full access to all projects and tasks.
+**A:** Role-based access control is fully implemented:
+- Admin: Full system access
+- Manager: Project creation and team management
+- Developer: Task management and collaboration
+- Viewer: Read-only access to assigned projects
+- Custom roles: Create organization-specific roles
 
 ## 📊 Project Management
 
@@ -70,11 +85,12 @@ See the [Installation Guide](Installation-Guide) for detailed instructions.
 **A:** Tasks can have prerequisites that must be completed first. Dependent tasks are automatically marked as "blocked" until their dependencies are resolved. Dependencies are visualized in the Timeline view.
 
 ### Q: Can I set recurring tasks?
-**A:** Recurring tasks aren't built-in yet, but you can:
-1. Create task templates for repeated work
-2. Use the bulk create feature
-3. Clone existing tasks
-4. This feature is planned for v1.2
+**A:** Yes! Recurring tasks are fully supported in v4.5.1:
+1. Create daily, weekly, monthly, or custom recurring patterns
+2. Automatic task generation based on schedules
+3. Template-based recurring workflows
+4. Smart dependency handling for recurring tasks
+5. Bulk management of recurring task series
 
 ### Q: How do I bulk update tasks?
 **A:** In List view:
@@ -159,14 +175,20 @@ See the [Installation Guide](Installation-Guide) for detailed instructions.
 - Brand customization via CSS variables
 
 ### Q: How do I add custom fields to tasks?
-**A:** Custom fields aren't built-in, but you can:
-- Use the description field with structured text
-- Leverage the tags system for categorization
-- Store additional data in comments
-- Custom fields are planned for v1.3
+**A:** Custom fields are fully supported in v4.5.1:
+- Create unlimited custom fields per project
+- Support for text, number, date, dropdown, and checkbox fields
+- Field validation and required field enforcement
+- Custom field templates for consistent data collection
+- Advanced search and filtering by custom fields
 
 ### Q: Can I modify the workflow statuses?
-**A:** Currently, statuses are fixed (Pending, In Progress, Blocked, Testing, Completed). Custom workflows are planned for v1.2. You can track this in our roadmap.
+**A:** Yes! Custom workflows are fully implemented in v4.5.1:
+- Create custom status columns for different project types
+- Define status transitions and rules
+- Set up approval workflows
+- Configure automated status changes based on conditions
+- Multiple workflow templates for different teams
 
 ## 🐛 Troubleshooting
 
@@ -193,7 +215,7 @@ See the [Installation Guide](Installation-Guide) for detailed instructions.
 4. **Increase resources**: Add more RAM/CPU if using Docker
 
 ### Q: Dark mode text is not readable
-**A:** This was a known issue that's been fixed in v1.0.0. If you're still experiencing issues:
+**A:** This was a known issue that's been fixed in v4.5.1. If you're still experiencing issues:
 1. Update to the latest version
 2. Clear browser cache
 3. Check for custom CSS overrides
@@ -283,7 +305,7 @@ See the [Installation Guide](Installation-Guide) for detailed instructions.
 
 ### Q: How do I report bugs?
 **A:** Bug reporting:
-1. Check [existing issues](https://github.com/anubissbe/task-management-webui/issues)
+1. Check [existing issues](https://github.com/anubissbe/ProjectHub-Mcp/issues)
 2. Create new issue with:
    - Steps to reproduce
    - Expected vs. actual behavior
@@ -327,4 +349,4 @@ See the [Installation Guide](Installation-Guide) for detailed instructions.
 
 ---
 
-**Still have questions?** Check the [Troubleshooting Guide](Troubleshooting) or create an issue on [GitHub](https://github.com/anubissbe/task-management-webui/issues).
+**Still have questions?** Check the [Troubleshooting Guide](Troubleshooting) or create an issue on [GitHub](https://github.com/anubissbe/ProjectHub-Mcp/issues).

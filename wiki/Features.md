@@ -1,4 +1,4 @@
-# ProjectHub-MCP Features
+# ProjectHub-MCP v4.5.1 Features
 
 ## 🎯 Core Features
 
@@ -10,12 +10,12 @@
 - **Metadata Support** - Store custom project information
 
 ### Task Management
-- **Hierarchical Tasks** - Support for subtasks and dependencies
-- **Priority Levels** - Critical, High, Medium, Low
-- **Status Workflow** - Pending → In Progress → Testing → Completed
-- **Time Tracking** - Estimated vs actual hours
-- **Bulk Operations** - Update multiple tasks at once
-- **Task History** - Full audit trail of changes
+- **Hierarchical Tasks** - Complete support for subtasks and dependencies
+- **Priority Levels** - Critical, High, Medium, Low with visual indicators
+- **Advanced Status Workflow** - Pending → In Progress → Blocked → Testing → Completed
+- **Comprehensive Time Tracking** - Estimated vs actual hours with reporting
+- **Bulk Operations** - Update multiple tasks at once with validation
+- **Complete Task History** - Full audit trail with user attribution
 
 ## 📊 Kanban Board
 
@@ -107,14 +107,18 @@
 - **Persistent Preferences** - Saved per user
 
 ### Templates
-- **Task Templates** - 5 pre-built workflows
+- **Task Templates** - 12 pre-built workflows including:
   - Bug Fix Workflow
   - Feature Development
   - Research Spike
   - Performance Optimization
   - Security Review
-- **Project Templates** - Common project types
-- **Custom Templates** - Save your own
+  - Code Review Process
+  - Testing Procedures
+  - Deployment Checklist
+- **Project Templates** - 8 common project types
+- **Custom Templates** - Save and share your own templates
+- **Template Sharing** - Import/export templates across instances
 
 ## 📤 Import/Export
 

@@ -6,7 +6,7 @@
 
 ## 🚀 Overview
 
-ProjectHub-Mcp provides powerful project management capabilities with a distinctive **black and orange** interface designed for MCP integration. This guide covers everything you need to manage projects effectively.
+ProjectHub-MCP v4.5.1 provides enterprise-grade project management capabilities with a distinctive **black and orange** interface designed for MCP integration. This production-ready system covers everything you need to manage projects effectively at scale.
 
 ## 📋 Project Structure
 

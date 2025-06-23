@@ -1,6 +1,6 @@
 # Analytics Dashboard
 
-The Analytics Dashboard provides comprehensive insights into project performance, team productivity, and task completion patterns. This guide covers all available metrics and how to interpret them.
+The Analytics Dashboard in ProjectHub-MCP v4.5.1 provides comprehensive insights into project performance, team productivity, and task completion patterns. This enterprise-grade analytics system covers all available metrics and how to interpret them for maximum business value.
 
 ## 📈 Dashboard Overview
 

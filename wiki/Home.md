@@ -58,7 +58,7 @@ Welcome to the comprehensive documentation for **ProjectHub-Mcp**!
 
 - Check the [FAQ](FAQ) for common questions
 - Browse the [Troubleshooting](Troubleshooting) guide
-- Create an [Issue](https://github.com/anubissbe/task-management-webui/issues) for bug reports
+- Create an [Issue](https://github.com/anubissbe/ProjectHub-Mcp/issues) for bug reports
 - Join our community discussions
 
 ## 🔗 External Resources
@@ -76,7 +76,7 @@ Welcome to the comprehensive documentation for **ProjectHub-Mcp**!
 
 <div align="center">
 
-**Last Updated**: June 2025 | **Version**: 4.1.0 | **Status**: Production Ready
+**Last Updated**: December 2024 | **Version**: 4.5.1 | **Status**: Production Ready
 
 <p style="color: #ff6500; font-weight: bold;">
 🧡 Built with the signature black (#0a0a0a) and orange (#ff6500) theme 🧡
