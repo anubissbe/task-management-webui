@@ -39,7 +39,7 @@ const AdvancedReportingDashboard: React.FC = () => {
       const reportFilter: ReportFilter = {
         ...filters,
         dateRange: filters.dateRange && filters.dateRange !== 'custom' && typeof filters.dateRange === 'string' 
-          ? ReportingService.generateDateRange(filters.dateRange as any)
+          ? ReportingService.generateDateRange(filters.dateRange as 'last7days' | 'last30days' | 'thisMonth' | 'lastMonth' | 'thisQuarter' | 'thisYear')
           : undefined,
         teamIds: filters.teamMemberIds,
         status: filters.taskStatuses,
