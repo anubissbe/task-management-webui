@@ -1,6 +1,6 @@
 {
   "name": "project-tasks-webui",
-  "version": "1.0.0",
+  "version": "4.5.1",
   "description": "A modern web interface for managing projects and tasks with real-time updates, visual progress tracking, and comprehensive test management.",
   "main": "test-ui.js",
   "directories": {
