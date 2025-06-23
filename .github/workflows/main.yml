@@ -102,7 +102,7 @@ jobs:
         run: npm run test:coverage -- --run
         
       - name: 📊 Upload coverage
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./frontend/coverage/lcov.info
@@ -166,7 +166,7 @@ jobs:
           JWT_SECRET: test-secret-key
           
       - name: 📊 Upload coverage
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./backend/coverage/lcov.info
