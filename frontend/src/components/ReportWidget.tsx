@@ -11,7 +11,10 @@ import {
   Tooltip,
   Legend,
   ChartData,
-  ChartOptions
+  ChartOptions,
+  ChartTypeRegistry,
+  Point,
+  BubbleDataPoint
 } from 'chart.js';
 import { Line, Bar, Pie, Doughnut } from 'react-chartjs-2';
 import { ReportWidget as ReportWidgetType } from '../services/reportingService';
@@ -67,7 +70,7 @@ const ReportWidget: React.FC<ReportWidgetProps> = ({
   onDelete,
   isEditing = false
 }) => {
-  const chartRef = useRef<any>(null);
+  const chartRef = useRef<ChartJS<keyof ChartTypeRegistry, (number | [number, number] | Point | BubbleDataPoint | null)[], unknown> | null>(null);
 
   // Transform data based on widget type
   const getChartData = (): ChartData<'line' | 'bar' | 'pie' | 'doughnut'> => {
