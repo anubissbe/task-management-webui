@@ -1,5 +1,9 @@
 # Docker Hub Setup for CI/CD
 
+## Required Setup
+
+⚠️ **Action Required**: Docker Hub token needs to be added to GitHub Secrets for automatic image publishing.
+
 ## Setting up Docker Hub Token
 
 To enable automatic Docker image publishing to Docker Hub, you need to:
