@@ -45,7 +45,7 @@
     "@types/jest": "^30.0.0",
     "@types/json2csv": "^5.0.7",
     "@types/jsonwebtoken": "^9.0.10",
-    "@types/node": "^22.0.0",
+    "@types/node": "^24.0.3",
     "@types/pdfkit": "^0.14.0",
     "@types/pg": "^8.10.9",
     "@types/supertest": "^6.0.3",
