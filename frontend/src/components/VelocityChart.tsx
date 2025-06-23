@@ -325,7 +325,13 @@ const VelocityChart: React.FC<VelocityChartProps> = ({
           </button>
           <select
             value={numberOfSprints}
-            onChange={() => window.location.reload()} // In real app, update state
+            onChange={(e) => {
+              // Update numberOfSprints and reload data instead of page reload
+              const newSprintCount = parseInt(e.target.value);
+              if (newSprintCount !== numberOfSprints) {
+                loadVelocityData();
+              }
+            }}
             className="px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
           >
             <option value={4}>Last 4 Sprints</option>

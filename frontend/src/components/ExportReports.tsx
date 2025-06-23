@@ -164,18 +164,30 @@ export function ExportReports({ project, tasks, activities = [], onClose }: Expo
     // For PDF export, we'll create an HTML representation that can be printed to PDF
     const htmlContent = generatePDFHTML(tasks);
     
-    // Create a new window with the HTML content for printing
-    const printWindow = window.open('', '_blank');
-    if (printWindow) {
-      printWindow.document.write(htmlContent);
-      printWindow.document.close();
-      printWindow.focus();
-      
-      // Trigger print dialog
+    // Create a blob URL for the HTML content
+    const blob = new Blob([htmlContent], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    
+    // Create a temporary iframe for printing
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    iframe.src = url;
+    
+    document.body.appendChild(iframe);
+    
+    // Wait for iframe to load then print
+    iframe.onload = () => {
       setTimeout(() => {
-        printWindow.print();
-      }, 500);
-    }
+        if (iframe.contentWindow) {
+          iframe.contentWindow.print();
+        }
+        // Clean up after printing
+        setTimeout(() => {
+          document.body.removeChild(iframe);
+          URL.revokeObjectURL(url);
+        }, 1000);
+      }, 100);
+    };
   };
 
   const generatePDFHTML = (tasks: Task[]): string => {

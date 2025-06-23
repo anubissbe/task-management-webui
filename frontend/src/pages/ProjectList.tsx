@@ -115,7 +115,10 @@ export const ProjectList: React.FC = () => {
           MCP Protocol Unavailable
         </p>
         <button 
-          onClick={() => window.location.reload()} 
+          onClick={() => {
+            // Retry by refetching data instead of page reload
+            queryClient.invalidateQueries({ queryKey: ['projects'] });
+          }} 
           className="mt-8 px-8 py-4 bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-500 hover:to-orange-400 text-white font-black rounded-xl transition-all transform hover:scale-110 shadow-2xl shadow-orange-500/40 uppercase tracking-wider text-lg"
         >
           Retry Connection
