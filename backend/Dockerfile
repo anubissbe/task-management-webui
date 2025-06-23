@@ -34,8 +34,20 @@ FROM node:22-alpine
 
 WORKDIR /app
 
-# Install runtime dependencies for native modules
+# Install runtime dependencies and build tools for native modules
 RUN apk add --no-cache \
+    python3 \
+    make \
+    g++ \
+    cairo-dev \
+    jpeg-dev \
+    pango-dev \
+    musl-dev \
+    giflib-dev \
+    pixman-dev \
+    pangomm-dev \
+    libjpeg-turbo-dev \
+    freetype-dev \
     cairo \
     jpeg \
     pango \
@@ -54,6 +66,12 @@ RUN npm ci --omit=dev
 
 # Copy built application
 COPY --from=builder /app/dist ./dist
+
+# Remove build dependencies to reduce image size
+RUN apk del python3 make g++ \
+    cairo-dev jpeg-dev pango-dev musl-dev \
+    giflib-dev pixman-dev pangomm-dev \
+    libjpeg-turbo-dev freetype-dev
 
 # Expose port
 EXPOSE 3001
