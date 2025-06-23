@@ -1,368 +1,720 @@
-# TypeScript/Node.js Full-Stack CI/CD Pipeline
-# For: React/Vue/Angular + Node.js/Express applications
-# Self-hosted runners: 192.168.1.16 with 20 available runners
-
-name: 🚀 Full-Stack CI/CD Pipeline
+name: 🚀 Universal CI/CD Pipeline
 
 on:
   push:
-    branches: [ main, develop, staging ]
+    branches: [ main, master, develop ]
   pull_request:
-    branches: [ main, develop ]
-  release:
-    types: [ published ]
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+    branches: [ main, master ]
+  workflow_dispatch:
+    inputs:
+      deploy_environment:
+        description: 'Environment to deploy to'
+        required: false
+        default: 'staging'
+        type: choice
+        options:
+        - staging
+        - production
+  schedule:
+    - cron: '0 2 * * 1'  # Weekly security scans on Mondays at 2 AM
 
 env:
-  NODE_VERSION: '20'
-  DOCKER_REGISTRY: ghcr.io
+  # Use dynamic runner labels from vault
+  RUNNER_LABELS: ${{ secrets.RUNNER_LABELS || 'ubuntu-latest' }}
+  # Docker registry settings
+  REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  # Node.js version for consistency
+  NODE_VERSION: '18'
+  PYTHON_VERSION: '3.11'
 
 jobs:
-  # 🔍 Static Analysis & Security
-  code-analysis:
-    name: 🔍 Code Analysis & Security
-    runs-on: [self-hosted, linux, docker]
-    timeout-minutes: 15
+  # Job 1: Environment Setup and Detection
+  setup:
+    name: 🔍 Environment Setup & Project Detection
+    runs-on: ubuntu-latest
+    outputs:
+      project-type: ${{ steps.detect.outputs.project-type }}
+      has-frontend: ${{ steps.detect.outputs.has-frontend }}
+      has-backend: ${{ steps.detect.outputs.has-backend }}
+      has-docker: ${{ steps.detect.outputs.has-docker }}
+      language: ${{ steps.detect.outputs.language }}
+      package-manager: ${{ steps.detect.outputs.package-manager }}
+      test-command: ${{ steps.detect.outputs.test-command }}
+      build-command: ${{ steps.detect.outputs.build-command }}
+      matrix: ${{ steps.matrix.outputs.matrix }}
     steps:
-      - name: 📥 Checkout code
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🔍 Detect Project Type
+        id: detect
+        run: |
+          # Initialize detection variables
+          PROJECT_TYPE="unknown"
+          HAS_FRONTEND="false"
+          HAS_BACKEND="false"
+          HAS_DOCKER="false"
+          LANGUAGE="unknown"
+          PACKAGE_MANAGER="npm"
+          TEST_COMMAND="npm test"
+          BUILD_COMMAND="npm run build"
+          
+          # Detect package manager
+          if [ -f "package.json" ]; then
+            if [ -f "yarn.lock" ]; then
+              PACKAGE_MANAGER="yarn"
+              TEST_COMMAND="yarn test"
+              BUILD_COMMAND="yarn build"
+            elif [ -f "pnpm-lock.yaml" ]; then
+              PACKAGE_MANAGER="pnpm"
+              TEST_COMMAND="pnpm test"
+              BUILD_COMMAND="pnpm build"
+            fi
+          fi
+          
+          # Detect frontend frameworks
+          if [ -f "package.json" ]; then
+            if grep -q "react\|vue\|angular\|svelte\|next\|nuxt\|vite" package.json; then
+              HAS_FRONTEND="true"
+              if grep -q "next" package.json; then
+                PROJECT_TYPE="nextjs"
+              elif grep -q "vite" package.json; then
+                PROJECT_TYPE="vite"
+              elif grep -q "react" package.json; then
+                PROJECT_TYPE="react"
+              elif grep -q "vue" package.json; then
+                PROJECT_TYPE="vue"
+              fi
+            fi
+          fi
+          
+          # Detect backend frameworks
+          if [ -f "package.json" ]; then
+            if grep -q "express\|fastify\|koa\|nest" package.json; then
+              HAS_BACKEND="true"
+              PROJECT_TYPE="fullstack"
+              LANGUAGE="javascript"
+            fi
+          fi
+          
+          # Detect Python projects
+          if [ -f "requirements.txt" ] || [ -f "pyproject.toml" ] || [ -f "setup.py" ]; then
+            LANGUAGE="python"
+            TEST_COMMAND="pytest"
+            BUILD_COMMAND="python -m build"
+            if grep -q "fastapi\|flask\|django" requirements.txt 2>/dev/null || grep -q "fastapi\|flask\|django" pyproject.toml 2>/dev/null; then
+              HAS_BACKEND="true"
+              PROJECT_TYPE="python-web"
+            else
+              PROJECT_TYPE="python"
+            fi
+          fi
+          
+          # Detect Docker
+          if [ -f "Dockerfile" ] || [ -f "docker-compose.yml" ] || [ -f "docker-compose.yaml" ]; then
+            HAS_DOCKER="true"
+          fi
+          
+          # Detect MCP servers
+          if [ -f "package.json" ] && grep -q "mcp\|model-context-protocol" package.json; then
+            PROJECT_TYPE="mcp-server"
+          fi
+          
+          # Output all detected values
+          echo "project-type=$PROJECT_TYPE" >> $GITHUB_OUTPUT
+          echo "has-frontend=$HAS_FRONTEND" >> $GITHUB_OUTPUT
+          echo "has-backend=$HAS_BACKEND" >> $GITHUB_OUTPUT
+          echo "has-docker=$HAS_DOCKER" >> $GITHUB_OUTPUT
+          echo "language=$LANGUAGE" >> $GITHUB_OUTPUT
+          echo "package-manager=$PACKAGE_MANAGER" >> $GITHUB_OUTPUT
+          echo "test-command=$TEST_COMMAND" >> $GITHUB_OUTPUT
+          echo "build-command=$BUILD_COMMAND" >> $GITHUB_OUTPUT
+          
+          echo "🔍 Detected project type: $PROJECT_TYPE"
+          echo "📦 Package manager: $PACKAGE_MANAGER"
+          echo "🗣️  Language: $LANGUAGE"
+
+      - name: 🔧 Generate Build Matrix
+        id: matrix
+        run: |
+          # Create build matrix based on detected project structure
+          MATRIX='{"include":[]}'
+          
+          if [ "${{ steps.detect.outputs.has-frontend }}" == "true" ]; then
+            MATRIX=$(echo $MATRIX | jq '.include += [{"component": "frontend", "directory": "frontend", "dockerfile": "Dockerfile.frontend"}]')
+          fi
+          
+          if [ "${{ steps.detect.outputs.has-backend }}" == "true" ]; then
+            MATRIX=$(echo $MATRIX | jq '.include += [{"component": "backend", "directory": "backend", "dockerfile": "Dockerfile.backend"}]')
+          fi
+          
+          # If no specific components detected, use root
+          if [ "$(echo $MATRIX | jq '.include | length')" == "0" ]; then
+            MATRIX='{"include":[{"component": "app", "directory": ".", "dockerfile": "Dockerfile"}]}'
+          fi
+          
+          echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
+          echo "📋 Build matrix: $MATRIX"
+
+  # Job 2: Code Quality & Linting
+  quality:
+    name: 🧹 Code Quality & Linting
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        if: needs.setup.outputs.language == 'javascript' || needs.setup.outputs.language == 'unknown'
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: ${{ needs.setup.outputs.package-manager }}
+
+      - name: 🐍 Setup Python
+        if: needs.setup.outputs.language == 'python'
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: 📦 Install Dependencies (JavaScript)
+        if: needs.setup.outputs.language == 'javascript' || needs.setup.outputs.language == 'unknown'
+        run: |
+          case "${{ needs.setup.outputs.package-manager }}" in
+            yarn) yarn install --frozen-lockfile ;;
+            pnpm) pnpm install --frozen-lockfile ;;
+            *) npm ci ;;
+          esac
+
+      - name: 📦 Install Dependencies (Python)
+        if: needs.setup.outputs.language == 'python'
+        run: |
+          pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
+          pip install black flake8 mypy pytest
+
+      - name: 🔍 ESLint (JavaScript)
+        if: needs.setup.outputs.language == 'javascript' || needs.setup.outputs.language == 'unknown'
+        run: |
+          if [ -f ".eslintrc.js" ] || [ -f ".eslintrc.json" ] || [ -f "eslint.config.js" ]; then
+            npx eslint . --ext .js,.jsx,.ts,.tsx --max-warnings 0
+          else
+            echo "⚠️ No ESLint configuration found, skipping..."
+          fi
+
+      - name: 🎨 Prettier (JavaScript)
+        if: needs.setup.outputs.language == 'javascript' || needs.setup.outputs.language == 'unknown'
+        run: |
+          if [ -f ".prettierrc" ] || [ -f "prettier.config.js" ]; then
+            npx prettier --check .
+          else
+            echo "⚠️ No Prettier configuration found, skipping..."
+          fi
+
+      - name: 🖤 Black Formatting (Python)
+        if: needs.setup.outputs.language == 'python'
+        run: black --check .
+
+      - name: 🔥 Flake8 Linting (Python)
+        if: needs.setup.outputs.language == 'python'
+        run: flake8 .
+
+      - name: 🔎 MyPy Type Checking (Python)
+        if: needs.setup.outputs.language == 'python'
+        run: |
+          if [ -f "mypy.ini" ] || [ -f ".mypy.ini" ] || [ -f "pyproject.toml" ]; then
+            mypy .
+          else
+            echo "⚠️ No MyPy configuration found, skipping..."
+          fi
+
+      - name: 📝 Markdown Linting
+        run: |
+          npm install -g markdownlint-cli
+          markdownlint "**/*.md" --ignore node_modules || echo "⚠️ Markdown linting failed, continuing..."
+
+      - name: 📊 Commit Message Validation
+        if: github.event_name == 'pull_request'
+        run: |
+          npm install -g @commitlint/cli @commitlint/config-conventional
+          echo "module.exports = { extends: ['@commitlint/config-conventional'] };" > commitlint.config.js
+          npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.sha }} || echo "⚠️ Commit message validation failed, continuing..."
+
+  # Job 3: Security Scanning
+  security:
+    name: 🔒 Security Scanning
+    runs-on: ubuntu-latest
+    needs: setup
+    permissions:
+      security-events: write
+      contents: read
+      actions: read
+    steps:
+      - name: 📥 Checkout Code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: 🔧 Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - name: 📦 Install dependencies
-        run: npm ci
-
-      - name: 🔍 ESLint Analysis
-        run: npm run lint
-        continue-on-error: true
-
-      - name: 🎯 TypeScript Check
-        run: npm run typecheck
-        continue-on-error: true
-
-      - name: 🛡️ CodeQL Analysis
+      - name: 🔍 CodeQL Analysis
         uses: github/codeql-action/init@v3
         with:
-          languages: typescript, javascript
+          languages: ${{ needs.setup.outputs.language == 'python' && 'python' || 'javascript' }}
+          queries: security-and-quality
 
-      - name: 🛡️ Perform CodeQL Analysis
+      - name: 🏗️ CodeQL Autobuild
+        uses: github/codeql-action/autobuild@v3
+
+      - name: 📊 CodeQL Results
         uses: github/codeql-action/analyze@v3
 
-      - name: 🔒 Run Trivy security scan
+      - name: 🛡️ Trivy Filesystem Scan
         uses: aquasecurity/trivy-action@master
         with:
           scan-type: 'fs'
           scan-ref: '.'
           format: 'sarif'
-          output: 'trivy-results.sarif'
+          output: 'trivy-fs-results.sarif'
 
-      - name: 📊 Upload Trivy results
+      - name: 📤 Upload Trivy Filesystem Results
         uses: github/codeql-action/upload-sarif@v3
         if: always()
         with:
-          sarif_file: 'trivy-results.sarif'
+          sarif_file: 'trivy-fs-results.sarif'
 
-  # 🧪 Frontend Testing
-  frontend-tests:
-    name: 🧪 Frontend Tests
-    runs-on: [self-hosted, linux, docker]
-    timeout-minutes: 20
-    strategy:
-      matrix:
-        test-type: [unit, integration]
-    steps:
-      - name: 📥 Checkout code
-        uses: actions/checkout@v4
-
-      - name: 🔧 Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - name: 📦 Install dependencies
-        run: npm ci
-
-      - name: 🧪 Run ${{ matrix.test-type }} tests
+      - name: 🐛 Snyk Security Scan
+        if: secrets.SNYK_TOKEN
         run: |
-          if [ "${{ matrix.test-type }}" = "unit" ]; then
-            npm run test:unit -- --coverage
-          else
-            npm run test:integration
+          npm install -g snyk
+          snyk auth ${{ secrets.SNYK_TOKEN }}
+          snyk test --severity-threshold=high || echo "⚠️ Snyk found vulnerabilities"
+          snyk monitor || echo "⚠️ Snyk monitoring failed"
+
+      - name: 🔐 OWASP Dependency Check
+        run: |
+          wget -q https://github.com/jeremylong/DependencyCheck/releases/download/v8.4.3/dependency-check-8.4.3-release.zip
+          unzip -q dependency-check-8.4.3-release.zip
+          ./dependency-check/bin/dependency-check.sh --project "${{ github.repository }}" --scan . --format ALL --out ./dependency-check-report
+          if [ -f "./dependency-check-report/dependency-check-report.json" ]; then
+            echo "📊 OWASP Dependency Check completed"
           fi
 
-      - name: 📊 Upload coverage reports
-        if: matrix.test-type == 'unit'
-        uses: codecov/codecov-action@v4
-        with:
-          file: ./coverage/lcov.info
-          flags: frontend
-          name: frontend-coverage
-
-  # 🧪 Backend Testing
-  backend-tests:
-    name: 🧪 Backend Tests
-    runs-on: [self-hosted, linux, docker]
-    timeout-minutes: 20
-    services:
-      postgres:
-        image: postgres:16
-        env:
-          POSTGRES_PASSWORD: test_password
-          POSTGRES_USER: test_user
-          POSTGRES_DB: test_db
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5433:5432
-
-      redis:
-        image: redis:7-alpine
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 6379:6379
-
-    steps:
-      - name: 📥 Checkout code
-        uses: actions/checkout@v4
-
-      - name: 🔧 Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - name: 📦 Install dependencies
-        run: npm ci
-
-      - name: 🏗️ Build backend
-        run: npm run build:backend
-
-      - name: 🧪 Run backend tests
-        run: npm run test:backend -- --coverage
-        env:
-          DATABASE_URL: postgresql://test_user:test_password@localhost:5433/test_db
-          REDIS_URL: redis://localhost:6379
-
-      - name: 📊 Upload coverage reports
-        uses: codecov/codecov-action@v4
-        with:
-          file: ./coverage/lcov.info
-          flags: backend
-          name: backend-coverage
-
-  # 🎭 End-to-End Testing
-  e2e-tests:
-    name: 🎭 E2E Tests
-    runs-on: [self-hosted, linux, docker]
-    timeout-minutes: 30
-    needs: [frontend-tests, backend-tests]
-    services:
-      postgres:
-        image: postgres:16
-        env:
-          POSTGRES_PASSWORD: test_password
-          POSTGRES_USER: test_user
-          POSTGRES_DB: test_db
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5433:5432
-
-    steps:
-      - name: 📥 Checkout code
-        uses: actions/checkout@v4
-
-      - name: 🔧 Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - name: 📦 Install dependencies
-        run: npm ci
-
-      - name: 🎭 Install Playwright
-        run: npx playwright install --with-deps
-
-      - name: 🏗️ Build application
-        run: npm run build
-
-      - name: 🚀 Start application
+      - name: 🕵️ Secret Detection
         run: |
-          npm run start:test &
-          npx wait-on http://localhost:3000 --timeout 60000
-        env:
-          DATABASE_URL: postgresql://test_user:test_password@localhost:5433/test_db
-          NODE_ENV: test
+          docker run --rm -v $(pwd):/scan trufflesecurity/trufflehog:latest filesystem /scan --no-update --json > secrets-scan.json || true
+          if [ -s secrets-scan.json ]; then
+            echo "⚠️ Potential secrets detected!"
+            cat secrets-scan.json
+          else
+            echo "✅ No secrets detected"
+          fi
 
-      - name: 🎭 Run E2E tests
-        run: npm run test:e2e
-
-      - name: 📸 Upload test results
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 7
-
-  # 🐳 Docker Build & Security
-  docker-build:
-    name: 🐳 Docker Build & Security
-    runs-on: [self-hosted, linux, docker]
-    timeout-minutes: 15
-    needs: [code-analysis]
+  # Job 4: Testing
+  testing:
+    name: 🧪 Testing
+    runs-on: ubuntu-latest
+    needs: [setup, quality]
+    strategy:
+      matrix: ${{ fromJson(needs.setup.outputs.matrix) }}
+      fail-fast: false
     steps:
-      - name: 📥 Checkout code
+      - name: 📥 Checkout Code
         uses: actions/checkout@v4
 
-      - name: 🐳 Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: 🏗️ Build Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          platforms: linux/amd64,linux/arm64
-          push: false
-          tags: ${{ env.IMAGE_NAME }}:test
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-      - name: 🔒 Run Trivy container scan
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: ${{ env.IMAGE_NAME }}:test
-          format: 'sarif'
-          output: 'docker-trivy-results.sarif'
-
-      - name: 📊 Upload Docker security results
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: 'docker-trivy-results.sarif'
-
-  # 📦 Release & Deploy
-  release:
-    name: 📦 Release & Deploy
-    runs-on: [self-hosted, linux, docker]
-    timeout-minutes: 20
-    needs: [frontend-tests, backend-tests, e2e-tests, docker-build]
-    if: github.event_name == 'release' && github.event.action == 'published'
-    permissions:
-      contents: write
-      packages: write
-    steps:
-      - name: 📥 Checkout code
-        uses: actions/checkout@v4
-
-      - name: 🔧 Setup Node.js
+      - name: 🟢 Setup Node.js
+        if: needs.setup.outputs.language == 'javascript' || needs.setup.outputs.language == 'unknown'
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: ${{ needs.setup.outputs.package-manager }}
 
-      - name: 📦 Install dependencies
-        run: npm ci
+      - name: 🐍 Setup Python
+        if: needs.setup.outputs.language == 'python'
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
 
-      - name: 🏗️ Build production
-        run: npm run build
+      - name: 📦 Install Dependencies
+        working-directory: ${{ matrix.directory }}
+        run: |
+          if [ "${{ needs.setup.outputs.language }}" == "python" ]; then
+            pip install --upgrade pip
+            if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+            if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
+            pip install pytest pytest-cov
+          else
+            case "${{ needs.setup.outputs.package-manager }}" in
+              yarn) yarn install --frozen-lockfile ;;
+              pnpm) pnpm install --frozen-lockfile ;;
+              *) npm ci ;;
+            esac
+          fi
+
+      - name: 🧪 Unit Tests
+        working-directory: ${{ matrix.directory }}
+        run: |
+          if [ "${{ needs.setup.outputs.language }}" == "python" ]; then
+            pytest --cov=. --cov-report=xml --cov-report=term
+          else
+            ${{ needs.setup.outputs.test-command }} --passWithNoTests --coverage --watchAll=false
+          fi
+
+      - name: 🎭 E2E Tests (Playwright)
+        if: needs.setup.outputs.has-frontend == 'true'
+        working-directory: ${{ matrix.directory }}
+        run: |
+          if [ -f "playwright.config.ts" ] || [ -f "playwright.config.js" ]; then
+            npx playwright install --with-deps
+            npx playwright test
+          else
+            echo "⚠️ No Playwright configuration found, skipping E2E tests..."
+          fi
+
+      - name: 📊 Upload Coverage to CodeClimate
+        if: secrets.CODECLIMATE_TOKEN
+        run: |
+          curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+          chmod +x ./cc-test-reporter
+          ./cc-test-reporter format-coverage -t lcov ./coverage/lcov.info || echo "⚠️ CodeClimate upload failed"
+          ./cc-test-reporter upload-coverage || echo "⚠️ CodeClimate upload failed"
+
+      - name: 📈 Upload Coverage to Codecov
+        if: secrets.CODECOV_TOKEN
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: ${{ matrix.directory }}
+          fail_ci_if_error: false
+
+  # Job 5: SonarCloud Analysis
+  sonarcloud:
+    name: 📊 SonarCloud Analysis
+    runs-on: ubuntu-latest
+    needs: [setup, testing]
+    if: secrets.SONARCLOUD_TOKEN
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 📊 SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
+
+  # Job 6: Build
+  build:
+    name: 🏗️ Build
+    runs-on: ubuntu-latest
+    needs: [setup, quality]
+    strategy:
+      matrix: ${{ fromJson(needs.setup.outputs.matrix) }}
+      fail-fast: false
+    outputs:
+      image-digest: ${{ steps.build.outputs.digest }}
+      image-tags: ${{ steps.meta.outputs.tags }}
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        if: needs.setup.outputs.language == 'javascript' || needs.setup.outputs.language == 'unknown'
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: ${{ needs.setup.outputs.package-manager }}
+
+      - name: 🐍 Setup Python
+        if: needs.setup.outputs.language == 'python'
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: 📦 Install Dependencies
+        working-directory: ${{ matrix.directory }}
+        run: |
+          if [ "${{ needs.setup.outputs.language }}" == "python" ]; then
+            pip install --upgrade pip
+            if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+            pip install build
+          else
+            case "${{ needs.setup.outputs.package-manager }}" in
+              yarn) yarn install --frozen-lockfile ;;
+              pnpm) pnpm install --frozen-lockfile ;;
+              *) npm ci ;;
+            esac
+          fi
+
+      - name: 🏗️ Build Application
+        working-directory: ${{ matrix.directory }}
+        run: |
+          if [ "${{ needs.setup.outputs.language }}" == "python" ]; then
+            python -m build
+          else
+            ${{ needs.setup.outputs.build-command }}
+          fi
 
       - name: 🐳 Set up Docker Buildx
+        if: needs.setup.outputs.has-docker == 'true'
         uses: docker/setup-buildx-action@v3
 
-      - name: 🔐 Login to Container Registry
+      - name: 🔑 Login to Container Registry
+        if: needs.setup.outputs.has-docker == 'true'
         uses: docker/login-action@v3
         with:
-          registry: ${{ env.DOCKER_REGISTRY }}
+          registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 🏷️ Extract metadata
+      - name: 🏷️ Extract Metadata
+        if: needs.setup.outputs.has-docker == 'true'
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-${{ matrix.component }}
           tags: |
             type=ref,event=branch
             type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
 
-      - name: 🚢 Build and push Docker image
-        uses: docker/build-push-action@v5
+      - name: 🐳 Build and Push Docker Image
+        if: needs.setup.outputs.has-docker == 'true'
+        id: build
+        uses: docker/build-push-action@v6
         with:
-          context: .
+          context: ${{ matrix.directory }}
+          file: ${{ matrix.directory }}/${{ matrix.dockerfile }}
           platforms: linux/amd64,linux/arm64
-          push: true
+          push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-  # 🔄 Dependency Updates
-  dependency-update:
-    name: 🔄 Dependency Updates
-    runs-on: [self-hosted, linux, docker]
-    timeout-minutes: 10
-    if: github.event_name == 'schedule'
+      - name: 📦 Archive Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts-${{ matrix.component }}
+          path: |
+            ${{ matrix.directory }}/dist/
+            ${{ matrix.directory }}/build/
+            ${{ matrix.directory }}/out/
+          retention-days: 7
+
+  # Job 7: Container Security Scanning
+  container-security:
+    name: 🛡️ Container Security Scanning
+    runs-on: ubuntu-latest
+    needs: [setup, build]
+    if: needs.setup.outputs.has-docker == 'true' && needs.build.outputs.image-digest
+    strategy:
+      matrix: ${{ fromJson(needs.setup.outputs.matrix) }}
     steps:
-      - name: 📥 Checkout code
-        uses: actions/checkout@v4
+      - name: 🛡️ Trivy Container Scan
+        uses: aquasecurity/trivy-action@master
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-${{ matrix.component }}@${{ needs.build.outputs.image-digest }}
+          format: 'sarif'
+          output: 'trivy-container-results.sarif'
 
-      - name: 🔧 Setup Node.js
-        uses: actions/setup-node@v4
+      - name: 📤 Upload Trivy Container Results
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
         with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          sarif_file: 'trivy-container-results.sarif'
 
-      - name: 🔄 Update dependencies
+      - name: 📋 Generate SBOM
         run: |
-          npm update
-          npm audit fix
+          curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
+          syft ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-${{ matrix.component }}@${{ needs.build.outputs.image-digest }} -o spdx-json=sbom.json
 
-      - name: 📝 Create Pull Request
-        uses: peter-evans/create-pull-request@v5
+      - name: 📤 Upload SBOM
+        uses: actions/upload-artifact@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: '🔄 chore: update dependencies'
-          title: '🔄 Automated dependency updates'
-          body: |
-            ## 🔄 Automated Dependency Updates
-            
-            This PR contains automated dependency updates.
-            
-            - Updated npm packages to latest compatible versions
-            - Fixed security vulnerabilities with `npm audit fix`
-            
-            **Note**: Please review changes before merging.
-          branch: chore/dependency-updates
-          delete-branch: true
+          name: sbom-${{ matrix.component }}
+          path: sbom.json
 
-# 📊 Workflow Status Badge
-# Add to README.md:
-# [![CI/CD Pipeline](https://github.com/YOUR_USERNAME/YOUR_REPO/workflows/🚀%20Full-Stack%20CI/CD%20Pipeline/badge.svg)](https://github.com/YOUR_USERNAME/YOUR_REPO/actions)
+  # Job 8: Deployment
+  deploy:
+    name: 🚀 Deploy
+    runs-on: ubuntu-latest
+    needs: [setup, build, security, container-security]
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || github.event_name == 'workflow_dispatch'
+    environment: 
+      name: ${{ github.event.inputs.deploy_environment || 'staging' }}
+      url: ${{ steps.deploy.outputs.url }}
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🐳 Login to DockerHub
+        if: secrets.DOCKERHUB_TOKEN
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: 🏷️ Tag and Push to DockerHub
+        if: secrets.DOCKERHUB_TOKEN && needs.setup.outputs.has-docker == 'true'
+        run: |
+          # Tag and push main application image
+          docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:latest
+          docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ github.sha }}
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ github.sha }}
+
+      - name: 🏷️ Generate Release Tag
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        id: tag
+        run: |
+          TAG="v$(date +'%Y.%m.%d')-${GITHUB_SHA::7}"
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "🏷️ Generated tag: $TAG"
+
+      - name: 📝 Generate Release Notes
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        id: release_notes
+        run: |
+          NOTES=$(git log --pretty=format:"- %s (%h)" $(git describe --tags --abbrev=0 2>/dev/null || echo "HEAD~10")..HEAD)
+          echo "notes<<EOF" >> $GITHUB_OUTPUT
+          echo "$NOTES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: 🎉 Create Release
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          release_name: Release ${{ steps.tag.outputs.tag }}
+          body: |
+            ## 🚀 What's New
+            
+            ${{ steps.release_notes.outputs.notes }}
+            
+            ## 📊 Metrics
+            - **Build Time**: ${{ github.run_number }}
+            - **Commit**: ${{ github.sha }}
+            - **Branch**: ${{ github.ref_name }}
+            
+            ## 🐳 Docker Images
+            ```bash
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ steps.tag.outputs.tag }}
+            ```
+            
+            **Auto-generated by GitHub Actions** 🤖
+          draft: false
+          prerelease: false
+
+  # Job 9: Cleanup
+  cleanup:
+    name: 🧹 Cleanup
+    runs-on: ubuntu-latest
+    needs: [deploy]
+    if: always()
+    steps:
+      - name: 🧹 Docker System Cleanup
+        run: |
+          # Clean up unused Docker resources
+          docker system prune -f --volumes
+          docker image prune -f --filter "until=24h"
+          
+      - name: 🧹 Runner Cleanup
+        run: |
+          # Clean up workflow artifacts and temporary files
+          sudo rm -rf /tmp/actions-*
+          sudo rm -rf ${{ github.workspace }}/../_temp
+          
+          # Clean up old log files
+          find /opt/actions-runner/_diag -name "*.log" -mtime +7 -delete 2>/dev/null || true
+
+  # Job 10: Notification
+  notify:
+    name: 📢 Notifications
+    runs-on: ubuntu-latest
+    needs: [setup, quality, security, testing, build, deploy]
+    if: always()
+    steps:
+      - name: 📊 Determine Overall Status
+        id: status
+        run: |
+          if [[ "${{ needs.setup.result }}" == "failure" || "${{ needs.quality.result }}" == "failure" || "${{ needs.security.result }}" == "failure" || "${{ needs.testing.result }}" == "failure" || "${{ needs.build.result }}" == "failure" ]]; then
+            echo "status=failure" >> $GITHUB_OUTPUT
+            echo "color=danger" >> $GITHUB_OUTPUT
+            echo "emoji=❌" >> $GITHUB_OUTPUT
+          elif [[ "${{ needs.deploy.result }}" == "success" ]]; then
+            echo "status=success" >> $GITHUB_OUTPUT
+            echo "color=good" >> $GITHUB_OUTPUT
+            echo "emoji=✅" >> $GITHUB_OUTPUT
+          else
+            echo "status=partial" >> $GITHUB_OUTPUT
+            echo "color=warning" >> $GITHUB_OUTPUT
+            echo "emoji=⚠️" >> $GITHUB_OUTPUT
+          fi
+
+      - name: 📢 Slack Notification
+        if: secrets.SLACK_BOT_TOKEN
+        uses: 8398a7/action-slack@v3
+        with:
+          status: custom
+          custom_payload: |
+            {
+              "text": "${{ steps.status.outputs.emoji }} CI/CD Pipeline ${{ steps.status.outputs.status == 'success' && 'Completed Successfully' || 'Failed' }}",
+              "color": "${{ steps.status.outputs.color }}",
+              "fields": [
+                {
+                  "title": "Repository",
+                  "value": "${{ github.repository }}",
+                  "short": true
+                },
+                {
+                  "title": "Branch",
+                  "value": "${{ github.ref_name }}",
+                  "short": true
+                },
+                {
+                  "title": "Commit",
+                  "value": "${{ github.sha }}",
+                  "short": true
+                },
+                {
+                  "title": "Workflow",
+                  "value": "${{ github.workflow }}",
+                  "short": true
+                },
+                {
+                  "title": "Quality Check",
+                  "value": "${{ needs.quality.result == 'success' && '✅ Passed' || '❌ Failed' }}",
+                  "short": true
+                },
+                {
+                  "title": "Security Scan",
+                  "value": "${{ needs.security.result == 'success' && '✅ Passed' || '❌ Failed' }}",
+                  "short": true
+                },
+                {
+                  "title": "Tests",
+                  "value": "${{ needs.testing.result == 'success' && '✅ Passed' || '❌ Failed' }}",
+                  "short": true
+                },
+                {
+                  "title": "Build",
+                  "value": "${{ needs.build.result == 'success' && '✅ Passed' || '❌ Failed' }}",
+                  "short": true
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
