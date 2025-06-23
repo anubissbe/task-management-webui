@@ -1,25 +1,73 @@
 {
-  "name": "project-tasks-webui",
+  "name": "projecthub-mcp",
   "version": "4.5.1",
-  "description": "A modern web interface for managing projects and tasks with real-time updates, visual progress tracking, and comprehensive test management.",
-  "main": "test-ui.js",
-  "directories": {
-    "test": "tests"
+  "description": "Enterprise-grade project management system with real-time collaboration, advanced analytics, team management, and seamless MCP integration",
+  "main": "index.js",
+  "private": true,
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
   },
   "scripts": {
-    "test": "echo \"No tests at root level\" && exit 0",
+    "install:all": "npm install && npm run install:frontend && npm run install:backend",
+    "install:frontend": "cd frontend && npm install",
+    "install:backend": "cd backend && npm install",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && npm run dev",
+    "build": "npm run build:frontend && npm run build:backend",
+    "build:frontend": "cd frontend && npm run build",
+    "build:backend": "cd backend && npm run build",
+    "test": "npm run test:backend && npm run test:frontend",
+    "test:backend": "cd backend && npm test",
     "test:frontend": "cd frontend && npm test",
-    "test:backend": "cd backend && npm test"
+    "test:e2e": "cd tests && npm install && npm run test:e2e",
+    "lint": "npm run lint:backend && npm run lint:frontend",
+    "lint:backend": "cd backend && npm run lint",
+    "lint:frontend": "cd frontend && npm run lint",
+    "typecheck": "npm run typecheck:backend && npm run typecheck:frontend",
+    "typecheck:backend": "cd backend && npm run typecheck",
+    "typecheck:frontend": "cd frontend && npm run typecheck",
+    "start": "npm run start:backend",
+    "start:backend": "cd backend && npm start",
+    "clean": "rm -rf node_modules frontend/node_modules backend/node_modules tests/node_modules",
+    "postinstall": "npm run install:all"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "dependencies": {
-    "playwright": "^1.53.0",
-    "puppeteer": "^24.10.1"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/anubissbe/ProjectHub-Mcp.git"
   },
+  "keywords": [
+    "project-management",
+    "task-management",
+    "team-collaboration",
+    "kanban-board",
+    "analytics",
+    "reporting",
+    "workspace-management",
+    "mcp-integration",
+    "real-time-collaboration",
+    "enterprise-grade",
+    "react",
+    "typescript",
+    "postgresql",
+    "docker",
+    "microservices"
+  ],
+  "author": {
+    "name": "ProjectHub-MCP Team",
+    "url": "https://github.com/anubissbe/ProjectHub-Mcp"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/anubissbe/ProjectHub-Mcp/issues"
+  },
+  "homepage": "https://github.com/anubissbe/ProjectHub-Mcp#readme",
   "devDependencies": {
+    "concurrently": "^8.2.2",
     "@vitest/coverage-v8": "^3.2.3"
+  },
+  "dependencies": {
+    "playwright": "^1.53.0"
   }
 }
