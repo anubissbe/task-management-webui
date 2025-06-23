@@ -2,8 +2,12 @@ import { Router } from 'express';
 import { mcpController } from '../controllers/mcpController';
 import { authenticate } from '../middleware/auth';
 import { workspaceContext } from '../middleware/workspace';
+import { apiLimiter } from '../middleware/rateLimiter';
 
 const router = Router();
+
+// Apply rate limiting to all MCP routes
+router.use(apiLimiter);
 
 // Apply authentication middleware to all MCP routes
 router.use(authenticate);

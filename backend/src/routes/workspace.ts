@@ -2,10 +2,12 @@ import { Router } from 'express';
 import { WorkspaceController } from '../controllers/workspaceController';
 import { authenticate } from '../middleware/auth';
 import { workspaceContext, requireWorkspaceAdmin } from '../middleware/workspace';
+import { apiLimiter } from '../middleware/rateLimiter';
 
 const router = Router();
 
-// All workspace routes require authentication
+// All workspace routes require rate limiting and authentication
+router.use(apiLimiter);
 router.use(authenticate);
 
 // Workspace management routes
