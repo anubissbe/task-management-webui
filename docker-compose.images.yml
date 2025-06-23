@@ -1,0 +1,75 @@
+version: '3.8'
+
+# This docker-compose file will use pre-built images once they're published
+# For now, use docker-compose.yml which builds from source
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: projecthub-mcp-postgres
+    environment:
+      POSTGRES_USER: ${DB_USER:-projecthub}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-projecthub123}
+      POSTGRES_DB: ${DB_NAME:-projecthub_mcp}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    networks:
+      - projecthub-mcp-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-projecthub}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  backend:
+    image: ghcr.io/anubissbe/projecthub-mcp-backend:latest
+    container_name: projecthub-mcp-backend
+    ports:
+      - "${BACKEND_PORT:-3001}:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - DATABASE_URL=postgresql://${DB_USER:-projecthub}:${DB_PASSWORD:-projecthub123}@postgres:5432/${DB_NAME:-projecthub_mcp}
+      - JWT_SECRET=${JWT_SECRET:-your-secret-key-here}
+      - CORS_ORIGIN=${CORS_ORIGIN:-http://localhost:5173}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - projecthub-mcp-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frontend:
+    image: ghcr.io/anubissbe/projecthub-mcp-frontend:latest
+    container_name: projecthub-mcp-frontend
+    ports:
+      - "${FRONTEND_PORT:-5173}:80"
+    environment:
+      - VITE_API_URL=${VITE_API_URL:-http://localhost:3001/api}
+      - VITE_WS_URL=${VITE_WS_URL:-http://localhost:3001}
+    depends_on:
+      - backend
+    networks:
+      - projecthub-mcp-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:80/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  projecthub-mcp-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local

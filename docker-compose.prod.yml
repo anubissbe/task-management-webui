@@ -27,7 +27,9 @@ services:
         max-file: "3"
 
   backend:
-    image: ${DOCKER_REGISTRY:-ghcr.io/anubissbe}/projecthub-mcp-backend:${VERSION:-latest}
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     container_name: projecthub-mcp-backend
     ports:
       - "${BACKEND_PORT:-3001}:3001"
@@ -66,7 +68,9 @@ services:
         max-file: "3"
 
   frontend:
-    image: ${DOCKER_REGISTRY:-ghcr.io/anubissbe}/projecthub-mcp-frontend:${VERSION:-latest}
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     container_name: projecthub-mcp-frontend
     ports:
       - "${FRONTEND_PORT:-5173}:80"
