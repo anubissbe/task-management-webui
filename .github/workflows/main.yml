@@ -209,19 +209,23 @@ jobs:
           
       - name: 🐳 Start services
         run: |
-          docker compose -f docker-compose.ci.yml up -d
+          docker compose -f docker-compose.ci.yml up -d --build
           
-          # Wait for services to be ready
+          # Wait for services to be ready with longer timeout
           echo "Waiting for services..."
-          for i in {1..30}; do
+          for i in {1..60}; do
             if curl -f http://localhost:3001/api/health >/dev/null 2>&1 && \
                curl -f http://localhost:5173/ >/dev/null 2>&1; then
               echo "Services are ready!"
               break
             fi
-            echo "Waiting for services... ($i/30)"
-            sleep 2
+            echo "Waiting for services... ($i/60)"
+            sleep 3
           done
+          
+          # Check if services are actually running
+          docker compose -f docker-compose.ci.yml ps
+          docker compose -f docker-compose.ci.yml logs --tail=50
           
       - name: 🧪 Install test dependencies
         working-directory: ./tests

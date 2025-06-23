@@ -3,7 +3,7 @@ import { ReportingService, Dashboard, ReportFilter, AdvancedMetrics, ReportWidge
 import ReportWidgetComponent from './ReportWidget';
 import ReportFilters, { ExtendedReportFilter } from './ReportFilters';
 import DashboardBuilder from './DashboardBuilder';
-import { useWorkspace } from '../contexts/WorkspaceContext';
+import { useWorkspace } from '../hooks/useWorkspace';
 
 const AdvancedReportingDashboard: React.FC = () => {
   const { workspaceId } = useWorkspace();
