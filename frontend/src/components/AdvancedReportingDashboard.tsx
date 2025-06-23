@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { ReportingService, Dashboard, ReportFilter, AdvancedMetrics, ReportWidget } from '../services/reportingService';
 import ReportWidgetComponent from './ReportWidget';
-import ReportFilters from './ReportFilters';
+import ReportFilters, { ExtendedReportFilter } from './ReportFilters';
 import DashboardBuilder from './DashboardBuilder';
 import { useWorkspace } from '../contexts/WorkspaceContext';
 
@@ -10,7 +10,7 @@ const AdvancedReportingDashboard: React.FC = () => {
   const [dashboards, setDashboards] = useState<Dashboard[]>([]);
   const [selectedDashboard, setSelectedDashboard] = useState<Dashboard | null>(null);
   const [advancedMetrics, setAdvancedMetrics] = useState<AdvancedMetrics | null>(null);
-  const [filters, setFilters] = useState<ReportFilter>({});
+  const [filters, setFilters] = useState<ExtendedReportFilter>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'view' | 'edit' | 'create'>('view');
@@ -35,7 +35,17 @@ const AdvancedReportingDashboard: React.FC = () => {
 
   const loadAdvancedMetrics = useCallback(async () => {
     try {
-      const metrics = await ReportingService.getAdvancedMetrics(filters);
+      // Convert ExtendedReportFilter to ReportFilter
+      const reportFilter: ReportFilter = {
+        ...filters,
+        dateRange: filters.dateRange && filters.dateRange !== 'custom' && typeof filters.dateRange === 'string' 
+          ? ReportingService.generateDateRange(filters.dateRange as any)
+          : undefined,
+        teamIds: filters.teamMemberIds,
+        status: filters.taskStatuses,
+        priority: filters.priorities?.length === 1 ? filters.priorities[0] : undefined
+      };
+      const metrics = await ReportingService.getAdvancedMetrics(reportFilter);
       setAdvancedMetrics(metrics);
     } catch (err) {
       console.error('Failed to load advanced metrics:', err);

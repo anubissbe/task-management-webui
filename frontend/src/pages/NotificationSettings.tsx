@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Save, Bell, Mail, Clock, AlertCircle, CheckCircle2 } from 'lucide-react';
 
 interface NotificationPreferences {
