@@ -281,7 +281,7 @@ jobs:
   release:
     name: 📦 Create Release
     runs-on: ubuntu-latest
-    needs: [docker]
+    needs: [quality-checks, frontend, backend, e2e-tests]
     if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
     
     permissions:
@@ -294,10 +294,11 @@ jobs:
         with:
           fetch-depth: 0
           
-      - name: 📥 Download artifacts
+      - name: 📥 Download build artifacts
         uses: actions/download-artifact@v4
         with:
           path: artifacts/
+          pattern: '*-dist'
           
       - name: 🏷️ Get version
         id: version
@@ -364,11 +365,10 @@ jobs:
           echo -e "\n## 🔧 Other Changes" >> CHANGELOG_RELEASE.md
           echo "$COMMITS" | grep -vE "^- (feat|feature|fix|docs):" >> CHANGELOG_RELEASE.md || echo "- No other changes" >> CHANGELOG_RELEASE.md
           
-          echo -e "\n## 🐳 Docker Images" >> CHANGELOG_RELEASE.md
-          echo "- \`ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}-frontend:${{ steps.version.outputs.version_number }}\`" >> CHANGELOG_RELEASE.md
-          echo "- \`ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}-backend:${{ steps.version.outputs.version_number }}\`" >> CHANGELOG_RELEASE.md
-          echo "- \`${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}-frontend:${{ steps.version.outputs.version_number }}\`" >> CHANGELOG_RELEASE.md
-          echo "- \`${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}-backend:${{ steps.version.outputs.version_number }}\`" >> CHANGELOG_RELEASE.md
+          echo -e "\n## 📦 Build Artifacts" >> CHANGELOG_RELEASE.md
+          echo "- Frontend build available as release asset" >> CHANGELOG_RELEASE.md
+          echo "- Backend build available as release asset" >> CHANGELOG_RELEASE.md
+          echo "- Docker images can be built from source using provided Dockerfiles" >> CHANGELOG_RELEASE.md
           
       - name: 📦 Create release archives
         run: |
@@ -398,7 +398,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `🚀 **Release ${{ steps.version.outputs.version }} created!**\n\nDocker images are available at:\n- \`ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}-frontend:${{ steps.version.outputs.version_number }}\`\n- \`ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}-backend:${{ steps.version.outputs.version_number }}\``
+              body: `🚀 **Release ${{ steps.version.outputs.version }} created!**\n\nBuild artifacts are available in the release assets:\n- Frontend build (frontend-${{ steps.version.outputs.version }}.tar.gz)\n- Backend build (backend-${{ steps.version.outputs.version }}.tar.gz)`
             })
 
   # ============================================
