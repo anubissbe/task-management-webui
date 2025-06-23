@@ -4,9 +4,20 @@ import { projectService } from '../services/projectService';
 import { memberService } from '../services/memberService';
 import { Calendar, Users, FolderOpen, Tag, Clock } from 'lucide-react';
 
+interface ExtendedReportFilter extends Omit<ReportFilter, 'dateRange'> {
+  dateRange?: DateRange | 'custom';
+  customDateRange?: {
+    startDate?: Date;
+    endDate?: Date;
+  };
+  teamMemberIds?: string[];
+  taskStatuses?: string[];
+  priorities?: string[];
+}
+
 interface ReportFiltersProps {
-  filters: ReportFilter;
-  onFiltersChange: (filters: ReportFilter) => void;
+  filters: ExtendedReportFilter;
+  onFiltersChange: (filters: ExtendedReportFilter) => void;
   workspaceId: string;
 }
 
@@ -29,7 +40,7 @@ const ReportFilters: React.FC<ReportFiltersProps> = ({
 
   const loadProjects = async () => {
     try {
-      const projectList = await projectService.getProjects(workspaceId);
+      const projectList = await projectService.getAllProjects();
       setProjects(projectList);
     } catch (error) {
       console.error('Failed to load projects:', error);
@@ -272,3 +283,4 @@ const ReportFilters: React.FC<ReportFiltersProps> = ({
 };
 
 export default ReportFilters;
+export type { ExtendedReportFilter };

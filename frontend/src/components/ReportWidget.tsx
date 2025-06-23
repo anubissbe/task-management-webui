@@ -67,7 +67,7 @@ const ReportWidget: React.FC<ReportWidgetProps> = ({
   onDelete,
   isEditing = false
 }) => {
-  const chartRef = useRef<ChartJS | null>(null);
+  const chartRef = useRef<any>(null);
 
   // Transform data based on widget type
   const getChartData = (): ChartData<'line' | 'bar' | 'pie' | 'doughnut'> => {
@@ -215,15 +215,15 @@ const ReportWidget: React.FC<ReportWidgetProps> = ({
     switch (widget.type) {
       case 'burndown':
       case 'velocity':
-        return <Line data={chartData} options={chartOptions} ref={chartRef} />;
+        return <Line data={chartData as ChartData<'line'>} options={chartOptions as ChartOptions<'line'>} ref={chartRef} />;
       
       case 'teamPerformance':
-        return <Bar data={chartData} options={chartOptions} ref={chartRef} />;
+        return <Bar data={chartData as ChartData<'bar'>} options={chartOptions as ChartOptions<'bar'>} ref={chartRef} />;
       
       case 'taskDistribution':
         return widget.config?.chartStyle === 'doughnut' 
-          ? <Doughnut data={chartData} options={chartOptions} ref={chartRef} />
-          : <Pie data={chartData} options={chartOptions} ref={chartRef} />;
+          ? <Doughnut data={chartData as ChartData<'doughnut'>} options={chartOptions as ChartOptions<'doughnut'>} ref={chartRef} />
+          : <Pie data={chartData as ChartData<'pie'>} options={chartOptions as ChartOptions<'pie'>} ref={chartRef} />;
       
       case 'kpi':
         return renderKPI();

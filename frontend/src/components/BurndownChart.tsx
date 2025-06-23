@@ -66,7 +66,7 @@ const BurndownChart: React.FC<BurndownChartProps> = ({
       const data = await ReportingService.getBurndownData({
         projectId,
         sprintId,
-        dateRange: dateRange || (selectedPeriod === 'sprint' ? 'currentSprint' : 'custom')
+        dateRange: selectedPeriod === 'sprint' ? 'currentSprint' : 'custom'
       });
       
       setBurndownData(data);
