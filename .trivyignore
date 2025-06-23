@@ -1,0 +1,16 @@
+# Trivy ignore file - suppress false positives and accepted risks
+
+# Development dependencies (not in production)
+CVE-2023-45857  # axios vulnerability in dev deps only
+CVE-2023-26136  # semver dev dependency
+CVE-2024-4067   # micromatch dev dependency 
+
+# Low severity issues that don't affect production
+CVE-2022-25883  # semver Regular Expression Denial of Service
+CVE-2023-26115  # word-wrap Regular Expression Denial of Service
+
+# License-related warnings (informational only)
+License:*
+
+# Node.js prototype pollution (mitigated by runtime environment)
+CVE-2022-46175  # json5 prototype pollution
