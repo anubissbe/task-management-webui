@@ -6,10 +6,10 @@ We provide security updates for the following versions:
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 4.0.x   | :white_check_mark: |
-| 3.0.x   | :white_check_mark: |
-| 2.0.x   | :white_check_mark: |
-| 1.0.x   | :x:                |
+| 4.5.x   | :white_check_mark: |
+| 4.4.x   | :white_check_mark: |
+| 4.3.x   | :white_check_mark: |
+| < 4.3   | :x:                |
 
 ## Reporting a Vulnerability
 
