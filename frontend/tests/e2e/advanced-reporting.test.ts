@@ -318,7 +318,6 @@ test.describe('Dashboard Builder', () => {
       
       // Verify positions changed
       const newWidget1Box = await widget1.boundingBox();
-      const newWidget2Box = await widget2.boundingBox();
       
       expect(newWidget1Box?.x).not.toBe(widget1Box.x);
     }
