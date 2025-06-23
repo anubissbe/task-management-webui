@@ -157,7 +157,7 @@ export class EmailService {
     const text = sanitizeHtml(html, {
       allowedTags: [], // Remove all HTML tags
       allowedAttributes: {}, // Remove all attributes
-      textFilter: (text) => {
+      textFilter: (text: string) => {
         // Normalize whitespace and decode HTML entities properly
         return text.replace(/\s+/g, ' ').trim();
       }
