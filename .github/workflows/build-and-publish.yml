@@ -101,7 +101,7 @@ jobs:
           type=semver,pattern={{major}}.{{minor}}
 
     - name: Build and push frontend image
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       with:
         context: ./frontend
         file: ./frontend/Dockerfile
@@ -113,7 +113,7 @@ jobs:
         cache-to: type=gha,mode=max
 
     - name: Build and push backend image
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       with:
         context: ./backend
         file: ./backend/Dockerfile
