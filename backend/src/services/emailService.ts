@@ -151,8 +151,22 @@ export class EmailService {
     const template = await this.loadTemplate(templateName);
     const html = template(data);
     
-    // Generate plain text version by removing HTML tags
-    const text = html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+    // Generate plain text version by removing HTML tags safely
+    // First decode HTML entities
+    const decodedHtml = html
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"')
+      .replace(/&#039;/g, "'");
+    
+    // Then remove all HTML tags and normalize whitespace
+    const text = decodedHtml
+      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '') // Remove script tags and content
+      .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '') // Remove style tags and content
+      .replace(/<[^>]+>/g, '') // Remove remaining HTML tags
+      .replace(/\s+/g, ' ') // Normalize whitespace
+      .trim();
     
     return {
       subject: data.subject || 'Notification from ProjectHub-MCP',
