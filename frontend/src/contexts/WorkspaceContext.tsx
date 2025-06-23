@@ -1,12 +1,5 @@
-import React, { createContext } from 'react';
-
-interface WorkspaceContextType {
-  workspaceId: string;
-}
-
-export const WorkspaceContext = createContext<WorkspaceContextType>({
-  workspaceId: 'default-workspace'
-});
+import React from 'react';
+import { WorkspaceContext } from './WorkspaceContext';
 
 export const WorkspaceProvider: React.FC<{ children: React.ReactNode; workspaceId?: string }> = ({ 
   children, 
