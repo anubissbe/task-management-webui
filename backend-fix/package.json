@@ -1,0 +1,17 @@
+{
+  "name": "projecthub-backend-fix",
+  "version": "1.0.0",
+  "description": "Complete backend for ProjectHub MCP Server with all features",
+  "main": "complete_backend.js",
+  "scripts": {
+    "start": "node complete_backend.js",
+    "dev": "nodemon complete_backend.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

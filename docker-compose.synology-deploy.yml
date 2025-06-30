@@ -1,0 +1,132 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: projecthub-postgres
+    environment:
+      POSTGRES_USER: ${DB_USER:-projecthub}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-projecthub_secure_2025}
+      POSTGRES_DB: ${DB_NAME:-projecthub_mcp}
+    volumes:
+      - /volume1/docker/projecthub/postgres:/var/lib/postgresql/data
+    ports:
+      - "${DB_PORT:-5433}:5432"
+    networks:
+      - projecthub-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-projecthub}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  redis:
+    image: redis:8-alpine
+    container_name: projecthub-redis
+    command: redis-server --requirepass ${REDIS_PASSWORD:-projecthub_redis_secure_2025}
+    volumes:
+      - /volume1/docker/projecthub/redis:/data
+    networks:
+      - projecthub-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: projecthub-backend:latest
+    container_name: projecthub-backend
+    ports:
+      - "${BACKEND_PORT:-3007}:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - DATABASE_URL=postgresql://${DB_USER:-projecthub}:${DB_PASSWORD:-projecthub_secure_2025}@postgres:5432/${DB_NAME:-projecthub_mcp}
+      - JWT_ACCESS_SECRET=${JWT_ACCESS_SECRET}
+      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}
+      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN:-7d}
+      - JWT_REFRESH_EXPIRES_IN=${JWT_REFRESH_EXPIRES_IN:-30d}
+      - CORS_ORIGIN=${CORS_ORIGIN:-http://192.168.1.24:5174}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - REDIS_URL=redis://:${REDIS_PASSWORD:-projecthub_redis_secure_2025}@redis:6379
+      # Email settings (optional)
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASS=${SMTP_PASS}
+      - EMAIL_FROM=${EMAIL_FROM:-noreply@projecthub.local}
+      - FROM_NAME=${FROM_NAME:-ProjectHub Team}
+      # Webhook settings
+      - WEBHOOK_SECRET=${WEBHOOK_SECRET}
+      # Rate limiting
+      - RATE_LIMIT_WINDOW_MS=${RATE_LIMIT_WINDOW_MS:-900000}
+      - RATE_LIMIT_MAX_REQUESTS=${RATE_LIMIT_MAX_REQUESTS:-100}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - projecthub-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=${VITE_API_URL:-http://192.168.1.24:3007/api}
+        - VITE_WS_URL=${VITE_WS_URL:-ws://192.168.1.24:3007}
+    image: projecthub-frontend:latest
+    container_name: projecthub-frontend
+    ports:
+      - "${FRONTEND_PORT:-5174}:80"
+    environment:
+      - VITE_API_URL=${VITE_API_URL:-http://192.168.1.24:3007/api}
+      - VITE_WS_URL=${VITE_WS_URL:-ws://192.168.1.24:3007}
+    depends_on:
+      - backend
+    networks:
+      - projecthub-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:80/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  projecthub-network:
+    driver: bridge
+    name: projecthub-network
