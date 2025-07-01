@@ -43,7 +43,6 @@ jobs:
         with:
           category: "/language:${{matrix.language}}"
           upload: true
-          add-snippets: true
 
   trivy:
     name: 🛡️ Trivy Security Scan
