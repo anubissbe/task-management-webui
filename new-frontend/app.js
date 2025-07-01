@@ -1,6 +1,15 @@
 // ProjectHub Modern Frontend - Main Application Logic
 
-const API_BASE = 'http://localhost:3009/api';
+// Dynamic API base - works for both local and deployed environments
+const API_BASE = (() => {
+    const host = window.location.hostname;
+    if (host === 'localhost' || host === '127.0.0.1') {
+        return 'http://localhost:3009/api';
+    } else {
+        // Use same host but different port for production deployments
+        return `http://${host}:3009/api`;
+    }
+})();
 
 // API Service
 const api = {
@@ -80,12 +89,76 @@ function projectHub() {
         // State
         currentView: 'dashboard',
         loading: false,
+        globalLoading: false,
         error: null,
+        
+        // Authentication
+        isAuthenticated: true, // Start as authenticated to show main app
+        loginError: null,
+        loginLoading: false,
+        loginForm: {
+            email: '',
+            password: ''
+        },
+        
+        // UI State
+        darkMode: false,
+        user: {
+            first_name: 'Demo',
+            last_name: 'User',
+            email: 'demo@projecthub.com',
+            role: 'admin'
+        },
+        
+        // Project State
+        selectedProject: null,
+        selectedProjectView: 'list',
+        projectSearch: '',
+        projectFilter: {
+            status: 'all'
+        },
+        
+        // Board State
+        selectedBoardProject: null,
+        taskStatuses: ['todo', 'in-progress', 'review', 'done', 'blocked', 'cancelled'],
+        
+        // Workspace State
+        currentWorkspace: 'default',
+        workspaces: [
+            { id: 'default', name: 'Default Workspace' }
+        ],
+        
+        // Toast Store (for Alpine.js store)
+        toasts: {
+            items: [],
+            add(message, type = 'success') {
+                const toast = {
+                    message,
+                    type,
+                    visible: true
+                };
+                this.items.push(toast);
+                setTimeout(() => {
+                    toast.visible = false;
+                    setTimeout(() => {
+                        this.items = this.items.filter(t => t !== toast);
+                    }, 300);
+                }, 3000);
+            },
+            remove(index) {
+                this.items.splice(index, 1);
+            }
+        },
         
         // Modals
         showNewProjectModal: false,
+        showCreateProjectModal: false,
         showNewTaskModal: false,
+        showCreateTaskModal: false,
         showNewWebhookModal: false,
+        showCreateWebhookModal: false,
+        showEditWebhookModal: false,
+        editingWebhook: null,
         
         // Form Data
         newProject: {
@@ -120,7 +193,15 @@ function projectHub() {
         projects: [],
         tasks: [],
         webhooks: [],
-        analytics: null,
+        analytics: {
+            totalProjects: 0,
+            totalTasks: 0,
+            completedTasks: 0,
+            activeTasks: 0,
+            projectsByStatus: {},
+            tasksByPriority: {},
+            taskCompletionTimeline: []
+        },
         
         // Kanban columns with tasks
         kanbanColumns: [
@@ -132,6 +213,74 @@ function projectHub() {
         ],
         
         recentActivity: [],
+        
+        // Computed Properties
+        get filteredProjects() {
+            let filtered = this.projects;
+            
+            // Filter by search
+            if (this.projectSearch) {
+                filtered = filtered.filter(p => 
+                    p.name.toLowerCase().includes(this.projectSearch.toLowerCase()) ||
+                    p.description.toLowerCase().includes(this.projectSearch.toLowerCase())
+                );
+            }
+            
+            // Filter by status
+            if (this.projectFilter.status !== 'all') {
+                filtered = filtered.filter(p => p.status === this.projectFilter.status);
+            }
+            
+            return filtered;
+        },
+        
+        // Methods
+        getProjectTasks(projectId) {
+            return this.tasks.filter(task => task.project_id === projectId);
+        },
+        
+        getProjectStatusClass(status) {
+            const classes = {
+                'planning': 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300',
+                'active': 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300',
+                'completed': 'bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-300',
+                'on-hold': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-300'
+            };
+            return classes[status] || classes['planning'];
+        },
+        
+        switchWorkspace() {
+            // Placeholder for workspace switching
+            console.log('Switching workspace to:', this.currentWorkspace);
+        },
+        
+        getTasksByStatus(status) {
+            // For kanban board - get tasks by status
+            const column = this.kanbanColumns.find(col => col.id === status);
+            return column ? column.tasks : [];
+        },
+        
+        formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffTime = Math.abs(now - date);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            if (diffDays < 1) {
+                return 'Today';
+            } else if (diffDays === 1) {
+                return 'Yesterday';
+            } else if (diffDays < 7) {
+                return `${diffDays} days ago`;
+            } else {
+                return date.toLocaleDateString('en-US', { 
+                    month: 'short', 
+                    day: 'numeric',
+                    year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
+                });
+            }
+        },
         
         // Initialize
         async init() {
@@ -463,3 +612,29 @@ function projectHub() {
         }
     };
 }
+// Expose globally for Alpine.js
+window.projectHub = projectHub;
+
+// Register Alpine.js store for toasts
+document.addEventListener('alpine:init', () => {
+    Alpine.store('toasts', {
+        items: [],
+        add(message, type = 'success') {
+            const toast = {
+                message,
+                type,
+                visible: true
+            };
+            this.items.push(toast);
+            setTimeout(() => {
+                toast.visible = false;
+                setTimeout(() => {
+                    this.items = this.items.filter(t => t !== toast);
+                }, 300);
+            }, 3000);
+        },
+        remove(index) {
+            this.items.splice(index, 1);
+        }
+    });
+});

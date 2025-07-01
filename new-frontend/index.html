@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ProjectHub - Modern Project Management</title>
     
-    <!-- Alpine.js for reactivity -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -92,8 +89,11 @@
         }
     </script>
     
-    <!-- Load app.js -->
+    <!-- Load app.js BEFORE Alpine.js -->
     <script src="app.js"></script>
+    
+    <!-- Alpine.js for reactivity - MUST load AFTER app.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class="bg-gray-900 text-gray-100" 
       x-data="projectHub()" 

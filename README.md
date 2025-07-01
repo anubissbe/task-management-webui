@@ -25,12 +25,26 @@ Get ProjectHub-MCP running in under 2 minutes:
 git clone https://github.com/anubissbe/ProjectHub-Mcp.git
 cd ProjectHub-Mcp
 
-# Start the application (includes PostgreSQL database)
+# Option 1: Use the fixed start script (Recommended)
+./start-fixed.sh
+
+# Option 2: Use Docker Compose with all fixes
+docker-compose -f docker-compose-fixed.yml up -d
+
+# Option 3: Use the original start script
 ./start.sh
 
 # Open your browser
 open http://localhost:8090
 ```
+
+### 🔧 Important Fixes Applied (v4.6.0+)
+
+This version includes critical fixes for common issues:
+- ✅ **CORS Configuration**: Backend properly allows frontend connections
+- ✅ **Alpine.js Variables**: All required variables are now defined
+- ✅ **Script Loading Order**: app.js loads before Alpine.js
+- ✅ **Dynamic API URL**: Automatically detects deployment environment
 
 That's it! ProjectHub-MCP will be running with:
 - 🗄️ **PostgreSQL Database**: `localhost:5433`
