@@ -1,3 +1,11 @@
+
+function sanitizeForLog(str: any): string {
+    if (typeof str !== 'string') {
+        return JSON.stringify(str).replace(/[\r\n]/g, ' ');
+    }
+    return str.replace(/[\r\n]/g, ' ');
+}
+
 import { Request, Response } from 'express';
 import { ProjectService } from '../services/projectService';
 import { triggerWebhooksForEvent } from './webhookController';
@@ -35,7 +43,7 @@ export class ProjectController {
         return;
       }
       const projects = await projectService.getAllProjects(req.workspaceId);
-      console.log(`Retrieved ${projects.length} projects from workspace ${req.workspaceId}`);
+      console.log('Retrieved ');
       res.json(projects);
     } catch (error) {
       console.error('Error fetching projects:', error);

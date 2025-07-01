@@ -68,6 +68,7 @@
     "concurrently": "^8.2.2"
   },
   "dependencies": {
+    "glob": "^11.0.3",
     "playwright": "^1.53.1"
   }
 }

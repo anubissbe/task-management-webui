@@ -1,6 +1,14 @@
 const express = require('express');
 const cors = require('cors');
 
+// Helper function to sanitize user input for logging
+function sanitizeForLog(str) {
+    if (typeof str !== 'string') {
+        return JSON.stringify(str).replace(/[\r\n]/g, ' ');
+    }
+    return str.replace(/[\r\n]/g, ' ');
+}
+
 const app = express();
 const port = 3001;
 
@@ -216,7 +224,7 @@ const sampleWebhooks = [
     {
         id: 'webhook-001',
         name: 'Slack Notifications',
-        url: 'https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX',
+        url: 'https://example.com/webhook/slack-demo',
         events: ['task.created', 'task.completed'],
         active: true,
         created_at: '2025-06-01T00:00:00.000Z',
@@ -532,7 +540,7 @@ app.get('/api/webhooks/:id', (req, res) => {
 
 // POST create new webhook
 app.post('/api/webhooks', (req, res) => {
-    console.log('✅ Webhooks POST - creating new webhook:', req.body);
+    console.log('✅ Webhooks POST - creating new webhook');
     const newWebhook = {
         id: `webhook-${Date.now()}`,
         ...req.body,
@@ -546,7 +554,7 @@ app.post('/api/webhooks', (req, res) => {
 
 // PUT update webhook
 app.put('/api/webhooks/:id', (req, res) => {
-    console.log(`✅ Webhooks PUT - updating webhook ${req.params.id}:`, req.body);
+    console.log('✅ Webhooks PUT - updating webhook ');
     const index = sampleWebhooks.findIndex(w => w.id === req.params.id);
     if (index !== -1) {
         sampleWebhooks[index] = {
@@ -562,7 +570,7 @@ app.put('/api/webhooks/:id', (req, res) => {
 
 // PATCH update webhook (partial update)
 app.patch('/api/webhooks/:id', (req, res) => {
-    console.log(`✅ Webhooks PATCH - updating webhook ${req.params.id}:`, req.body);
+    console.log('✅ Webhooks PATCH - updating webhook ');
     const index = sampleWebhooks.findIndex(w => w.id === req.params.id);
     if (index !== -1) {
         sampleWebhooks[index] = {
@@ -578,7 +586,7 @@ app.patch('/api/webhooks/:id', (req, res) => {
 
 // DELETE webhook
 app.delete('/api/webhooks/:id', (req, res) => {
-    console.log(`✅ Webhooks DELETE - deleting webhook ${req.params.id}`);
+    console.log('✅ Webhooks DELETE - deleting webhook ');
     const index = sampleWebhooks.findIndex(w => w.id === req.params.id);
     if (index !== -1) {
         sampleWebhooks.splice(index, 1);
@@ -590,7 +598,7 @@ app.delete('/api/webhooks/:id', (req, res) => {
 
 // POST test webhook
 app.post('/api/webhooks/:id/test', (req, res) => {
-    console.log(`✅ Webhooks TEST - testing webhook ${req.params.id}`);
+    console.log('✅ Webhooks TEST - testing webhook ');
     const webhook = sampleWebhooks.find(w => w.id === req.params.id);
     if (webhook) {
         res.json({
@@ -757,7 +765,7 @@ app.post('/api/tasks', (req, res) => {
 
 // Task update endpoints
 app.put('/api/tasks/:taskId', (req, res) => {
-    console.log(`✅ Tasks PUT - updating task ${req.params.taskId}:`, req.body);
+    console.log('✅ Tasks PUT - updating task ');
     const index = sampleTasks.findIndex(t => t.id === req.params.taskId);
     if (index !== -1) {
         sampleTasks[index] = {
@@ -772,7 +780,7 @@ app.put('/api/tasks/:taskId', (req, res) => {
 });
 
 app.patch('/api/tasks/:taskId', (req, res) => {
-    console.log(`✅ Tasks PATCH - updating task ${req.params.taskId}:`, req.body);
+    console.log('✅ Tasks PATCH - updating task ');
     const index = sampleTasks.findIndex(t => t.id === req.params.taskId);
     if (index !== -1) {
         sampleTasks[index] = {
@@ -787,7 +795,7 @@ app.patch('/api/tasks/:taskId', (req, res) => {
 });
 
 app.delete('/api/tasks/:taskId', (req, res) => {
-    console.log(`✅ Tasks DELETE - deleting task ${req.params.taskId}`);
+    console.log('✅ Tasks DELETE - deleting task ');
     const index = sampleTasks.findIndex(t => t.id === req.params.taskId);
     if (index !== -1) {
         sampleTasks.splice(index, 1);
@@ -830,7 +838,7 @@ app.get('/health', (req, res) => {
 
 // Catch all for debugging
 app.use((req, res) => {
-    console.log(`⚠️ Unhandled route: ${req.method} ${req.path}`);
+    console.log('⚠️ Unhandled route: ');
     res.status(404).json({ 
         error: 'Not found', 
         path: req.path,
