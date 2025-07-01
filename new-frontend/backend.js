@@ -554,7 +554,7 @@ app.post('/api/webhooks', (req, res) => {
 
 // PUT update webhook
 app.put('/api/webhooks/:id', (req, res) => {
-    console.log(`✅ Webhooks PUT - updating webhook ${sanitizeForLog(req.params.id)}`);
+    console.log('✅ Webhooks PUT - updating webhook ');
     const index = sampleWebhooks.findIndex(w => w.id === req.params.id);
     if (index !== -1) {
         sampleWebhooks[index] = {
@@ -570,7 +570,7 @@ app.put('/api/webhooks/:id', (req, res) => {
 
 // PATCH update webhook (partial update)
 app.patch('/api/webhooks/:id', (req, res) => {
-    console.log(`✅ Webhooks PATCH - updating webhook ${sanitizeForLog(req.params.id)}`);
+    console.log('✅ Webhooks PATCH - updating webhook ');
     const index = sampleWebhooks.findIndex(w => w.id === req.params.id);
     if (index !== -1) {
         sampleWebhooks[index] = {
@@ -586,7 +586,7 @@ app.patch('/api/webhooks/:id', (req, res) => {
 
 // DELETE webhook
 app.delete('/api/webhooks/:id', (req, res) => {
-    console.log(`✅ Webhooks DELETE - deleting webhook ${sanitizeForLog(req.params.id)}`);
+    console.log('✅ Webhooks DELETE - deleting webhook ');
     const index = sampleWebhooks.findIndex(w => w.id === req.params.id);
     if (index !== -1) {
         sampleWebhooks.splice(index, 1);
@@ -598,7 +598,7 @@ app.delete('/api/webhooks/:id', (req, res) => {
 
 // POST test webhook
 app.post('/api/webhooks/:id/test', (req, res) => {
-    console.log(`✅ Webhooks TEST - testing webhook ${sanitizeForLog(req.params.id)}`);
+    console.log('✅ Webhooks TEST - testing webhook ');
     const webhook = sampleWebhooks.find(w => w.id === req.params.id);
     if (webhook) {
         res.json({
@@ -765,7 +765,7 @@ app.post('/api/tasks', (req, res) => {
 
 // Task update endpoints
 app.put('/api/tasks/:taskId', (req, res) => {
-    console.log(`✅ Tasks PUT - updating task ${sanitizeForLog(req.params.taskId)}`);
+    console.log('✅ Tasks PUT - updating task ');
     const index = sampleTasks.findIndex(t => t.id === req.params.taskId);
     if (index !== -1) {
         sampleTasks[index] = {
@@ -780,7 +780,7 @@ app.put('/api/tasks/:taskId', (req, res) => {
 });
 
 app.patch('/api/tasks/:taskId', (req, res) => {
-    console.log(`✅ Tasks PATCH - updating task ${sanitizeForLog(req.params.taskId)}`);
+    console.log('✅ Tasks PATCH - updating task ');
     const index = sampleTasks.findIndex(t => t.id === req.params.taskId);
     if (index !== -1) {
         sampleTasks[index] = {
@@ -795,7 +795,7 @@ app.patch('/api/tasks/:taskId', (req, res) => {
 });
 
 app.delete('/api/tasks/:taskId', (req, res) => {
-    console.log(`✅ Tasks DELETE - deleting task ${sanitizeForLog(req.params.taskId)}`);
+    console.log('✅ Tasks DELETE - deleting task ');
     const index = sampleTasks.findIndex(t => t.id === req.params.taskId);
     if (index !== -1) {
         sampleTasks.splice(index, 1);
@@ -838,7 +838,7 @@ app.get('/health', (req, res) => {
 
 // Catch all for debugging
 app.use((req, res) => {
-    console.log(`⚠️ Unhandled route: ${sanitizeForLog(req.method)} ${sanitizeForLog(req.path)}`);
+    console.log('⚠️ Unhandled route: ');
     res.status(404).json({ 
         error: 'Not found', 
         path: req.path,

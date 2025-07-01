@@ -1,10 +1,4 @@
 
-function sanitizeForLog(str: any): string {
-    if (typeof str !== 'string') {
-        return JSON.stringify(str).replace(/[\r\n]/g, ' ');
-    }
-    return str.replace(/[\r\n]/g, ' ');
-}
 
 import { Request, Response } from 'express';
 import { TaskService } from '../services/taskService';

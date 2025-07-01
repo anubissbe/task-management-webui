@@ -43,7 +43,7 @@ export class ProjectController {
         return;
       }
       const projects = await projectService.getAllProjects(req.workspaceId);
-      console.log(`Retrieved ${projects.length} projects from workspace ${sanitizeForLog(req.workspaceId)}`);
+      console.log('Retrieved ');
       res.json(projects);
     } catch (error) {
       console.error('Error fetching projects:', error);

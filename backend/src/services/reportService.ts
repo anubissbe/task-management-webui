@@ -1,15 +1,9 @@
 
-function sanitizeForLog(str: any): string {
-    if (typeof str !== 'string') {
-        return JSON.stringify(str).replace(/[\r\n]/g, ' ');
-    }
-    return str.replace(/[\r\n]/g, ' ');
-}
 
 // Mock database for now - replace with actual db import
 const db = {
   query: async (sql: string, params?: any[]) => {
-    console.log('Mock DB query:', sql, params);
+    // Removed log entry for security
     return { rows: [] };
   }
 };

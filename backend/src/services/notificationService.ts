@@ -146,11 +146,7 @@ export class NotificationService {
 
     // Start all cron jobs
     this.cronJobs.forEach(job => job.start());
-    console.log('Notification cron jobs started');
-  }
-
-  // Get user notification preferences
-  public async getUserNotificationPreferences(userId: string, workspaceId: string): Promise<NotificationPreferences> {
+    console.log('Notification cron jobs started'): Promise<NotificationPreferences> {
     const result = await this.db.query(
       'SELECT * FROM notification_preferences WHERE user_id = $1 AND workspace_id = $2',
       [userId, workspaceId]
