@@ -15,7 +15,8 @@ Welcome to the comprehensive documentation for **ProjectHub-Mcp**!
 ## 📚 Documentation Sections
 
 ### 🎯 Getting Started
-- [📦 Quick Installation Guide](Installation-Guide) - Get up and running in minutes
+- [🚀 Quick Start](Installation-Guide) - Get running in under 2 minutes with `./start.sh`
+- [📦 Installation Guide](Installation-Guide) - Detailed installation instructions
 - [⚙️ Development Setup](Development-Setup) - Set up your development environment
 - [🐳 Docker Deployment](Production-Deployment) - Deploy with containers
 - [🔧 Troubleshooting](Troubleshooting) - Common issues and solutions
@@ -76,7 +77,7 @@ Welcome to the comprehensive documentation for **ProjectHub-Mcp**!
 
 <div align="center">
 
-**Last Updated**: December 2024 | **Version**: 4.5.1 | **Status**: Production Ready
+**Last Updated**: July 2025 | **Version**: 4.6.0 | **Status**: Production Ready
 
 <p style="color: #ff6500; font-weight: bold;">
 🧡 Built with the signature black (#0a0a0a) and orange (#ff6500) theme 🧡

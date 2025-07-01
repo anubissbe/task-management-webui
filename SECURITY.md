@@ -102,13 +102,14 @@ The project uses Alpine.js v2.0.0 architecture with enhanced security:
 
 ## 🔍 Security Audit Log
 
-### Recent Security Improvements (v2.0.0 - July 2025)
-- **2025-07-01**: Resolved all log injection vulnerabilities
-- **2025-07-01**: Replaced sensitive URLs with safe examples
-- **2025-07-01**: Removed development/debug files from production
-- **2025-07-01**: Enhanced CodeQL configuration with exclusions
-- **2025-07-01**: Implemented comprehensive security workflow
-- **2025-07-01**: Added input sanitization across all endpoints
+### Recent Security Improvements (v4.6.0 - July 2025)
+- **2025-07-01**: Major repository cleanup and security hardening
+- **2025-07-01**: Resolved all CodeQL syntax errors and security warnings
+- **2025-07-01**: Enhanced CodeQL configuration with comprehensive exclusions
+- **2025-07-01**: Removed 120+ development artifacts and debug files
+- **2025-07-01**: Updated to version 4.6.0 with security improvements
+- **2025-07-01**: Implemented automated deployment with security scanning
+- **2025-07-01**: Added comprehensive input sanitization
 
 ### Known False Positives
 The following are confirmed false positives:
@@ -200,8 +201,21 @@ We thank the security community for responsible disclosure. Contributors:
 - Open source security tools we utilize
 - GitHub Security team for their platform features
 
+## 🛡️ Supported Versions
+
+We provide security updates for the following versions:
+
+| Version | Supported | Security Updates |
+| ------- | --------- | ---------------- |
+| 4.6.x   | ✅ | Full support with regular updates |
+| 4.5.x   | ⚠️ | Critical security fixes only |
+| 4.0.x   | ❌ | No longer supported |
+| < 4.0   | ❌ | No longer supported |
+
+**Recommendation**: Always use the latest version (4.6.x) for the best security posture.
+
 ---
 
 **Last Updated**: July 1, 2025  
-**Version**: 2.0.0  
+**Version**: 4.6.0  
 **Next Security Review**: January 1, 2026

@@ -1,15 +1,8 @@
 FROM nginx:alpine
 
-# Copy the new frontend
+# Copy the new frontend (only existing files)
 COPY index-complete.html /usr/share/nginx/html/index.html
-COPY app-complete.js /usr/share/nginx/html/
-COPY app-fixed.js /usr/share/nginx/html/
-COPY app-singleton.js /usr/share/nginx/html/
-COPY app-singleton-fixed.js /usr/share/nginx/html/
-COPY app-charts-fix.js /usr/share/nginx/html/
-COPY app-webhooks-fix.js /usr/share/nginx/html/
-COPY app-real-backend.js /usr/share/nginx/html/
-COPY app-webhook-final.js /usr/share/nginx/html/
+COPY app.js /usr/share/nginx/html/
 
 # Custom nginx config for SPA
 RUN echo 'server { \
