@@ -162,6 +162,18 @@
         }
         
         /* Force select option colors regardless of browser defaults */
+        /* Light mode select styling - ensure readability */
+        select.form-input {
+            background-color: #ffffff;
+            color: #1f2937;
+        }
+        
+        select.form-input option {
+            background-color: #ffffff !important;
+            color: #1f2937 !important;
+        }
+        
+        /* Dark mode select styling */
         html.dark select.form-input {
             background-color: #1f2937;
             color: #ffffff;
