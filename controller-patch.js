@@ -55,7 +55,7 @@ let serviceContent = fs.readFileSync(servicePath, 'utf8');
 // Fix the VALUES clause counting issue
 serviceContent = serviceContent.replace(
     /VALUES \(\$1, \$2, \$3, \$4, 'planning', \$5\)/,
-    'VALUES ($1, $2, $3 || \\'\\', $4 || \\'\\', \\'planning\\', $5)'
+    "VALUES ($1, $2, $3 || '', $4 || '', 'planning', $5)"
 );
 
 fs.writeFileSync(servicePath, serviceContent);

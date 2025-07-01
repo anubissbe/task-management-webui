@@ -12,3 +12,9 @@ paths-ignore:
   - new-frontend/diagnose-*.html
   - '**/*.test.js'
   - '**/*.spec.js'
+  - take-screenshots.js
+  - capture-*.js
+  - controller-patch.js
+  - '**/test-*.js'
+  - '**/inject-*.js'
+  - '**/browser-*.js'

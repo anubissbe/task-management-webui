@@ -4,7 +4,7 @@ const fs = require('fs');
 
 async function captureScreenshots() {
   const screenshotsDir = path.join(__dirname, 'docs', 'images');
-  if (\!fs.existsSync(screenshotsDir)) {
+  if (!fs.existsSync(screenshotsDir)) {
     fs.mkdirSync(screenshotsDir, { recursive: true });
   }
 
@@ -78,7 +78,7 @@ async function captureScreenshots() {
       fullPage: false
     });
 
-    console.log('✅ Screenshots captured successfully\!');
+    console.log('✅ Screenshots captured successfully!');
     console.log(`📁 Screenshots saved to: ${screenshotsDir}`);
 
   } catch (error) {
