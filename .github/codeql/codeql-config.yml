@@ -10,6 +10,7 @@ paths-ignore:
   # Dependencies
   - node_modules
   - "**/node_modules"
+  - "**/node_modules/**"
   
   # Test files
   - "**/*.test.js"
@@ -19,12 +20,18 @@ paths-ignore:
   - "**/test/**"
   - "**/tests/**"
   - "__tests__"
+  - "**/__tests__/**"
   
   # Development and debugging files
+  - "test-*.js"
+  - "debug-*.js"
+  - "fix-*.js"
+  - "**/test-*.js"
+  - "**/debug-*.js"
+  - "**/fix-*.js"
   - "new-frontend/test-*.html"
   - "new-frontend/diagnose-*.html"
   - "new-frontend/verify-*.js"
-  - "**/fix-*.js"
   - "**/analyze-*.js"
   - "**/inject-*.js"
   - "**/browser-*.js"
@@ -32,12 +39,15 @@ paths-ignore:
   - "**/take-*.js"
   - "**/*-patch.js"
   - "**/*-fix.js"
+  - "runtime-patch.js"
   
   # Build and compiled files
   - "dist/**"
   - "build/**"
   - ".next/**"
   - "out/**"
+  - "**/dist/**"
+  - "**/build/**"
   
   # Documentation
   - "**/*.md"
@@ -47,11 +57,31 @@ paths-ignore:
   - "**/*.json"
   - "**/*.yml"
   - "**/*.yaml"
+  - "**/*.config.js"
+  - "**/*.config.ts"
+  - "jest.config.js"
+  - "playwright.config.ts"
+  
+  # Package files
+  - "package.json"
+  - "package-lock.json"
+  - "**/package.json"
+  - "**/package-lock.json"
   
   # Deprecated React frontend (not in use)
   - "frontend/src/contexts/WorkspaceContext.tsx"
   - "frontend/**/*.tsx"
   - "frontend/**/*.ts"
+  
+  # Generated or temporary files
+  - "*.min.js"
+  - "**/*.min.js"
+  - "*.bundle.js"
+  - "**/*.bundle.js"
+  
+  # HTML files (to avoid parsing inline scripts)
+  - "**/*.html"
+  - "**/*.htm"
 
 # Custom query exclusions
 query-filters:
