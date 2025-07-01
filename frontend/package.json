@@ -2,7 +2,7 @@
   "name": "projecthub-mcp-frontend",
   "description": "ProjectHub-Mcp Frontend - MCP Enhanced Project Management Workspace with advanced task tracking, Pomodoro timer, and team collaboration features",
   "private": true,
-  "version": "4.5.1",
+  "version": "4.6.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
