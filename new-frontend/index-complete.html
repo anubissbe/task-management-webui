@@ -251,11 +251,28 @@
         
         /* Modal backdrop */
         .modal-backdrop {
-            @apply fixed inset-0 bg-black bg-opacity-50 transition-opacity z-40;
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            transition: opacity 0.3s;
+            z-index: 40;
         }
         
         .modal-content {
-            @apply bg-white dark:bg-gray-800 rounded-lg shadow-xl transform transition-all sm:max-w-lg sm:w-full;
+            background-color: #ffffff;
+            border-radius: 0.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            transform: scale(1);
+            transition: all 0.3s;
+            max-width: 32rem;
+            width: 100%;
+        }
+        
+        html.dark .modal-content {
+            background-color: #1f2937;
         }
     </style>
     
