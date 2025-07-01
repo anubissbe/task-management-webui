@@ -47,8 +47,8 @@ That's it! ProjectHub-MCP will be running with:
 ### 📊 Analytics Dashboard
 <img src="docs/images/working-analytics.png" alt="Advanced Analytics Dashboard" width="800"/>
 
-### 📅 Calendar & Task Scheduling
-<img src="docs/images/calendar.png" alt="Calendar View with Task Scheduling" width="800"/>
+### ✅ Task Management Interface
+<img src="docs/images/current-calendar.png" alt="Modern Task Management Interface" width="800"/>
 
 </div>
 
