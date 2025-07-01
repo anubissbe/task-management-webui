@@ -138,21 +138,73 @@
         }
         
         /* Form styles */
+        /* Form styles - explicit CSS for better compatibility */
         .form-input {
-            @apply appearance-none rounded-lg relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white bg-white dark:bg-gray-800 focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-sm;
+            appearance: none;
+            border-radius: 0.5rem;
+            position: relative;
+            display: block;
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #d1d5db;
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+            
+            /* Light mode styling */
+            background-color: #ffffff;
+            color: #1f2937;
+            border-color: #d1d5db;
+        }
+        
+        .form-input::placeholder {
+            color: #6b7280;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #ff6500;
+            box-shadow: 0 0 0 1px #ff6500;
+            z-index: 10;
+        }
+        
+        /* Dark mode form styling */
+        html.dark .form-input {
+            background-color: #1f2937;
+            color: #ffffff;
+            border-color: #4b5563;
+        }
+        
+        html.dark .form-input::placeholder {
+            color: #9ca3af;
+        }
+        
+        html.dark .form-input:focus {
+            border-color: #ff6500;
+            box-shadow: 0 0 0 1px #ff6500;
         }
         
         /* Force option styling for better dark mode support */
         .form-input option {
-            @apply bg-white dark:bg-gray-800 text-gray-900 dark:text-white;
+            background-color: #ffffff;
+            color: #1f2937;
+        }
+        
+        html.dark .form-input option {
+            background-color: #1f2937;
+            color: #ffffff;
         }
         
         /* Additional select styling */
         select.form-input {
-            @apply bg-white dark:bg-gray-800 text-gray-900 dark:text-white;
+            background-color: #ffffff;
+            color: #1f2937;
             color-scheme: light dark;
         }
         
+        html.dark select.form-input {
+            background-color: #1f2937;
+            color: #ffffff;
+        }
         /* Dark mode select dropdown styling */
         @media (prefers-color-scheme: dark) {
             .dark select.form-input option {
