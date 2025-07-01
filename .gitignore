@@ -183,3 +183,26 @@ docker-compose.production.yml
 # Monitoring and analytics
 .vscode/settings.json
 .history/
+
+# Development artifacts to prevent
+# (These were causing clutter in the past)
+test-*.html
+debug-*.js
+fix-*.js
+*-backup*.html
+*-fix.js
+*-patch.js
+inject-*.js
+browser-*.js
+capture-*.js
+take-*.js
+modern-ui-*.js
+modern-ui-*.css
+verify-*.js
+diagnose-*.html
+temp-files-backup/
+deployment_package/
+
+# Archive packages (keep only official releases)
+projecthub-*.tar.gz
+!projecthub-deployment-package.tar.gz
