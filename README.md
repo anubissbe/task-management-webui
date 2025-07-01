@@ -41,8 +41,8 @@ That's it! ProjectHub-MCP will be running with:
 
 <div align="center">
 
-### 🏠 Project Management Dashboard
-<img src="docs/images/homepage.png" alt="Projects Overview Dashboard" width="800"/>
+### 📅 Calendar & Task Scheduling
+<img src="docs/images/calendar.png" alt="Calendar View with Task Scheduling" width="800"/>
 
 ### ✅ Task Management & Tracking
 <img src="docs/images/project-tasks.png" alt="Task Management Interface" width="800"/>
