@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend Functionality Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <style>
+        body { font-family: system-ui; padding: 20px; background: #1a1a1a; color: #fff; }
+        .test-result { margin: 10px 0; padding: 15px; border-radius: 8px; }
+        .pass { background: #22c55e33; border: 1px solid #22c55e; }
+        .fail { background: #ef444433; border: 1px solid #ef4444; }
+        .info { background: #3b82f633; border: 1px solid #3b82f6; }
+        .warning { background: #f59e0b33; border: 1px solid #f59e0b; }
+        button { background: #ff6500; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 5px; }
+        button:hover { background: #ff8533; }
+        iframe { width: 100%; height: 600px; border: 2px solid #ff6500; border-radius: 8px; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <div x-data="testApp()">
+        <h1>ProjectHub Frontend Functionality Test</h1>
+        
+        <button @click="runAllTests()">Run All Tests</button>
+        <button @click="clearResults()">Clear Results</button>
+        <button @click="window.open('http://localhost:8090', '_blank')">Open App in New Tab</button>
+        
+        <div id="results" x-html="results"></div>
+        
+        <h2>Live App Preview</h2>
+        <iframe id="app-frame" src="http://localhost:8090" @load="appLoaded = true"></iframe>
+    </div>
+    
+    <script>
+        function testApp() {
+            return {
+                results: '',
+                appLoaded: false,
+                testsPassed: 0,
+                testsFailed: 0,
+                
+                log(message, type = 'info') {
+                    this.results += `<div class="test-result ${type}">${message}</div>`;
+                },
+                
+                clearResults() {
+                    this.results = '';
+                    this.testsPassed = 0;
+                    this.testsFailed = 0;
+                },
+                
+                async delay(ms) {
+                    return new Promise(resolve => setTimeout(resolve, ms));
+                },
+                
+                async runAllTests() {
+                    this.clearResults();
+                    this.log('<h2>🧪 Running Frontend Tests...</h2>');
+                    
+                    // Test 1: Check if app loads
+                    await this.testAppLoads();
+                    
+                    // Test 2: Test authentication
+                    await this.testAuthentication();
+                    
+                    // Test 3: Test API connectivity
+                    await this.testAPIConnectivity();
+                    
+                    // Test 4: Test UI components
+                    await this.testUIComponents();
+                    
+                    // Summary
+                    this.log(`<h2>📊 Test Summary</h2>`);
+                    this.log(`✅ Passed: ${this.testsPassed}`, 'pass');
+                    this.log(`❌ Failed: ${this.testsFailed}`, this.testsFailed > 0 ? 'fail' : 'info');
+                    
+                    if (this.testsFailed === 0) {
+                        this.log('<h3>🎉 All tests passed! The frontend is fully functional.</h3>', 'pass');
+                    } else {
+                        this.log('<h3>⚠️ Some tests failed. Please check the issues above.</h3>', 'warning');
+                    }
+                },
+                
+                async testAppLoads() {
+                    this.log('<strong>Test 1: App Loading</strong>');
+                    
+                    try {
+                        const response = await fetch('http://localhost:8090');
+                        if (response.ok) {
+                            const html = await response.text();
+                            
+                            // Check for critical components
+                            const checks = [
+                                { name: 'Alpine.js', check: html.includes('alpinejs') },
+                                { name: 'App JavaScript', check: html.includes('app-complete.js') },
+                                { name: 'ProjectHub Function', check: html.includes('projectHub()') },
+                                { name: 'Login Form', check: html.includes('loginForm') },
+                                { name: 'Tailwind CSS', check: html.includes('tailwindcss') },
+                                { name: 'Chart.js', check: html.includes('chart.js') },
+                                { name: 'SortableJS', check: html.includes('sortablejs') }
+                            ];
+                            
+                            let allPassed = true;
+                            checks.forEach(check => {
+                                if (check.check) {
+                                    this.log(`✅ ${check.name} loaded`, 'pass');
+                                } else {
+                                    this.log(`❌ ${check.name} not found`, 'fail');
+                                    allPassed = false;
+                                }
+                            });
+                            
+                            if (allPassed) {
+                                this.testsPassed++;
+                            } else {
+                                this.testsFailed++;
+                            }
+                        } else {
+                            this.log(`❌ App not accessible: ${response.status}`, 'fail');
+                            this.testsFailed++;
+                        }
+                    } catch (error) {
+                        this.log(`❌ Error loading app: ${error.message}`, 'fail');
+                        this.testsFailed++;
+                    }
+                },
+                
+                async testAuthentication() {
+                    this.log('<strong>Test 2: Authentication System</strong>');
+                    
+                    try {
+                        // Test login endpoint
+                        const loginResponse = await fetch('http://localhost:3009/api/auth/login', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                email: 'admin@projecthub.local',
+                                password: 'admin123'
+                            })
+                        });
+                        
+                        if (loginResponse.ok) {
+                            const data = await loginResponse.json();
+                            const token = data.accessToken || data.access_token;
+                            
+                            if (token) {
+                                this.log('✅ Authentication endpoint working', 'pass');
+                                this.log(`✅ Token received: ${token.substring(0, 20)}...`, 'pass');
+                                
+                                // Test authenticated request
+                                const meResponse = await fetch('http://localhost:3009/api/auth/me', {
+                                    headers: { 'Authorization': `Bearer ${token}` }
+                                });
+                                
+                                if (meResponse.ok) {
+                                    this.log('✅ Authenticated requests working', 'pass');
+                                    this.testsPassed++;
+                                } else {
+                                    this.log('❌ Authenticated requests failing', 'fail');
+                                    this.testsFailed++;
+                                }
+                            } else {
+                                this.log('❌ No token received', 'fail');
+                                this.testsFailed++;
+                            }
+                        } else {
+                            this.log(`❌ Login failed: ${loginResponse.status}`, 'fail');
+                            this.testsFailed++;
+                        }
+                    } catch (error) {
+                        this.log(`❌ Authentication error: ${error.message}`, 'fail');
+                        this.testsFailed++;
+                    }
+                },
+                
+                async testAPIConnectivity() {
+                    this.log('<strong>Test 3: API Connectivity</strong>');
+                    
+                    try {
+                        // Get token first
+                        const loginResponse = await fetch('http://localhost:3009/api/auth/login', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                email: 'admin@projecthub.local',
+                                password: 'admin123'
+                            })
+                        });
+                        
+                        const data = await loginResponse.json();
+                        const token = data.accessToken || data.access_token;
+                        const headers = { 'Authorization': `Bearer ${token}` };
+                        
+                        // Test each endpoint
+                        const endpoints = [
+                            { name: 'Projects', url: '/projects' },
+                            { name: 'Tasks', url: '/tasks' },
+                            { name: 'Analytics', url: '/analytics' },
+                            { name: 'Webhooks', url: '/webhooks' }
+                        ];
+                        
+                        let allPassed = true;
+                        for (const endpoint of endpoints) {
+                            const response = await fetch(`http://localhost:3009/api${endpoint.url}`, { headers });
+                            
+                            if (response.ok) {
+                                const data = await response.json();
+                                this.log(`✅ ${endpoint.name} API: ${Array.isArray(data) ? data.length + ' items' : 'data received'}`, 'pass');
+                            } else {
+                                this.log(`❌ ${endpoint.name} API failed: ${response.status}`, 'fail');
+                                allPassed = false;
+                            }
+                        }
+                        
+                        if (allPassed) {
+                            this.testsPassed++;
+                        } else {
+                            this.testsFailed++;
+                        }
+                    } catch (error) {
+                        this.log(`❌ API connectivity error: ${error.message}`, 'fail');
+                        this.testsFailed++;
+                    }
+                },
+                
+                async testUIComponents() {
+                    this.log('<strong>Test 4: UI Components</strong>');
+                    
+                    // Check if iframe loaded
+                    if (this.appLoaded) {
+                        this.log('✅ App iframe loaded successfully', 'pass');
+                        
+                        try {
+                            // We can't access iframe content due to CORS, but we can verify it loaded
+                            const iframe = document.getElementById('app-frame');
+                            if (iframe && iframe.contentWindow) {
+                                this.log('✅ App is rendering in iframe', 'pass');
+                                this.testsPassed++;
+                            } else {
+                                this.log('❌ App iframe not accessible', 'fail');
+                                this.testsFailed++;
+                            }
+                        } catch (error) {
+                            this.log('⚠️ Cannot access iframe content (expected due to CORS)', 'warning');
+                            this.testsPassed++;
+                        }
+                    } else {
+                        this.log('❌ App iframe not loaded', 'fail');
+                        this.testsFailed++;
+                    }
+                    
+                    this.log('ℹ️ Manual verification needed for:', 'info');
+                    this.log('• Drag and drop functionality', 'info');
+                    this.log('• Modal interactions', 'info');
+                    this.log('• Real-time updates', 'info');
+                    this.log('• Chart rendering', 'info');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

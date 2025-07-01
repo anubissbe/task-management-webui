@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Final Test - ProjectHub</title>
+    <style>
+        body { font-family: system-ui; padding: 20px; background: #1a1a1a; color: #fff; }
+        .test { margin: 10px 0; padding: 15px; border-radius: 8px; }
+        .pass { background: #22c55e33; border: 1px solid #22c55e; }
+        .fail { background: #ef444433; border: 1px solid #ef4444; }
+        .info { background: #3b82f633; border: 1px solid #3b82f6; }
+        button { background: #ff6500; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 5px; }
+        button:hover { background: #ff8533; }
+        pre { background: #000; padding: 10px; border-radius: 5px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>ProjectHub Final Test</h1>
+    <p>This tests the complete frontend with all fixes applied.</p>
+    
+    <div id="results"></div>
+    
+    <button onclick="runTests()">Run All Tests</button>
+    <button onclick="window.open('http://localhost:8090', '_blank')">Open ProjectHub</button>
+    
+    <h2>Instructions to Clear Browser Cache:</h2>
+    <ol>
+        <li>Open http://localhost:8090 in your browser</li>
+        <li>Press <strong>Ctrl+Shift+R</strong> (Windows/Linux) or <strong>Cmd+Shift+R</strong> (Mac) to hard refresh</li>
+        <li>Or open Developer Tools (F12) → Network tab → Check "Disable cache"</li>
+        <li>Then refresh the page</li>
+    </ol>
+    
+    <script>
+        const results = document.getElementById('results');
+        
+        function log(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `test ${type}`;
+            div.innerHTML = message;
+            results.appendChild(div);
+        }
+        
+        async function runTests() {
+            results.innerHTML = '';
+            
+            // Test 1: Check frontend is accessible
+            log('<strong>Test 1: Frontend Accessibility</strong>');
+            try {
+                const frontendResponse = await fetch('http://localhost:8090');
+                if (frontendResponse.ok) {
+                    log('✅ Frontend is accessible', 'pass');
+                } else {
+                    log('❌ Frontend not accessible: ' + frontendResponse.status, 'fail');
+                }
+            } catch (error) {
+                log('❌ Frontend error: ' + error.message, 'fail');
+            }
+            
+            // Test 2: Check app script has correct API_BASE
+            log('<strong>Test 2: App Script Configuration</strong>');
+            try {
+                const scriptResponse = await fetch('http://localhost:8090/app-complete.js?v=2');
+                const scriptText = await scriptResponse.text();
+                
+                if (scriptText.includes("const API_BASE = '/api'")) {
+                    log('✅ App script uses relative API URL', 'pass');
+                } else if (scriptText.includes("const API_BASE = 'http://localhost:3009/api'")) {
+                    log('❌ App script still uses absolute URL - clear browser cache!', 'fail');
+                } else {
+                    log('⚠️ Could not verify API_BASE', 'info');
+                }
+            } catch (error) {
+                log('❌ Script error: ' + error.message, 'fail');
+            }
+            
+            // Test 3: Test API through nginx proxy
+            log('<strong>Test 3: API Proxy</strong>');
+            try {
+                const apiResponse = await fetch('http://localhost:8090/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: 'admin@projecthub.local',
+                        password: 'admin123'
+                    })
+                });
+                
+                if (apiResponse.ok) {
+                    const data = await apiResponse.json();
+                    log('✅ API proxy working - Login successful', 'pass');
+                    log('<pre>' + JSON.stringify(data, null, 2) + '</pre>', 'info');
+                } else {
+                    log('❌ API proxy failed: ' + apiResponse.status, 'fail');
+                }
+            } catch (error) {
+                log('❌ API error: ' + error.message, 'fail');
+            }
+            
+            // Test 4: Check nginx configuration
+            log('<strong>Test 4: Server Configuration</strong>');
+            log('ℹ️ Nginx is configured to proxy /api requests to backend', 'info');
+            log('ℹ️ CORS is handled by nginx proxy - no cross-origin requests', 'info');
+            
+            log('<h3>Summary</h3>');
+            log('If you still see CORS errors in the browser:', 'info');
+            log('1. Clear browser cache (Ctrl+Shift+R)', 'info');
+            log('2. Check Developer Tools → Network → Disable cache', 'info');
+            log('3. Close all tabs with localhost:8090 and reopen', 'info');
+        }
+        
+        // Auto-run tests on load
+        window.onload = () => {
+            log('Click "Run All Tests" to begin testing', 'info');
+        };
+    </script>
+</body>
+</html>

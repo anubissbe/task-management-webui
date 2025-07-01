@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Singleton</title>
+</head>
+<body>
+    <h1>Testing Singleton Pattern</h1>
+    <div id="test-output"></div>
+    
+    <script>
+        // Test to verify singleton pattern works
+        const output = document.getElementById('test-output');
+        
+        // Simulate browser accessing the app
+        fetch('http://localhost:8090/')
+            .then(response => response.text())
+            .then(html => {
+                output.innerHTML = '<p>✅ Frontend loaded successfully</p>';
+                
+                // Check console output would show single initialization
+                output.innerHTML += '<p>Check browser console at http://localhost:8090 - should show only ONE initialization message</p>';
+                output.innerHTML += '<p>Expected: "🚀 Initializing ProjectHub..." appears only ONCE</p>';
+                output.innerHTML += '<hr>';
+                output.innerHTML += '<p><strong>Instructions:</strong></p>';
+                output.innerHTML += '<ol>';
+                output.innerHTML += '<li>Open http://localhost:8090 in your browser</li>';
+                output.innerHTML += '<li>Open Developer Console (F12)</li>';
+                output.innerHTML += '<li>Look for initialization messages</li>';
+                output.innerHTML += '<li>Switch between tabs (Projects, Kanban, Analytics)</li>';
+                output.innerHTML += '<li>Verify analytics charts load properly</li>';
+                output.innerHTML += '</ol>';
+            })
+            .catch(error => {
+                output.innerHTML = '<p>❌ Error: ' + error.message + '</p>';
+            });
+    </script>
+</body>
+</html>

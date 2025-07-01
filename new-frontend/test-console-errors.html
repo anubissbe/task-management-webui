@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Frontend Console</title>
+    <style>
+        body { font-family: system-ui; padding: 20px; background: #1a1a1a; color: #fff; }
+        .log { margin: 5px 0; padding: 10px; border-radius: 5px; font-family: monospace; }
+        .error { background: #dc262633; border: 1px solid #dc2626; }
+        .warn { background: #f59e0b33; border: 1px solid #f59e0b; }
+        .info { background: #3b82f633; border: 1px solid #3b82f6; }
+        .success { background: #22c55e33; border: 1px solid #22c55e; }
+        iframe { width: 100%; height: 400px; border: 2px solid #ff6500; border-radius: 8px; }
+    </style>
+</head>
+<body>
+    <h1>ProjectHub Frontend Console Test</h1>
+    <p>This page loads the frontend in an iframe and monitors for console errors.</p>
+    
+    <div id="logs"></div>
+    
+    <h2>Frontend Preview:</h2>
+    <iframe id="app-frame" src="http://localhost:8090"></iframe>
+    
+    <script>
+        const logs = document.getElementById('logs');
+        let errorCount = 0;
+        let warnCount = 0;
+        
+        function addLog(message, type = 'info') {
+            const log = document.createElement('div');
+            log.className = `log ${type}`;
+            log.textContent = `[${type.toUpperCase()}] ${message}`;
+            logs.appendChild(log);
+        }
+        
+        // Monitor iframe load
+        const iframe = document.getElementById('app-frame');
+        iframe.onload = function() {
+            addLog('Frontend loaded', 'success');
+            
+            // Check if we can access basic info
+            setTimeout(() => {
+                addLog(`Total errors detected: ${errorCount}`, errorCount > 0 ? 'error' : 'success');
+                addLog(`Total warnings detected: ${warnCount}`, warnCount > 0 ? 'warn' : 'info');
+                
+                if (errorCount === 0) {
+                    addLog('✅ No console errors detected!', 'success');
+                } else {
+                    addLog('❌ Console errors found. Check browser console for details.', 'error');
+                }
+            }, 3000);
+        };
+        
+        // Override console methods to capture iframe logs (if same origin)
+        const originalError = console.error;
+        const originalWarn = console.warn;
+        const originalLog = console.log;
+        
+        console.error = function(...args) {
+            errorCount++;
+            const message = args.join(' ');
+            if (!message.includes('cdn.tailwindcss.com should not be used in production')) {
+                addLog(message, 'error');
+            }
+            originalError.apply(console, args);
+        };
+        
+        console.warn = function(...args) {
+            const message = args.join(' ');
+            if (!message.includes('cdn.tailwindcss.com should not be used in production')) {
+                warnCount++;
+                addLog(message, 'warn');
+            }
+            originalWarn.apply(console, args);
+        };
+        
+        console.log = function(...args) {
+            const message = args.join(' ');
+            if (message.includes('Alpine.js initializing') || message.includes('ProjectHub')) {
+                addLog(message, 'info');
+            }
+            originalLog.apply(console, args);
+        };
+        
+        // Test API connectivity
+        setTimeout(async () => {
+            try {
+                const response = await fetch('http://localhost:3009/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: 'admin@projecthub.local',
+                        password: 'admin123'
+                    })
+                });
+                
+                if (response.ok) {
+                    addLog('API authentication test passed', 'success');
+                } else {
+                    addLog(`API authentication test failed: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                addLog(`API connection error: ${error.message}`, 'error');
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

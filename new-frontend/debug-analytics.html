@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Analytics</title>
+    <style>
+        body { font-family: system-ui; padding: 20px; background: #1a1a1a; color: #fff; }
+        .section { margin: 20px 0; padding: 20px; background: #2a2a2a; border-radius: 8px; }
+        .code { background: #000; padding: 10px; border-radius: 5px; overflow-x: auto; font-family: monospace; }
+        button { background: #ff6500; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 5px; }
+        .success { color: #22c55e; }
+        .error { color: #ef4444; }
+        .warning { color: #f59e0b; }
+    </style>
+</head>
+<body>
+    <h1>Debug Analytics Issues</h1>
+    
+    <div class="section">
+        <h2>Common Analytics Issues:</h2>
+        <ul>
+            <li><strong>Charts flashing/redrawing</strong> - Multiple chart instances being created</li>
+            <li><strong>Charts not showing</strong> - Chart.js not loaded or canvas elements missing</li>
+            <li><strong>Empty charts</strong> - No data available</li>
+            <li><strong>Charts overlapping</strong> - Previous charts not being destroyed</li>
+        </ul>
+    </div>
+    
+    <div class="section">
+        <h2>Debug Commands</h2>
+        <p>Run these in the browser console on ProjectHub:</p>
+        
+        <h3>1. Check Chart Instances</h3>
+        <div class="code">
+// Check how many chart instances exist
+if (typeof Chart !== 'undefined') {
+    console.log('Chart.js version:', Chart.version);
+    console.log('Active chart instances:', Chart.instances ? Object.keys(Chart.instances).length : 0);
+    
+    // List all chart IDs
+    if (Chart.instances) {
+        Object.keys(Chart.instances).forEach(id => {
+            const chart = Chart.instances[id];
+            console.log(`Chart ${id}:`, chart.canvas.id, chart.config.type);
+        });
+    }
+}
+        </div>
+        
+        <h3>2. Fix Duplicate Charts</h3>
+        <div class="code">
+// Clear all existing charts
+if (typeof Chart !== 'undefined' && Chart.instances) {
+    Object.values(Chart.instances).forEach(instance => {
+        if (instance) {
+            console.log('Destroying chart:', instance.canvas.id);
+            instance.destroy();
+        }
+    });
+}
+
+// Get app and refresh analytics
+let app = document.querySelector('[x-data]').__x.$data;
+app.currentView = 'analytics';
+app.calculateAnalytics();
+setTimeout(() => app.updateCharts(), 500);
+        </div>
+        
+        <h3>3. Check Canvas Elements</h3>
+        <div class="code">
+// Check if canvas elements exist and are visible
+['projectStatusChart', 'taskPriorityChart', 'taskTimelineChart'].forEach(id => {
+    const canvas = document.getElementById(id);
+    if (canvas) {
+        const rect = canvas.getBoundingClientRect();
+        console.log(`${id}:`, {
+            exists: true,
+            visible: rect.width > 0 && rect.height > 0,
+            dimensions: `${rect.width}x${rect.height}`,
+            parent: canvas.parentElement.className
+        });
+    } else {
+        console.log(`${id}: NOT FOUND`);
+    }
+});
+        </div>
+        
+        <h3>4. Check Data</h3>
+        <div class="code">
+// Check what data is available for charts
+let app = document.querySelector('[x-data]').__x.$data;
+console.log('Analytics data:', app.analytics);
+console.log('Projects by status:', app.projects.reduce((acc, p) => {
+    acc[p.status] = (acc[p.status] || 0) + 1;
+    return acc;
+}, {}));
+console.log('Tasks by priority:', app.tasks.reduce((acc, t) => {
+    acc[t.priority] = (acc[t.priority] || 0) + 1;
+    return acc;
+}, {}));
+        </div>
+        
+        <h3>5. Force Single Chart Update</h3>
+        <div class="code">
+// This ensures only one set of charts is created
+let app = document.querySelector('[x-data]').__x.$data;
+
+// Disable any pending updates
+if (app._chartUpdateTimeout) {
+    clearTimeout(app._chartUpdateTimeout);
+}
+
+// Clear all charts
+if (typeof Chart !== 'undefined' && Chart.instances) {
+    Object.values(Chart.instances).forEach(i => i && i.destroy());
+}
+
+// Update once
+app.currentView = 'analytics';
+app.calculateAnalytics();
+app._chartUpdateTimeout = setTimeout(() => {
+    app.updateCharts();
+    app._chartUpdateTimeout = null;
+}, 500);
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>Test Analytics Isolation</h2>
+        <p>Open this URL in a new tab to test charts in isolation:</p>
+        <div class="code">http://localhost:8090#analytics</div>
+        <p>Then run:</p>
+        <div class="code">
+// Force analytics view on load
+setTimeout(() => {
+    let app = document.querySelector('[x-data]').__x.$data;
+    if (app && app.isAuthenticated) {
+        app.currentView = 'analytics';
+    }
+}, 2000);
+        </div>
+    </div>
+</body>
+</html>

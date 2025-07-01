@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Alpine.js</title>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <style>
+        body { font-family: system-ui; padding: 20px; background: #1a1a1a; color: #fff; }
+        .view { margin: 20px 0; padding: 20px; background: #2a2a2a; border-radius: 8px; }
+        button { background: #ff6500; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 5px; }
+        button:hover { background: #ff8533; }
+        .active { background: #ff6500; }
+    </style>
+</head>
+<body>
+    <h1>Test Alpine.js View Switching</h1>
+    
+    <div x-data="{ currentView: 'projects' }">
+        <div>
+            <button @click="currentView = 'projects'" :class="{ active: currentView === 'projects' }">Projects</button>
+            <button @click="currentView = 'board'" :class="{ active: currentView === 'board' }">Board</button>
+            <button @click="currentView = 'analytics'" :class="{ active: currentView === 'analytics' }">Analytics</button>
+        </div>
+        
+        <div class="view" x-show="currentView === 'projects'">
+            <h2>Projects View</h2>
+            <p>This is the projects view.</p>
+        </div>
+        
+        <div class="view" x-show="currentView === 'board'">
+            <h2>Board View</h2>
+            <p>This is the board view.</p>
+        </div>
+        
+        <div class="view" x-show="currentView === 'analytics'">
+            <h2>Analytics View</h2>
+            <p>This is the analytics view.</p>
+        </div>
+        
+        <div style="margin-top: 20px;">
+            Current View: <span x-text="currentView"></span>
+        </div>
+    </div>
+    
+    <h2>Test in ProjectHub</h2>
+    <p>Open the browser console on http://localhost:8090 and run:</p>
+    <pre style="background: #000; padding: 10px; border-radius: 5px;">
+// Get the Alpine component
+let app = document.querySelector('[x-data]').__x.$data;
+
+// Check current view
+console.log('Current view:', app.currentView);
+
+// Switch to board
+app.currentView = 'board';
+
+// Switch to analytics  
+app.currentView = 'analytics';
+
+// Check if views exist
+console.log('Board element:', document.querySelector('[x-show*="board"]'));
+console.log('Analytics element:', document.querySelector('[x-show*="analytics"]'));
+    </pre>
+</body>
+</html>

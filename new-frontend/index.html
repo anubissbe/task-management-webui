@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProjectHub - Modern Project Management</title>
+    
+    <!-- Alpine.js for reactivity -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js for analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom styles -->
+    <style>
+        [x-cloak] { display: none !important; }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #ff6500; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #ff8533; }
+        
+        /* Glass morphism */
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 101, 0, 0.2);
+        }
+        
+        .glass-dark {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 101, 0, 0.2);
+        }
+        
+        /* Gradient backgrounds */
+        .gradient-orange {
+            background: linear-gradient(135deg, #ff6500, #ff8533);
+        }
+        
+        .gradient-dark {
+            background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-fadeIn {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        /* Card hover effects */
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(255, 101, 0, 0.2);
+        }
+        
+        /* Status pills */
+        .status-todo { background: rgba(156, 163, 175, 0.2); color: #d1d5db; border: 1px solid rgba(156, 163, 175, 0.3); }
+        .status-in-progress { background: rgba(59, 130, 246, 0.2); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.3); }
+        .status-completed { background: rgba(34, 197, 94, 0.2); color: #86efac; border: 1px solid rgba(34, 197, 94, 0.3); }
+        .status-blocked { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3); }
+    </style>
+    
+    <script>
+        // Tailwind config
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'projecthub-orange': '#ff6500',
+                        'projecthub-orange-light': '#ff8533',
+                        'projecthub-orange-dark': '#cc5200',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Load app.js -->
+    <script src="app.js"></script>
+</head>
+<body class="bg-gray-900 text-gray-100" 
+      x-data="projectHub()" 
+      x-init="init()"
+      style="background-image: radial-gradient(circle at 20% 20%, rgba(255, 101, 0, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(255, 133, 51, 0.1) 0%, transparent 50%);">
+    
+    <!-- Header -->
+    <header class="glass-dark sticky top-0 z-50 border-b border-orange-500/30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <h1 class="text-2xl font-bold gradient-orange bg-clip-text text-transparent">
+                        ProjectHub
+                    </h1>
+                </div>
+                
+                <!-- Navigation -->
+                <nav class="flex space-x-1">
+                    <button @click="currentView = 'dashboard'" 
+                            :class="currentView === 'dashboard' ? 'bg-orange-500/20 text-orange-400' : 'text-gray-400 hover:text-gray-200'"
+                            class="px-4 py-2 rounded-lg transition-all duration-200">
+                        <i class="fas fa-home mr-2"></i>Dashboard
+                    </button>
+                    <button @click="currentView = 'projects'" 
+                            :class="currentView === 'projects' ? 'bg-orange-500/20 text-orange-400' : 'text-gray-400 hover:text-gray-200'"
+                            class="px-4 py-2 rounded-lg transition-all duration-200">
+                        <i class="fas fa-folder mr-2"></i>Projects
+                    </button>
+                    <button @click="currentView = 'kanban'" 
+                            :class="currentView === 'kanban' ? 'bg-orange-500/20 text-orange-400' : 'text-gray-400 hover:text-gray-200'"
+                            class="px-4 py-2 rounded-lg transition-all duration-200">
+                        <i class="fas fa-columns mr-2"></i>Kanban
+                    </button>
+                    <button @click="currentView = 'analytics'" 
+                            :class="currentView === 'analytics' ? 'bg-orange-500/20 text-orange-400' : 'text-gray-400 hover:text-gray-200'"
+                            class="px-4 py-2 rounded-lg transition-all duration-200">
+                        <i class="fas fa-chart-bar mr-2"></i>Analytics
+                    </button>
+                    <button @click="currentView = 'webhooks'" 
+                            :class="currentView === 'webhooks' ? 'bg-orange-500/20 text-orange-400' : 'text-gray-400 hover:text-gray-200'"
+                            class="px-4 py-2 rounded-lg transition-all duration-200">
+                        <i class="fas fa-plug mr-2"></i>Webhooks
+                    </button>
+                </nav>
+                
+                <!-- User Menu -->
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-400">Welcome, Test User</span>
+                    <button class="w-10 h-10 rounded-full gradient-orange flex items-center justify-center text-white font-semibold">
+                        TU
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Dashboard View -->
+        <div x-show="currentView === 'dashboard'" x-cloak class="animate-fadeIn">
+            <h2 class="text-3xl font-bold mb-8">Dashboard</h2>
+            
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="glass rounded-xl p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-400 text-sm">Total Projects</p>
+                            <p class="text-3xl font-bold mt-2" x-text="stats.totalProjects"></p>
+                        </div>
+                        <div class="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-folder text-orange-400"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="glass rounded-xl p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-400 text-sm">Active Tasks</p>
+                            <p class="text-3xl font-bold mt-2" x-text="stats.activeTasks"></p>
+                        </div>
+                        <div class="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-tasks text-blue-400"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="glass rounded-xl p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-400 text-sm">Completed</p>
+                            <p class="text-3xl font-bold mt-2" x-text="stats.completedTasks"></p>
+                        </div>
+                        <div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-check-circle text-green-400"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="glass rounded-xl p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-400 text-sm">Team Members</p>
+                            <p class="text-3xl font-bold mt-2" x-text="stats.teamMembers"></p>
+                        </div>
+                        <div class="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-users text-purple-400"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Activity -->
+            <div class="glass rounded-xl p-6">
+                <h3 class="text-xl font-semibold mb-4">Recent Activity</h3>
+                <div class="space-y-4">
+                    <template x-for="activity in recentActivity" :key="activity.id">
+                        <div class="flex items-center space-x-4 p-4 glass rounded-lg">
+                            <div class="w-10 h-10 rounded-full bg-orange-500/20 flex items-center justify-center">
+                                <i :class="activity.icon" class="text-orange-400"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-medium" x-text="activity.title"></p>
+                                <p class="text-sm text-gray-400" x-text="activity.time"></p>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Projects View -->
+        <div x-show="currentView === 'projects'" x-cloak class="animate-fadeIn">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-bold">Projects</h2>
+                <button @click="showNewProjectModal = true" 
+                        class="gradient-orange text-white px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-200">
+                    <i class="fas fa-plus mr-2"></i>New Project
+                </button>
+            </div>
+            
+            <!-- Projects Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <template x-for="project in projects" :key="project.id">
+                    <div class="glass rounded-xl p-6 card-hover">
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="text-xl font-semibold" x-text="project.name"></h3>
+                            <span :class="'status-' + project.status" 
+                                  class="px-3 py-1 rounded-full text-xs font-semibold"
+                                  x-text="project.status"></span>
+                        </div>
+                        <p class="text-gray-400 mb-4" x-text="project.description"></p>
+                        
+                        <!-- Progress Bar -->
+                        <div class="mb-4">
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>Progress</span>
+                                <span x-text="project.progress + '%'"></span>
+                            </div>
+                            <div class="w-full bg-gray-700 rounded-full h-2">
+                                <div class="gradient-orange h-2 rounded-full transition-all duration-300"
+                                     :style="'width: ' + project.progress + '%'"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Team Members -->
+                        <div class="flex -space-x-2">
+                            <template x-for="member in project.team" :key="member">
+                                <div class="w-8 h-8 rounded-full bg-gray-600 border-2 border-gray-800 flex items-center justify-center text-xs font-semibold">
+                                    <span x-text="member"></span>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+        
+        <!-- Kanban View -->
+        <div x-show="currentView === 'kanban'" x-cloak class="animate-fadeIn">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-bold">Kanban Board</h2>
+                <button @click="showNewTaskModal = true"
+                        class="gradient-orange text-white px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-200">
+                    <i class="fas fa-plus mr-2"></i>New Task
+                </button>
+            </div>
+            
+            <!-- Kanban Columns -->
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                <template x-for="column in kanbanColumns" :key="column.id">
+                    <div class="glass rounded-xl p-4">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-semibold" x-text="column.title"></h3>
+                            <span class="text-sm text-gray-400" x-text="column.tasks.length"></span>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <template x-for="task in column.tasks" :key="task.id">
+                                <div class="glass rounded-lg p-4 cursor-move hover:shadow-lg transition-all duration-200">
+                                    <h4 class="font-medium mb-2" x-text="task.title"></h4>
+                                    <p class="text-sm text-gray-400 mb-3" x-text="task.description"></p>
+                                    
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-2">
+                                            <span :class="'status-' + task.priority" 
+                                                  class="px-2 py-1 rounded text-xs font-semibold"
+                                                  x-text="task.priority"></span>
+                                        </div>
+                                        <div class="w-6 h-6 rounded-full bg-gray-600 flex items-center justify-center text-xs">
+                                            <span x-text="task.assignee"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+        
+        <!-- Analytics View -->
+        <div x-show="currentView === 'analytics'" x-cloak class="animate-fadeIn">
+            <h2 class="text-3xl font-bold mb-8">Analytics</h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Project Progress Chart -->
+                <div class="glass rounded-xl p-6">
+                    <h3 class="text-xl font-semibold mb-4">Project Progress</h3>
+                    <canvas id="projectProgressChart"></canvas>
+                </div>
+                
+                <!-- Task Distribution Chart -->
+                <div class="glass rounded-xl p-6">
+                    <h3 class="text-xl font-semibold mb-4">Task Distribution</h3>
+                    <canvas id="taskDistributionChart"></canvas>
+                </div>
+                
+                <!-- Activity Timeline -->
+                <div class="glass rounded-xl p-6 lg:col-span-2">
+                    <h3 class="text-xl font-semibold mb-4">Activity Timeline</h3>
+                    <canvas id="activityTimelineChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Webhooks View -->
+        <div x-show="currentView === 'webhooks'" x-cloak class="animate-fadeIn">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-bold">Webhooks</h2>
+                <button @click="showNewWebhookModal = true"
+                        class="gradient-orange text-white px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-200">
+                    <i class="fas fa-plus mr-2"></i>New Webhook
+                </button>
+            </div>
+            
+            <!-- Webhooks List -->
+            <div class="space-y-4">
+                <template x-for="webhook in webhooks" :key="webhook.id">
+                    <div class="glass rounded-xl p-6 flex items-center justify-between">
+                        <div class="flex-1">
+                            <h3 class="text-lg font-semibold mb-2" x-text="webhook.name"></h3>
+                            <p class="text-sm text-gray-400 mb-2" x-text="webhook.url"></p>
+                            <div class="flex items-center space-x-4">
+                                <span class="text-sm text-gray-400">Events: <span x-text="webhook.events.join(', ')"></span></span>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" :checked="webhook.active" class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-500"></div>
+                            </label>
+                            <button class="text-gray-400 hover:text-red-400 transition-colors">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Floating Action Button -->
+    <button @click="handleQuickAction()"
+            class="fixed bottom-8 right-8 w-14 h-14 gradient-orange rounded-full shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-200 flex items-center justify-center text-white">
+        <i class="fas fa-plus text-xl"></i>
+    </button>
+    
+    <!-- Modals would go here -->
+    
+    <script>
+        function projectHub() {
+            return {
+                currentView: 'dashboard',
+                showNewProjectModal: false,
+                showNewTaskModal: false,
+                showNewWebhookModal: false,
+                
+                // Data
+                stats: {
+                    totalProjects: 12,
+                    activeTasks: 34,
+                    completedTasks: 89,
+                    teamMembers: 8
+                },
+                
+                projects: [
+                    {
+                        id: 1,
+                        name: 'Website Redesign',
+                        description: 'Complete overhaul of company website with modern design',
+                        status: 'in-progress',
+                        progress: 65,
+                        team: ['JD', 'SM', 'BJ']
+                    },
+                    {
+                        id: 2,
+                        name: 'Mobile App Development',
+                        description: 'Native iOS and Android app for customer portal',
+                        status: 'in-progress',
+                        progress: 45,
+                        team: ['AK', 'TM', 'RW']
+                    },
+                    {
+                        id: 3,
+                        name: 'Database Migration',
+                        description: 'Migrate legacy database to cloud infrastructure',
+                        status: 'completed',
+                        progress: 100,
+                        team: ['DB', 'JK']
+                    }
+                ],
+                
+                kanbanColumns: [
+                    {
+                        id: 'todo',
+                        title: 'To Do',
+                        tasks: [
+                            { id: 1, title: 'Design new landing page', description: 'Create mockups for homepage', priority: 'high', assignee: 'JD' },
+                            { id: 2, title: 'API Documentation', description: 'Write API docs for v2', priority: 'medium', assignee: 'SM' }
+                        ]
+                    },
+                    {
+                        id: 'in-progress',
+                        title: 'In Progress',
+                        tasks: [
+                            { id: 3, title: 'User Authentication', description: 'Implement OAuth2', priority: 'high', assignee: 'BJ' }
+                        ]
+                    },
+                    {
+                        id: 'review',
+                        title: 'Review',
+                        tasks: [
+                            { id: 4, title: 'Payment Integration', description: 'Stripe payment flow', priority: 'high', assignee: 'AK' }
+                        ]
+                    },
+                    {
+                        id: 'blocked',
+                        title: 'Blocked',
+                        tasks: []
+                    },
+                    {
+                        id: 'done',
+                        title: 'Done',
+                        tasks: [
+                            { id: 5, title: 'Setup CI/CD', description: 'GitHub Actions workflow', priority: 'medium', assignee: 'TM' }
+                        ]
+                    }
+                ],
+                
+                webhooks: [
+                    {
+                        id: 1,
+                        name: 'Slack Notifications',
+                        url: 'https://hooks.slack.com/services/...',
+                        events: ['project.created', 'task.completed'],
+                        active: true
+                    },
+                    {
+                        id: 2,
+                        name: 'GitHub Issues Sync',
+                        url: 'https://api.github.com/repos/...',
+                        events: ['task.created', 'task.updated'],
+                        active: false
+                    }
+                ],
+                
+                recentActivity: [
+                    { id: 1, title: 'New task created in Website Redesign', time: '5 minutes ago', icon: 'fas fa-plus' },
+                    { id: 2, title: 'Database Migration completed', time: '1 hour ago', icon: 'fas fa-check' },
+                    { id: 3, title: 'John Doe joined Mobile App Development', time: '3 hours ago', icon: 'fas fa-user' },
+                    { id: 4, title: 'API Documentation moved to Review', time: 'Yesterday', icon: 'fas fa-arrow-right' }
+                ],
+                
+                init() {
+                    // Initialize charts when analytics view is shown
+                    this.$watch('currentView', (value) => {
+                        if (value === 'analytics') {
+                            this.$nextTick(() => {
+                                this.initCharts();
+                            });
+                        }
+                    });
+                },
+                
+                initCharts() {
+                    // Project Progress Chart
+                    const ctx1 = document.getElementById('projectProgressChart');
+                    if (ctx1) {
+                        new Chart(ctx1, {
+                            type: 'bar',
+                            data: {
+                                labels: ['Website Redesign', 'Mobile App', 'Database Migration', 'API v2', 'Cloud Setup'],
+                                datasets: [{
+                                    label: 'Progress %',
+                                    data: [65, 45, 100, 30, 80],
+                                    backgroundColor: 'rgba(255, 101, 0, 0.5)',
+                                    borderColor: 'rgba(255, 101, 0, 1)',
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    legend: { display: false }
+                                },
+                                scales: {
+                                    y: { beginAtZero: true, max: 100 }
+                                }
+                            }
+                        });
+                    }
+                    
+                    // Task Distribution Chart
+                    const ctx2 = document.getElementById('taskDistributionChart');
+                    if (ctx2) {
+                        new Chart(ctx2, {
+                            type: 'doughnut',
+                            data: {
+                                labels: ['To Do', 'In Progress', 'Review', 'Blocked', 'Done'],
+                                datasets: [{
+                                    data: [12, 8, 5, 2, 23],
+                                    backgroundColor: [
+                                        'rgba(156, 163, 175, 0.5)',
+                                        'rgba(59, 130, 246, 0.5)',
+                                        'rgba(251, 191, 36, 0.5)',
+                                        'rgba(239, 68, 68, 0.5)',
+                                        'rgba(34, 197, 94, 0.5)'
+                                    ]
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    legend: { position: 'bottom' }
+                                }
+                            }
+                        });
+                    }
+                    
+                    // Activity Timeline Chart
+                    const ctx3 = document.getElementById('activityTimelineChart');
+                    if (ctx3) {
+                        new Chart(ctx3, {
+                            type: 'line',
+                            data: {
+                                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                                datasets: [{
+                                    label: 'Tasks Completed',
+                                    data: [5, 8, 12, 10, 15, 6, 3],
+                                    borderColor: 'rgba(255, 101, 0, 1)',
+                                    backgroundColor: 'rgba(255, 101, 0, 0.1)',
+                                    tension: 0.4
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    legend: { display: false }
+                                }
+                            }
+                        });
+                    }
+                },
+                
+                handleQuickAction() {
+                    // Quick action based on current view
+                    switch(this.currentView) {
+                        case 'projects':
+                            this.showNewProjectModal = true;
+                            break;
+                        case 'kanban':
+                            this.showNewTaskModal = true;
+                            break;
+                        case 'webhooks':
+                            this.showNewWebhookModal = true;
+                            break;
+                        default:
+                            // Scroll to top
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>
