@@ -89,4 +89,3 @@ async function captureScreenshots() {
 }
 
 captureScreenshots().catch(console.error);
-EOF < /dev/null
