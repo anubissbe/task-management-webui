@@ -1,9 +1,9 @@
 # Dependabot configuration for automated dependency updates
 version: 2
 updates:
-  # Frontend dependencies
+  # Alpine.js Frontend dependencies (if we add package.json in future)
   - package-ecosystem: "npm"
-    directory: "/frontend"
+    directory: "/new-frontend"
     schedule:
       interval: "weekly"
       day: "monday"
@@ -20,26 +20,9 @@ updates:
       include: "scope"
     pull-request-branch-name:
       separator: "-"
-
-  # Backend dependencies
-  - package-ecosystem: "npm"
-    directory: "/backend"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "03:00"
-    open-pull-requests-limit: 5
-    reviewers:
-      - "anubissbe"
-    labels:
-      - "dependencies"
-      - "backend"
-    commit-message:
-      prefix: "chore"
-      prefix-development: "chore"
-      include: "scope"
-    pull-request-branch-name:
-      separator: "-"
+    # Ignore updates as we use CDN for Alpine.js
+    ignore:
+      - dependency-name: "*"
 
   # GitHub Actions
   - package-ecosystem: "github-actions"
@@ -60,19 +43,7 @@ updates:
 
   # Docker dependencies
   - package-ecosystem: "docker"
-    directory: "/frontend"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "03:00"
-    reviewers:
-      - "anubissbe"
-    labels:
-      - "dependencies"
-      - "docker"
-
-  - package-ecosystem: "docker"
-    directory: "/backend"
+    directory: "/new-frontend"
     schedule:
       interval: "weekly"
       day: "monday"

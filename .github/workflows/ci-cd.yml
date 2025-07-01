@@ -29,7 +29,7 @@ jobs:
 
       - name: 🧪 Test Alpine.js Frontend
         working-directory: ./new-frontend
-        run:  < /dev/null | 
+        run: |
           echo "✅ Testing Alpine.js frontend structure..."
           
           # Check required files exist
@@ -45,13 +45,13 @@ jobs:
           grep -q "function projectHub()" app-webhook-final.js || { echo "❌ Main function missing"; exit 1; }
           grep -q "webhooks:" app-webhook-final.js || { echo "❌ Webhooks functionality missing"; exit 1; }
           
-          echo "✅ All frontend tests passed\!"
+          echo "✅ All frontend tests passed!"
           
       - name: 🏗️ Test Docker Build
         working-directory: ./new-frontend
         run: |
           docker build -t test-frontend .
-          echo "✅ Frontend Docker build successful\!"
+          echo "✅ Frontend Docker build successful!"
 
   build-and-push:
     name: 🐳 Build & Push Docker Images
