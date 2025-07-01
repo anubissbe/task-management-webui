@@ -1,0 +1,177 @@
+name: 🔒 Security Analysis
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 0 * * 0'  # Weekly security scan
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
+jobs:
+  codeql:
+    name: 🔍 CodeQL Analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'javascript' ]
+    
+    steps:
+      - name: 📦 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🔧 Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          config-file: ./.github/codeql/codeql-config.yml
+          queries: security-extended,security-and-quality
+
+      - name: 🔨 Autobuild
+        uses: github/codeql-action/autobuild@v3
+
+      - name: 🔍 Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{matrix.language}}"
+          upload: true
+          add-snippets: true
+
+  trivy:
+    name: 🛡️ Trivy Security Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+      - name: 📦 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔍 Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH,MEDIUM'
+          ignore-unfixed: true
+
+      - name: 📤 Upload Trivy results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+          category: 'trivy-filesystem'
+
+  secret-scanning:
+    name: 🔐 Secret Scanning
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    
+    steps:
+      - name: 📦 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🔍 GitGuardian scan
+        uses: GitGuardian/ggshield-action@v1
+        continue-on-error: true
+        env:
+          GITHUB_PUSH_BEFORE_SHA: ${{ github.event.before }}
+          GITHUB_PUSH_BASE_SHA: ${{ github.event.base }}
+          GITHUB_PULL_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          GITHUB_DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          GITGUARDIAN_API_KEY: ${{ secrets.GITGUARDIAN_API_KEY }}
+
+      - name: 🔍 Gitleaks scan
+        uses: gitleaks/gitleaks-action@v2
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  docker-scan:
+    name: 🐳 Docker Image Security
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    timeout-minutes: 15
+    
+    steps:
+      - name: 📦 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🏗️ Build Docker image
+        working-directory: ./new-frontend
+        run: |
+          docker build -t projecthub-security-scan:${{ github.sha }} .
+
+      - name: 🔍 Run Trivy on Docker image
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'projecthub-security-scan:${{ github.sha }}'
+          format: 'sarif'
+          output: 'docker-trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
+
+      - name: 📤 Upload Docker scan results
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'docker-trivy-results.sarif'
+          category: 'docker-security'
+
+  security-summary:
+    name: 📊 Security Summary
+    runs-on: ubuntu-latest
+    needs: [codeql, trivy, secret-scanning, docker-scan]
+    if: always()
+    timeout-minutes: 5
+    
+    steps:
+      - name: 📦 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📝 Generate Security Report
+        run: |
+          echo "# 🔒 Security Scan Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Scan Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [[ "${{ needs.codeql.result }}" == "success" ]]; then
+            echo "✅ **CodeQL Analysis**: Passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ **CodeQL Analysis**: Failed" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [[ "${{ needs.trivy.result }}" == "success" ]]; then
+            echo "✅ **Trivy Scan**: Passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ **Trivy Scan**: Failed" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [[ "${{ needs.secret-scanning.result }}" == "success" ]]; then
+            echo "✅ **Secret Scanning**: Passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ **Secret Scanning**: Check results" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [[ "${{ needs.docker-scan.result }}" == "success" ]]; then
+            echo "✅ **Docker Security**: Passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ **Docker Security**: Failed" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## 📋 Next Steps" >> $GITHUB_STEP_SUMMARY
+          echo "- Review any security alerts in the Security tab" >> $GITHUB_STEP_SUMMARY
+          echo "- Check workflow logs for detailed results" >> $GITHUB_STEP_SUMMARY
+          echo "- Address any HIGH or CRITICAL vulnerabilities" >> $GITHUB_STEP_SUMMARY

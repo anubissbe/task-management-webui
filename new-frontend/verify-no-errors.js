@@ -1,5 +1,4 @@
 // Verify no console errors in the frontend
-const http = require('http');
 
 // Simple test to check if the frontend loads without errors
 async function verifyFrontend() {

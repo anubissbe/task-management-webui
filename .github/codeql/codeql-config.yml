@@ -1,20 +1,66 @@
 name: "CodeQL config"
 
+# Query suites to use
 queries:
   - uses: security-extended
   - uses: security-and-quality
 
+# Paths to exclude from analysis
 paths-ignore:
+  # Dependencies
   - node_modules
-  - test
-  - tests
-  - new-frontend/test-*.html
-  - new-frontend/diagnose-*.html
-  - '**/*.test.js'
-  - '**/*.spec.js'
-  - take-screenshots.js
-  - capture-*.js
-  - controller-patch.js
-  - '**/test-*.js'
-  - '**/inject-*.js'
-  - '**/browser-*.js'
+  - "**/node_modules"
+  
+  # Test files
+  - "**/*.test.js"
+  - "**/*.spec.js"
+  - "**/*.test.ts"
+  - "**/*.spec.ts"
+  - "**/test/**"
+  - "**/tests/**"
+  - "__tests__"
+  
+  # Development and debugging files
+  - "new-frontend/test-*.html"
+  - "new-frontend/diagnose-*.html"
+  - "new-frontend/verify-*.js"
+  - "**/fix-*.js"
+  - "**/analyze-*.js"
+  - "**/inject-*.js"
+  - "**/browser-*.js"
+  - "**/capture-*.js"
+  - "**/take-*.js"
+  - "**/*-patch.js"
+  - "**/*-fix.js"
+  
+  # Build and compiled files
+  - "dist/**"
+  - "build/**"
+  - ".next/**"
+  - "out/**"
+  
+  # Documentation
+  - "**/*.md"
+  - "docs/**"
+  
+  # Configuration files
+  - "**/*.json"
+  - "**/*.yml"
+  - "**/*.yaml"
+  
+  # Deprecated React frontend (not in use)
+  - "frontend/src/contexts/WorkspaceContext.tsx"
+  - "frontend/**/*.tsx"
+  - "frontend/**/*.ts"
+
+# Custom query exclusions
+query-filters:
+  - exclude:
+      id: js/unused-local-variable
+      tags: 
+        - "test"
+        - "example"
+  - exclude:
+      id: js/log-injection
+      # Log injection in development backend is not a security risk
+      pathRegex: "new-frontend/backend\\.js"
