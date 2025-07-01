@@ -42,7 +42,7 @@ jobs:
           grep -q "Alpine.js" index-complete.html || { echo "❌ Alpine.js CDN missing"; exit 1; }
           
           # Check JavaScript functions
-          grep -q "function projectHub()" app-webhook-final.js || { echo "❌ Main function missing"; exit 1; }
+          grep -q "Alpine.data('projectHub'," app-webhook-final.js || { echo "❌ Main Alpine component missing"; exit 1; }
           grep -q "webhooks:" app-webhook-final.js || { echo "❌ Webhooks functionality missing"; exit 1; }
           
           echo "✅ All frontend tests passed!"
