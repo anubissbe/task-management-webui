@@ -13,7 +13,7 @@
 > 🎯 **Enterprise-grade project management system** with real-time collaboration, advanced analytics, team management, and seamless MCP (Model Context Protocol) integration
 
 <div align="center">
-  <img src="docs/images/analytics-dashboard.png" alt="ProjectHub-MCP Analytics Dashboard" width="800"/>
+  <img src="docs/images/working-analytics.png" alt="ProjectHub-MCP Analytics Dashboard" width="800"/>
 </div>
 
 ## 🚀 Quick Start
@@ -41,14 +41,14 @@ That's it! ProjectHub-MCP will be running with:
 
 <div align="center">
 
+### 🏠 Project Management Dashboard
+<img src="docs/images/working-homepage.png" alt="Modern Project Management Interface" width="800"/>
+
+### 📊 Analytics Dashboard
+<img src="docs/images/working-analytics.png" alt="Advanced Analytics Dashboard" width="800"/>
+
 ### 📅 Calendar & Task Scheduling
 <img src="docs/images/calendar.png" alt="Calendar View with Task Scheduling" width="800"/>
-
-### ✅ Task Management & Tracking
-<img src="docs/images/project-tasks.png" alt="Task Management Interface" width="800"/>
-
-### 📋 Kanban Board System
-<img src="docs/images/board.png" alt="Kanban Board Selection" width="800"/>
 
 </div>
 
