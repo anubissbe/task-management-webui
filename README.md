@@ -13,7 +13,7 @@
 > 🎯 **Enterprise-grade project management system** with real-time collaboration, advanced analytics, team management, and seamless MCP (Model Context Protocol) integration
 
 <div align="center">
-  <img src="docs/images/homepage-light.png" alt="ProjectHub-MCP Dashboard" width="800"/>
+  <img src="docs/images/analytics-dashboard.png" alt="ProjectHub-MCP Analytics Dashboard" width="800"/>
 </div>
 
 ## 🚀 Quick Start
@@ -41,17 +41,14 @@ That's it! ProjectHub-MCP will be running with:
 
 <div align="center">
 
-### 🏠 Dashboard Views
-<img src="docs/images/homepage-light.png" alt="Homepage - Light Mode" width="400"/>
-<img src="docs/images/homepage-dark.png" alt="Homepage - Dark Mode" width="400"/>
+### 🏠 Project Management Dashboard
+<img src="docs/images/homepage.png" alt="Projects Overview Dashboard" width="800"/>
 
-### 📋 Project Management
-<img src="docs/images/projects-list.png" alt="Projects Overview" width="400"/>
-<img src="docs/images/kanban-board.png" alt="Kanban Board" width="400"/>
+### ✅ Task Management & Tracking
+<img src="docs/images/project-tasks.png" alt="Task Management Interface" width="800"/>
 
-### 📊 Analytics & Insights
-<img src="docs/images/analytics-dashboard.png" alt="Analytics Dashboard" width="400"/>
-<img src="docs/images/mobile-view.png" alt="Mobile Responsive" width="200"/>
+### 📋 Kanban Board System
+<img src="docs/images/board.png" alt="Kanban Board Selection" width="800"/>
 
 </div>
 
