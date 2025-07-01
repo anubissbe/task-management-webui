@@ -1,0 +1,99 @@
+name: 🚀 ProjectHub CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+    tags: [ 'v*.*.*' ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  DOCKERHUB_USERNAME: anubissbe
+  IMAGE_NAME: projecthub-mcp
+
+permissions:
+  contents: write
+  packages: write
+  actions: read
+
+jobs:
+  test:
+    name: 🧪 Test Frontend
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📦 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🧪 Test Alpine.js Frontend
+        working-directory: ./new-frontend
+        run:  < /dev/null | 
+          echo "✅ Testing Alpine.js frontend structure..."
+          
+          # Check required files exist
+          test -f index-complete.html || { echo "❌ index-complete.html missing"; exit 1; }
+          test -f app-webhook-final.js || { echo "❌ app-webhook-final.js missing"; exit 1; }
+          test -f Dockerfile || { echo "❌ Dockerfile missing"; exit 1; }
+          
+          # Check HTML structure
+          grep -q "x-data=\"projectHub()\"" index-complete.html || { echo "❌ Alpine.js initialization missing"; exit 1; }
+          grep -q "Alpine.js" index-complete.html || { echo "❌ Alpine.js CDN missing"; exit 1; }
+          
+          # Check JavaScript functions
+          grep -q "function projectHub()" app-webhook-final.js || { echo "❌ Main function missing"; exit 1; }
+          grep -q "webhooks:" app-webhook-final.js || { echo "❌ Webhooks functionality missing"; exit 1; }
+          
+          echo "✅ All frontend tests passed\!"
+          
+      - name: 🏗️ Test Docker Build
+        working-directory: ./new-frontend
+        run: |
+          docker build -t test-frontend .
+          echo "✅ Frontend Docker build successful\!"
+
+  build-and-push:
+    name: 🐳 Build & Push Docker Images
+    runs-on: ubuntu-latest
+    needs: [test]
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+    
+    steps:
+      - name: 📦 Checkout code
+        uses: actions/checkout@v4
+        
+      - name: 🔧 Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        
+      - name: 🔑 Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: 🏷️ Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}-frontend
+          tags: |
+            type=ref,event=branch
+            type=ref,event=tag
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=latest,enable={{is_default_branch}}
+            
+      - name: 🏗️ Build and push Frontend image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./new-frontend
+          file: ./new-frontend/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          platforms: linux/amd64,linux/arm64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
