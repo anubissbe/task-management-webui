@@ -2,11 +2,16 @@
 
 ## Supported Versions
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 4.1.x   | ✅ |
-| 4.0.x   | ✅ |
-| < 4.0   | ❌ |
+We provide security updates for the following versions:
+
+| Version | Supported | Security Updates |
+| ------- | --------- | ---------------- |
+| 4.6.x   | ✅ | Full support with regular updates |
+| 4.5.x   | ⚠️ | Critical security fixes only |
+| 4.0.x   | ❌ | No longer supported |
+| < 4.0   | ❌ | No longer supported |
+
+**Recommendation**: Always use the latest version (4.6.x) for the best security posture.
 
 ## Reporting Issues
 
