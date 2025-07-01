@@ -54,7 +54,6 @@ jobs:
 
       - name: 🔍 Run GitGuardian scan
         uses: GitGuardian/ggshield-action@v1
-        if: ${{ secrets.GITGUARDIAN_API_KEY != '' }}
         continue-on-error: true
         env:
           GITHUB_PUSH_BEFORE_SHA: ${{ github.event.before }}
