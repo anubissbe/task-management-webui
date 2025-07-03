@@ -101,7 +101,7 @@ function projectHub() {
         error: null,
         
         // Authentication
-        isAuthenticated: true, // Start as authenticated to show main app
+        isAuthenticated: false, // Start as not authenticated
         loginError: null,
         loginLoading: false,
         loginForm: {
@@ -111,13 +111,7 @@ function projectHub() {
         
         // UI State
         darkMode: false,
-        user: {
-            id: 'user-123',
-            first_name: 'Demo',
-            last_name: 'User',
-            email: 'demo@projecthub.com',
-            role: 'admin'
-        },
+        user: null, // Start with no user
         
         // Project State
         selectedProject: null,
@@ -318,8 +312,32 @@ function projectHub() {
         async init() {
             console.log('🚀 ProjectHub initializing...');
             
-            // Load initial data
-            await this.loadDashboardData();
+            // Check for stored authentication
+            const storedToken = localStorage.getItem('token');
+            const storedUser = localStorage.getItem('currentUser');
+            
+            if (storedToken && storedUser) {
+                try {
+                    this.user = JSON.parse(storedUser);
+                    this.isAuthenticated = true;
+                    this.isAdmin = this.user.role === 'admin';
+                    console.log('✅ Restored authentication');
+                } catch (e) {
+                    console.error('Failed to restore auth:', e);
+                    localStorage.clear();
+                    this.isAuthenticated = false;
+                    this.user = null;
+                }
+            } else {
+                // No stored auth
+                this.isAuthenticated = false;
+                this.user = null;
+            }
+            
+            // Only load data if authenticated
+            if (this.isAuthenticated) {
+                await this.loadDashboardData();
+            }
             
             // Watch for view changes
             this.$watch('currentView', async (value) => {
@@ -671,21 +689,103 @@ function projectHub() {
             }
         },
         
+        // Login function
+        async login() {
+            this.loginLoading = true;
+            this.loginError = null;
+            
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(this.loginForm)
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.token) {
+                    // Save auth data
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('currentUser', JSON.stringify(data.user));
+                    
+                    // Update app state
+                    this.user = data.user;
+                    this.isAuthenticated = true;
+                    this.isAdmin = data.user.role === 'admin';
+                    
+                    // Clear form
+                    this.loginForm.email = '';
+                    this.loginForm.password = '';
+                    
+                    // Load data
+                    await this.loadDashboardData();
+                    
+                    this.showNotification('Login successful!', 'success');
+                } else {
+                    this.loginError = data.error || 'Login failed';
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                this.loginError = 'Failed to connect to server';
+            } finally {
+                this.loginLoading = false;
+            }
+        },
+        
         // Logout function
-        logout() {
-            // Clear user data from localStorage
-            localStorage.removeItem('currentUser');
-            localStorage.removeItem('token');
-            
-            // Reset user state
-            this.currentUser = null;
-            this.isAdmin = false;
-            
-            // Show notification
-            this.showNotification('Logged out successfully!');
-            
-            // Optionally redirect to login page or refresh
-            // window.location.reload();
+        async logout() {
+            try {
+                // Get the token
+                const token = localStorage.getItem('token') || 'sample-token-123';
+                
+                // Call backend logout endpoint
+                const response = await fetch(`${API_BASE}/auth/logout`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                // Log the response for debugging
+                if (!response.ok) {
+                    console.warn('Logout API response:', response.status);
+                }
+                
+                // Clear all auth data from localStorage
+                localStorage.removeItem('currentUser');
+                localStorage.removeItem('token');
+                localStorage.removeItem('authToken');
+                
+                // Clear session storage too
+                sessionStorage.clear();
+                
+                // Reset user state
+                this.currentUser = null;
+                this.isAdmin = false;
+                this.projects = [];
+                this.tasks = [];
+                
+                // Show notification
+                this.showNotification('Logged out successfully!');
+                
+                // Force reload to clear all state
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+                
+            } catch (error) {
+                console.error('Logout error:', error);
+                
+                // Even if API fails, clear local data
+                localStorage.clear();
+                sessionStorage.clear();
+                
+                // Force reload
+                window.location.reload();
+            }
         },
         
         // Show notification
