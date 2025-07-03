@@ -1,0 +1,36 @@
+FROM node:22-alpine
+
+WORKDIR /app
+
+# Install runtime dependencies for native modules
+RUN apk add --no-cache \
+    cairo \
+    jpeg \
+    pango \
+    musl \
+    giflib \
+    pixman \
+    pangomm \
+    libjpeg-turbo \
+    freetype
+
+# Copy package files
+COPY package*.json ./
+
+# Install production dependencies only
+RUN npm ci --omit=dev
+
+# Copy pre-built application
+COPY dist ./dist
+
+# Copy email templates
+COPY src/templates ./src/templates
+
+# Set environment
+ENV NODE_ENV=production
+
+# Expose port
+EXPOSE 3001
+
+# Start the application
+CMD ["node", "dist/index.js"]
