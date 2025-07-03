@@ -1,7 +1,9 @@
 # 🚀 ProjectHub-MCP
 
+> 🚨 **IMPORTANT**: Use the commands in this README v4.7.1 for deployment. Previous versions had issues with authentication, missing endpoints, and Synology compatibility. The deployment commands below are TESTED and WORKING.
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/Version-4.6.0-blue.svg)](https://github.com/anubissbe/ProjectHub-Mcp/releases)
+[![Version](https://img.shields.io/badge/Version-4.7.1-blue.svg)](https://github.com/anubissbe/ProjectHub-Mcp/releases)
 [![Alpine.js](https://img.shields.io/badge/Alpine.js-3.0-blue?logo=alpinedotjs)](https://alpinejs.dev/)
 [![React](https://img.shields.io/badge/React-19.1.0-blue?logo=react)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?logo=typescript)](https://www.typescriptlang.org/)
@@ -16,8 +18,10 @@
 
 Pre-built images available:
 ```bash
-docker pull telkombe/projecthub-frontend:latest
-docker pull telkombe/projecthub-backend:latest
+# Working production images (v4.7.1)
+docker pull telkombe/projecthub-backend:complete-v4.7.1
+docker pull telkombe/projecthub-frontend:synology-v2
+docker pull anubissbe/projecthub-mcp-frontend:latest  # Alternative
 ```
 
 <div align="center">
@@ -46,18 +50,21 @@ docker-compose -f docker-compose-fixed.yml up -d
 open http://localhost:8090
 ```
 
-### 🔧 Important Fixes Applied (v4.6.0+)
+**For production deployment on Synology NAS**, see the [Synology NAS Deployment Guide](#-synology-nas-deployment-guide) below, or access the live demo at **http://192.168.1.24:5174**.
+
+### 🔧 Important Fixes Applied (v4.7.1)
 
 This version includes critical fixes for common issues:
-- ✅ **CORS Configuration**: Backend properly allows frontend connections
-- ✅ **Alpine.js Variables**: All required variables are now defined
-- ✅ **Script Loading Order**: app.js loads before Alpine.js
-- ✅ **Dynamic API URL**: Automatically detects deployment environment
+- ✅ **Complete Backend**: All endpoints implemented (analytics, webhooks, users)
+- ✅ **Authentication Fixed**: No more hardcoded tokens or auth states
+- ✅ **Synology Compatible**: Nginx config works on Synology NAS
+- ✅ **Network Connectivity**: Proper Docker networking between services
+- ✅ **Database Integration**: Full PostgreSQL integration with connection pooling
 
 That's it! ProjectHub-MCP will be running with:
 - 🗄️ **PostgreSQL Database**: `localhost:5433`
-- 🌐 **Frontend Interface**: `http://localhost:8090`
-- 📡 **API Backend**: `http://localhost:3007` (if using full stack)
+- 🌐 **Frontend Interface**: `http://localhost:5174`
+- 📡 **API Backend**: `http://localhost:3008`
 
 ## 📸 Screenshots
 
@@ -150,7 +157,31 @@ docker-compose -f docker-compose.demo.yml up -d
 docker-compose up -d
 ```
 
-### ⚙️ **Option 3: Manual Setup**
+### 🏢 **Option 3: Synology NAS Deployment (Enterprise)**
+Deploy to Synology NAS using the TESTED and WORKING configuration:
+
+```bash
+# SSH to Synology NAS (port 2222)
+ssh -p 2222 Bert@192.168.1.24
+
+# One-liner deployment with ALL fixes:
+docker stop projecthub-backend projecthub-frontend projecthub-postgres 2>/dev/null; docker rm projecthub-backend projecthub-frontend projecthub-postgres 2>/dev/null; docker network create root_projecthub-network 2>/dev/null; docker run -d --name projecthub-postgres -e POSTGRES_USER=projecthub -e POSTGRES_PASSWORD=projecthub_password -e POSTGRES_DB=projecthub_mcp -p 5433:5432 --network root_projecthub-network postgres:15-alpine && docker run -d --name projecthub-backend -p 3008:3001 -e DATABASE_URL=postgresql://projecthub:projecthub_password@projecthub-postgres:5432/projecthub_mcp -e JWT_SECRET=your-secret-key-here -e CORS_ORIGIN="*" --network root_projecthub-network telkombe/projecthub-backend:complete-v4.7.1 && docker run -d --name projecthub-frontend -p 5174:80 --network root_projecthub-network telkombe/projecthub-frontend:synology-v2
+
+# Verify deployment
+curl http://192.168.1.24:5174/  # Frontend
+curl http://192.168.1.24:3008/health  # Backend API
+```
+
+**Production URLs:**
+- 🌐 **Frontend**: http://192.168.1.24:5174
+- 📡 **Backend API**: http://192.168.1.24:3008
+- 🗄️ **Database**: 192.168.1.24:5433
+- 🔧 **Login**: admin@projecthub.com / admin123
+
+> 🚀 **Live Demo**: The production deployment is currently running at http://192.168.1.24:5174  
+> 🔑 **Demo Login**: admin@projecthub.com / admin123 or developer@projecthub.com / dev123
+
+### ⚙️ **Option 4: Manual Setup**
 ```bash
 # 1. Start PostgreSQL
 docker run -d --name postgres \
@@ -187,6 +218,106 @@ SMTP_PASS=your-app-password
 - 🔐 **Security**: [SECURITY.md](SECURITY.md)
 - 🚀 **Deployment**: [docs/deployment/](docs/deployment/)
 - 📖 **Wiki**: [wiki/](wiki/) for detailed guides
+
+### 🏢 Synology NAS Deployment Guide
+
+For production deployment on Synology NAS, follow these TESTED and WORKING steps:
+
+#### Prerequisites
+- SSH access to Synology NAS (Port 2222, User: Bert)
+- Docker installed
+- Ports 3008, 5174, and 5433 available
+
+#### ⚡ Quick Deployment (Recommended)
+
+**One-liner that actually works:**
+```bash
+ssh -p 2222 Bert@192.168.1.24 'docker stop projecthub-backend projecthub-frontend projecthub-postgres 2>/dev/null; docker rm projecthub-backend projecthub-frontend projecthub-postgres 2>/dev/null; docker network create root_projecthub-network 2>/dev/null; docker run -d --name projecthub-postgres -e POSTGRES_USER=projecthub -e POSTGRES_PASSWORD=projecthub_password -e POSTGRES_DB=projecthub_mcp -p 5433:5432 --network root_projecthub-network postgres:15-alpine && docker run -d --name projecthub-backend -p 3008:3001 -e DATABASE_URL=postgresql://projecthub:projecthub_password@projecthub-postgres:5432/projecthub_mcp -e JWT_SECRET=your-secret-key-here -e CORS_ORIGIN="*" --network root_projecthub-network telkombe/projecthub-backend:complete-v4.7.1 && docker run -d --name projecthub-frontend -p 5174:80 --network root_projecthub-network telkombe/projecthub-frontend:synology-v2'
+```
+
+#### 📋 Step-by-Step Deployment
+
+1. **Connect to Synology NAS**
+   ```bash
+   ssh -p 2222 Bert@192.168.1.24
+   ```
+
+2. **Clean Previous Deployment**
+   ```bash
+   # Stop and remove any existing containers
+   docker stop projecthub-backend projecthub-frontend projecthub-postgres 2>/dev/null
+   docker rm projecthub-backend projecthub-frontend projecthub-postgres 2>/dev/null
+   ```
+
+3. **Deploy Working Version**
+   ```bash
+   # Create network
+   docker network create root_projecthub-network 2>/dev/null
+   
+   # Deploy database
+   docker run -d --name projecthub-postgres \
+     -e POSTGRES_USER=projecthub \
+     -e POSTGRES_PASSWORD=projecthub_password \
+     -e POSTGRES_DB=projecthub_mcp \
+     -p 5433:5432 \
+     --network root_projecthub-network \
+     postgres:15-alpine
+   
+   # Deploy backend (with ALL features)
+   docker run -d --name projecthub-backend \
+     -p 3008:3001 \
+     -e DATABASE_URL=postgresql://projecthub:projecthub_password@projecthub-postgres:5432/projecthub_mcp \
+     -e JWT_SECRET=your-secret-key-here \
+     -e CORS_ORIGIN="*" \
+     --network root_projecthub-network \
+     telkombe/projecthub-backend:complete-v4.7.1
+   
+   # Deploy frontend (Synology-compatible)
+   docker run -d --name projecthub-frontend \
+     -p 5174:80 \
+     --network root_projecthub-network \
+     telkombe/projecthub-frontend:synology-v2
+   ```
+
+4. **Verify Deployment**
+   ```bash
+   # Check all containers are running
+   docker ps | grep projecthub
+   
+   # Test frontend
+   curl http://localhost:5174/
+   
+   # Test backend API
+   curl http://localhost:3008/health
+   ```
+
+#### Docker Images Used (TESTED & WORKING)
+- **Backend**: `telkombe/projecthub-backend:complete-v4.7.1` (includes ALL features)
+- **Frontend**: `telkombe/projecthub-frontend:synology-v2` (Synology-compatible nginx)
+- **Database**: `postgres:15-alpine`
+
+#### What's Fixed in These Images
+- ✅ **Complete Backend**: Analytics, webhooks, user management all implemented
+- ✅ **Auth Working**: Real JWT tokens, proper logout functionality
+- ✅ **Synology Compatible**: Nginx config that works on Synology NAS
+- ✅ **No Mock Data**: Clean database, no hardcoded sample data
+- ✅ **Network Connectivity**: Proper Docker networking between services
+
+#### Troubleshooting
+- **Port conflicts**: Ensure ports 3007, 5174, and 5433 are available
+- **Database issues**: Check PostgreSQL health with `docker exec projecthub-mcp-postgres pg_isready`
+- **Network problems**: Verify Docker network creation with `docker network ls`
+
+#### Post-Deployment Security
+- Change default JWT secret in backend environment
+- Update database password from default
+- Review and update default admin credentials
+
+#### Additional Resources
+- `DEPLOYMENT_INSTRUCTIONS.md` - Complete deployment guide
+- `deploy-clean-to-synology.sh` - Automated deployment script
+- `verify-deployment.sh` - Deployment verification script
+- `docker-compose.clean.yml` - Clean deployment configuration
 
 ## 🛠️ Development
 
