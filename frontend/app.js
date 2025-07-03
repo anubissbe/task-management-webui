@@ -12,10 +12,10 @@ const API_BASE = (() => {
     
     // Default to direct backend connection
     if (host === 'localhost' || host === '127.0.0.1') {
-        return 'http://localhost:3007/api';
+        return 'http://localhost:3008/api';
     } else {
         // Use backend port for production deployments
-        return `${protocol}//${host}:3007/api`;
+        return `${protocol}//${host}:3008/api`;
     }
 })();
 

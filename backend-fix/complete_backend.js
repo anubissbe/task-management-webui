@@ -5,8 +5,13 @@ const app = express();
 const port = process.env.PORT || 3010;
 
 // CORS middleware - properly configured for all environments
-app.use(cors({
+const corsOptions = {
     origin: function(origin, callback) {
+        // If CORS_ORIGIN env var is '*', allow all origins
+        if (process.env.CORS_ORIGIN === '*') {
+            return callback(null, true);
+        }
+        
         // Allow requests with no origin (like mobile apps or Postman)
         if (!origin) return callback(null, true);
         
@@ -25,7 +30,7 @@ app.use(cors({
         ];
         
         // Check if the origin includes an IP address (for production deployments)
-        if (/^http:\/\/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(:\d+)?$/.test(origin)) {
+        if (/^https?:\/\/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(:\d+)?$/.test(origin)) {
             return callback(null, true);
         }
         
@@ -38,8 +43,17 @@ app.use(cors({
         console.log('CORS rejected origin:', origin);
         return callback(new Error('Not allowed by CORS'));
     },
-    credentials: true
-}));
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    preflightContinue: false,
+    optionsSuccessStatus: 204
+};
+
+app.use(cors(corsOptions));
+
+// Handle preflight requests explicitly
+app.options('*', cors(corsOptions));
 
 app.use(express.json());
 
@@ -693,10 +707,17 @@ app.get('/api/dashboard', (req, res) => {
     res.json(summary);
 });
 
+// Add logging middleware to debug CORS
+app.use((req, res, next) => {
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.path} - Origin: ${req.headers.origin}`);
+    next();
+});
+
 // Start server
 app.listen(port, () => {
     console.log(`🚀 Complete ProjectHub backend running on port ${port}`);
     console.log(`📡 Health check: http://localhost:${port}/health`);
+    console.log(`🔧 CORS_ORIGIN: ${process.env.CORS_ORIGIN || 'not set'}`);
     console.log(`✨ Features: Projects, Tasks, Kanban Board, Analytics, Users, Webhooks, Notifications, Dashboard`);
     console.log(`📊 Kanban board: /api/kanban/board/:projectId`);
     console.log(`📈 Analytics: /api/analytics`);
