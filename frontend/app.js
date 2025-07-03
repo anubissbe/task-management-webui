@@ -23,12 +23,15 @@ const API_BASE = (() => {
 const api = {
     async get(endpoint) {
         try {
-            const response = await fetch(`${API_BASE}${endpoint}`, {
-                headers: {
-                    'Authorization': 'Bearer sample-token-123',
-                    'Content-Type': 'application/json'
-                }
-            });
+            const token = localStorage.getItem('token');
+            const headers = {
+                'Content-Type': 'application/json'
+            };
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+            
+            const response = await fetch(`${API_BASE}${endpoint}`, { headers });
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             return await response.json();
         } catch (error) {
@@ -39,12 +42,17 @@ const api = {
     
     async post(endpoint, data) {
         try {
+            const token = localStorage.getItem('token');
+            const headers = {
+                'Content-Type': 'application/json'
+            };
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+            
             const response = await fetch(`${API_BASE}${endpoint}`, {
                 method: 'POST',
-                headers: {
-                    'Authorization': 'Bearer sample-token-123',
-                    'Content-Type': 'application/json'
-                },
+                headers,
                 body: JSON.stringify(data)
             });
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
@@ -57,12 +65,17 @@ const api = {
     
     async put(endpoint, data) {
         try {
+            const token = localStorage.getItem('token');
+            const headers = {
+                'Content-Type': 'application/json'
+            };
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+            
             const response = await fetch(`${API_BASE}${endpoint}`, {
                 method: 'PUT',
-                headers: {
-                    'Authorization': 'Bearer sample-token-123',
-                    'Content-Type': 'application/json'
-                },
+                headers,
                 body: JSON.stringify(data)
             });
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
@@ -75,12 +88,17 @@ const api = {
     
     async delete(endpoint) {
         try {
+            const token = localStorage.getItem('token');
+            const headers = {
+                'Content-Type': 'application/json'
+            };
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+            
             const response = await fetch(`${API_BASE}${endpoint}`, {
                 method: 'DELETE',
-                headers: {
-                    'Authorization': 'Bearer sample-token-123',
-                    'Content-Type': 'application/json'
-                }
+                headers
             });
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             return true;
