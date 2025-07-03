@@ -50,7 +50,7 @@ services:
 
   # Frontend (React App)
   frontend:
-    image: telkombe/projecthub-frontend:2.0.0
+    image: telkombe/projecthub-frontend:v4.7.0
     container_name: projecthub-mcp-frontend
     environment:
       REACT_APP_API_URL: http://192.168.1.24:3007
