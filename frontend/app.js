@@ -3,11 +3,19 @@
 // Dynamic API base - works for both local and deployed environments
 const API_BASE = (() => {
     const host = window.location.hostname;
+    const protocol = window.location.protocol;
+    
+    // Check if we're using the nginx proxy
+    if (window.location.pathname.startsWith('/api')) {
+        return '/api';
+    }
+    
+    // Default to direct backend connection
     if (host === 'localhost' || host === '127.0.0.1') {
-        return 'http://localhost:3010/api';
+        return 'http://localhost:3007/api';
     } else {
-        // Use same host but different port for production deployments
-        return `http://${host}:3010/api`;
+        // Use backend port for production deployments
+        return `${protocol}//${host}:3007/api`;
     }
 })();
 
