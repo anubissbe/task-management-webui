@@ -90,7 +90,7 @@
     </script>
     
     <!-- Load app.js BEFORE Alpine.js -->
-    <script src="app.js"></script>
+    <script src="app.js?v=2"></script>
     
     <!-- Alpine.js for reactivity - MUST load AFTER app.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -138,13 +138,21 @@
                             class="px-4 py-2 rounded-lg transition-all duration-200">
                         <i class="fas fa-plug mr-2"></i>Webhooks
                     </button>
+                    <!-- Users menu - only for admins -->
+                    <button x-show="user.role === 'admin'" 
+                            @click="currentView = 'users'" 
+                            :class="currentView === 'users' ? 'bg-orange-500/20 text-orange-400' : 'text-gray-400 hover:text-gray-200'"
+                            class="px-4 py-2 rounded-lg transition-all duration-200">
+                        <i class="fas fa-users-cog mr-2"></i>Users
+                    </button>
                 </nav>
                 
                 <!-- User Menu -->
                 <div class="flex items-center space-x-4">
-                    <span class="text-sm text-gray-400">Welcome, Test User</span>
+                    <span class="text-sm text-gray-400">Welcome, <span x-text="user.first_name + ' ' + user.last_name"></span></span>
+                    <span class="text-xs px-2 py-1 rounded-full" :class="getRoleClass(user.role)" x-text="user.role"></span>
                     <button class="w-10 h-10 rounded-full gradient-orange flex items-center justify-center text-white font-semibold">
-                        TU
+                        <span x-text="(user.first_name[0] + user.last_name[0]).toUpperCase()"></span>
                     </button>
                 </div>
             </div>
@@ -376,6 +384,79 @@
                 </template>
             </div>
         </div>
+        
+        <!-- Users View (Admin only) -->
+        <div x-show="currentView === 'users' && user.role === 'admin'" x-cloak class="animate-fadeIn">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-bold">User Management</h2>
+                <button @click="showUserModal = true; newUser = { first_name: '', last_name: '', email: '', password: '', role: 'user' }" 
+                        class="gradient-orange text-white px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-200">
+                    <i class="fas fa-user-plus mr-2"></i>Add User
+                </button>
+            </div>
+            
+            <!-- Users Table -->
+            <div class="glass rounded-xl overflow-hidden">
+                <table class="w-full">
+                    <thead class="bg-gray-800/50 border-b border-gray-700">
+                        <tr>
+                            <th class="text-left px-6 py-4 text-sm font-semibold text-gray-300">Name</th>
+                            <th class="text-left px-6 py-4 text-sm font-semibold text-gray-300">Email</th>
+                            <th class="text-left px-6 py-4 text-sm font-semibold text-gray-300">Role</th>
+                            <th class="text-left px-6 py-4 text-sm font-semibold text-gray-300">Status</th>
+                            <th class="text-left px-6 py-4 text-sm font-semibold text-gray-300">Last Login</th>
+                            <th class="text-right px-6 py-4 text-sm font-semibold text-gray-300">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-700">
+                        <template x-for="user in users" :key="user.id">
+                            <tr class="hover:bg-gray-800/30 transition-colors">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center">
+                                        <div class="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-sm font-semibold mr-3">
+                                            <span x-text="(user.first_name[0] + user.last_name[0]).toUpperCase()"></span>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium" x-text="user.first_name + ' ' + user.last_name"></p>
+                                            <p class="text-sm text-gray-400" x-text="'ID: ' + user.id"></p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-gray-300" x-text="user.email"></td>
+                                <td class="px-6 py-4">
+                                    <span class="px-3 py-1 rounded-full text-xs font-semibold" :class="getRoleClass(user.role)" x-text="user.role"></span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="flex items-center">
+                                        <span class="w-2 h-2 rounded-full mr-2" :class="user.is_active ? 'bg-green-400' : 'bg-gray-400'"></span>
+                                        <span class="text-sm" x-text="user.is_active ? 'Active' : 'Inactive'"></span>
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-400" x-text="formatDate(user.last_login) || 'Never'"></td>
+                                <td class="px-6 py-4 text-right">
+                                    <button @click="editUser(user)" 
+                                            class="text-blue-400 hover:text-blue-300 mr-3 transition-colors">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button @click="deleteUser(user)" 
+                                            :disabled="user.id === $data.user.id"
+                                            :class="user.id === $data.user.id ? 'text-gray-600 cursor-not-allowed' : 'text-red-400 hover:text-red-300'"
+                                            class="transition-colors">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+                
+                <!-- Empty state -->
+                <div x-show="users.length === 0" class="text-center py-12">
+                    <i class="fas fa-users text-4xl text-gray-600 mb-4"></i>
+                    <p class="text-gray-400">No users found</p>
+                </div>
+            </div>
+        </div>
     </main>
     
     <!-- Floating Action Button -->
@@ -384,10 +465,145 @@
         <i class="fas fa-plus text-xl"></i>
     </button>
     
-    <!-- Modals would go here -->
+    <!-- Modals -->
+    
+    <!-- Add User Modal -->
+    <div x-show="showUserModal" x-cloak 
+         class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
+         @click.self="showUserModal = false">
+        <div class="glass rounded-xl p-6 w-full max-w-md animate-fadeIn">
+            <h3 class="text-xl font-semibold mb-4">Add New User</h3>
+            
+            <form @submit.prevent="createUser()">
+                <div class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">First Name</label>
+                            <input type="text" x-model="newUser.first_name" required
+                                   class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-orange-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Last Name</label>
+                            <input type="text" x-model="newUser.last_name" required
+                                   class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-orange-500">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Email</label>
+                        <input type="email" x-model="newUser.email" required
+                               class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-orange-500">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Password</label>
+                        <input type="password" x-model="newUser.password" required minlength="6"
+                               class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-orange-500">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Role</label>
+                        <select x-model="newUser.role" 
+                                class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-orange-500">
+                            <option value="user">User</option>
+                            <option value="developer">Developer</option>
+                            <option value="manager">Manager</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end space-x-3 mt-6">
+                    <button type="button" @click="showUserModal = false"
+                            class="px-4 py-2 text-gray-400 hover:text-gray-200 transition-colors">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                            class="gradient-orange text-white px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-200">
+                        Create User
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Edit User Modal -->
+    <div x-show="showEditUserModal" x-cloak 
+         class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
+         @click.self="closeEditUserModal()">
+        <div class="glass rounded-xl p-6 w-full max-w-md animate-fadeIn">
+            <h3 class="text-xl font-semibold mb-4">Edit User</h3>
+            
+            <div x-show="!editingUser.id" class="text-center py-8 text-gray-400">
+                <i class="fas fa-spinner fa-spin text-2xl"></i>
+                <p class="mt-2">Loading user data...</p>
+            </div>
+            
+            <form @submit.prevent="updateUser()" x-show="editingUser.id">
+                <div class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">First Name</label>
+                            <input type="text" x-model="editingUser.first_name" required
+                                   class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-orange-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Last Name</label>
+                            <input type="text" x-model="editingUser.last_name" required
+                                   class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-orange-500">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Email</label>
+                        <input type="email" x-model="editingUser.email" required
+                               class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-orange-500">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">New Password (leave blank to keep current)</label>
+                        <input type="password" x-model="editingUser.password" minlength="6"
+                               class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-orange-500"
+                               placeholder="Leave blank to keep current password">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Role</label>
+                        <select x-model="editingUser.role" 
+                                class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-orange-500">
+                            <option value="user">User</option>
+                            <option value="developer">Developer</option>
+                            <option value="manager">Manager</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Status</label>
+                        <label class="flex items-center cursor-pointer">
+                            <input type="checkbox" x-model="editingUser.is_active" class="mr-2">
+                            <span>Active</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end space-x-3 mt-6">
+                    <button type="button" @click="closeEditUserModal()"
+                            class="px-4 py-2 text-gray-400 hover:text-gray-200 transition-colors">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                            class="gradient-orange text-white px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-200">
+                        Update User
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
     
     <script>
-        function projectHub() {
+        // projectHub function is defined in app.js
+        /*function projectHub() {
             return {
                 currentView: 'dashboard',
                 showNewProjectModal: false,
@@ -599,7 +815,7 @@
                     }
                 }
             }
-        }
+        }*/
     </script>
 </body>
 </html>

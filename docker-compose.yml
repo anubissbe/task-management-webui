@@ -1,45 +1,79 @@
 version: '3.8'
 
 services:
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile.dev
-    container_name: projecthub-mcp-backend
-    ports:
-      - "3001:3001"
+  postgres:
+    image: postgres:15-alpine
+    container_name: projecthub-postgres
+    restart: unless-stopped
     environment:
-      - NODE_ENV=development
-      - PORT=3001
-      - DATABASE_URL=postgresql://mcp_user:mcp_secure_password_2024@172.19.0.4:5432/mcp_learning
-      - CORS_ORIGIN=http://localhost:5173
+      POSTGRES_DB: projecthub
+      POSTGRES_USER: projecthub
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-projecthub123}
     volumes:
-      - ./backend:/app
-      - /app/node_modules
+      - projecthub-db:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "${POSTGRES_PORT:-5433}:5432"
     networks:
-      - projecthub-mcp-network
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+      - projecthub-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U projecthub"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    image: anubissbe/projecthub-backend:latest
+    build:
+      context: ./backend-fix
+      dockerfile: Dockerfile
+    container_name: projecthub-backend
+    restart: unless-stopped
     depends_on:
-      - frontend
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 3010
+      DATABASE_URL: postgresql://projecthub:${POSTGRES_PASSWORD:-projecthub123}@postgres:5432/projecthub
+      CORS_ORIGIN: ${CORS_ORIGIN:-*}
+    ports:
+      - "${BACKEND_PORT:-3007}:3010"
+    networks:
+      - projecthub-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3010/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   frontend:
+    image: anubissbe/projecthub-frontend:latest
     build:
       context: ./frontend
-      dockerfile: Dockerfile.dev
-    container_name: projecthub-mcp-frontend
-    ports:
-      - "5173:5173"
+      dockerfile: Dockerfile
+    container_name: projecthub-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
     environment:
-      - VITE_API_URL=http://localhost:3001/api
-      - VITE_WS_URL=http://localhost:3001
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      API_URL: ${API_URL:-http://localhost:3007}
+    ports:
+      - "${FRONTEND_PORT:-5174}:80"
     networks:
-      - projecthub-mcp-network
+      - projecthub-network
+    volumes:
+      - ./frontend/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
 networks:
-  projecthub-mcp-network:
-    external: true
-    name: projecthub-mcp_network
+  projecthub-network:
+    driver: bridge
+
+volumes:
+  projecthub-db:
+    name: projecthub-db

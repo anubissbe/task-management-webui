@@ -1,0 +1,17 @@
+node_modules
+npm-debug.log
+.git
+.gitignore
+.env
+.env.local
+.DS_Store
+*.log
+*.tar
+*.tar.gz
+deployment-package/
+deploy-*.py
+deploy-*.sh
+test-*.sh
+*.md
+.vscode
+.idea

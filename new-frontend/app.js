@@ -4,10 +4,10 @@
 const API_BASE = (() => {
     const host = window.location.hostname;
     if (host === 'localhost' || host === '127.0.0.1') {
-        return 'http://localhost:3009/api';
+        return 'http://localhost:3010/api';
     } else {
         // Use same host but different port for production deployments
-        return `http://${host}:3009/api`;
+        return `http://${host}:3010/api`;
     }
 })();
 
@@ -104,6 +104,7 @@ function projectHub() {
         // UI State
         darkMode: false,
         user: {
+            id: 'user-123',
             first_name: 'Demo',
             last_name: 'User',
             email: 'demo@projecthub.com',
@@ -159,6 +160,9 @@ function projectHub() {
         showCreateWebhookModal: false,
         showEditWebhookModal: false,
         editingWebhook: null,
+        showUserModal: false,
+        showEditUserModal: false,
+        editingUser: {},
         
         // Form Data
         newProject: {
@@ -182,6 +186,14 @@ function projectHub() {
             active: true
         },
         
+        newUser: {
+            first_name: '',
+            last_name: '',
+            email: '',
+            password: '',
+            role: 'user'
+        },
+        
         // Data from API
         stats: {
             totalProjects: 0,
@@ -193,6 +205,7 @@ function projectHub() {
         projects: [],
         tasks: [],
         webhooks: [],
+        users: [],
         analytics: {
             totalProjects: 0,
             totalTasks: 0,
@@ -307,6 +320,11 @@ function projectHub() {
                         break;
                     case 'webhooks':
                         await this.loadWebhooks();
+                        break;
+                    case 'users':
+                        if (this.user.role === 'admin') {
+                            await this.loadUsers();
+                        }
                         break;
                 }
             });
@@ -609,11 +627,96 @@ function projectHub() {
                     this.showNotification('Webhook deleted successfully');
                 }
             }
+        },
+        
+        // User Management Methods (Admin only)
+        async loadUsers() {
+            if (this.user.role !== 'admin') return;
+            
+            this.loading = true;
+            const users = await api.get('/users');
+            if (users) {
+                this.users = users;
+            }
+            this.loading = false;
+        },
+        
+        async createUser() {
+            if (this.user.role !== 'admin') return;
+            
+            const result = await api.post('/users', this.newUser);
+            if (result) {
+                await this.loadUsers();
+                this.showUserModal = false;
+                this.newUser = { first_name: '', last_name: '', email: '', password: '', role: 'user' };
+                this.showNotification('User created successfully!');
+            }
+        },
+        
+        async updateUser() {
+            if (this.user.role !== 'admin' || !this.editingUser || !this.editingUser.id) return;
+            
+            // Don't send password if it's empty (not changing)
+            const updateData = { ...this.editingUser };
+            if (!updateData.password) {
+                delete updateData.password;
+            }
+            
+            const result = await api.put(`/users/${this.editingUser.id}`, updateData);
+            if (result) {
+                await this.loadUsers();
+                this.showEditUserModal = false;
+                this.editingUser = {};
+                this.showNotification('User updated successfully!');
+            }
+        },
+        
+        editUser(user) {
+            if (this.user.role !== 'admin') return;
+            
+            this.editingUser = { ...user, password: '' }; // Don't show existing password
+            this.showEditUserModal = true;
+        },
+        
+        closeEditUserModal() {
+            this.showEditUserModal = false;
+            // Reset editingUser to empty object instead of null
+            this.editingUser = {};
+        },
+        
+        async deleteUser(user) {
+            if (this.user.role !== 'admin') return;
+            
+            // Prevent deleting yourself
+            if (user.id === this.user.id) {
+                alert("You cannot delete your own account!");
+                return;
+            }
+            
+            if (confirm(`Are you sure you want to delete user ${user.email}?`)) {
+                const result = await api.delete(`/users/${user.id}`);
+                if (result) {
+                    await this.loadUsers();
+                    this.showNotification('User deleted successfully');
+                }
+            }
+        },
+        
+        getRoleClass(role) {
+            const classes = {
+                'admin': 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300',
+                'manager': 'bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-300',
+                'developer': 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300',
+                'user': 'bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-300'
+            };
+            return classes[role] || classes['user'];
         }
     };
 }
-// Expose globally for Alpine.js
-window.projectHub = projectHub;
+// Expose globally for Alpine.js (only if not already defined)
+if (!window.projectHub) {
+    window.projectHub = projectHub;
+}
 
 // Register Alpine.js store for toasts
 document.addEventListener('alpine:init', () => {

@@ -12,6 +12,14 @@
 
 > 🎯 **Enterprise-grade project management system** with real-time collaboration, advanced analytics, team management, and seamless MCP (Model Context Protocol) integration
 
+## 🐳 Docker Hub Images
+
+Pre-built images available:
+```bash
+docker pull anubissbe/projecthub-frontend:latest
+docker pull anubissbe/projecthub-backend:latest
+```
+
 <div align="center">
   <img src="docs/images/working-analytics.png" alt="ProjectHub-MCP Analytics Dashboard" width="800"/>
 </div>
