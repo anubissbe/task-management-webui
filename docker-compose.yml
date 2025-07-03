@@ -23,7 +23,7 @@ services:
       retries: 5
 
   backend:
-    image: anubissbe/projecthub-backend:latest
+    image: telkombe/projecthub-backend:latest
     build:
       context: ./backend-fix
       dockerfile: Dockerfile
@@ -48,7 +48,7 @@ services:
       retries: 3
 
   frontend:
-    image: anubissbe/projecthub-frontend:latest
+    image: telkombe/projecthub-frontend:latest
     build:
       context: ./frontend
       dockerfile: Dockerfile

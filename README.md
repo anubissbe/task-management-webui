@@ -16,8 +16,8 @@
 
 Pre-built images available:
 ```bash
-docker pull anubissbe/projecthub-frontend:latest
-docker pull anubissbe/projecthub-backend:latest
+docker pull telkombe/projecthub-frontend:latest
+docker pull telkombe/projecthub-backend:latest
 ```
 
 <div align="center">
