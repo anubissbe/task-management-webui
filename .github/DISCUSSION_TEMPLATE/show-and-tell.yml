@@ -1,0 +1,78 @@
+title: "[SHOWCASE] "
+labels: ["showcase", "community"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🎉 Show and Tell
+        
+        Share your ProjectHub-MCP implementation, customizations, or success stories with the community!
+        
+  - type: dropdown
+    id: showcase-type
+    attributes:
+      label: What are you showcasing?
+      options:
+        - Custom Deployment
+        - AI Integration
+        - Custom Features/Extensions
+        - Workflow/Process
+        - Performance Optimization
+        - Team Success Story
+        - Other
+    validations:
+      required: true
+      
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Tell us about what you've built or achieved
+      placeholder: |
+        Describe your implementation:
+        - What did you create/customize?
+        - What problems did it solve?
+        - What makes it special?
+    validations:
+      required: true
+      
+  - type: textarea
+    id: technical-details
+    attributes:
+      label: Technical Details
+      description: Share the technical aspects of your implementation
+      placeholder: |
+        - Technologies used
+        - Architecture decisions
+        - Performance metrics
+        - Code snippets (if applicable)
+      render: markdown
+      
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots/Demos
+      description: Add screenshots or links to demos
+      placeholder: |
+        Drag and drop images here or provide links to demos
+        
+  - type: textarea
+    id: lessons-learned
+    attributes:
+      label: Lessons Learned
+      description: What did you learn? Any tips for others?
+      
+  - type: textarea
+    id: future-plans
+    attributes:
+      label: Future Plans
+      description: Any plans to expand or improve your implementation?
+      
+  - type: checkboxes
+    id: sharing
+    attributes:
+      label: Sharing Options
+      options:
+        - label: I'm willing to share my code/configuration
+        - label: I'm open to questions from the community
+        - label: This could be added to the documentation/examples

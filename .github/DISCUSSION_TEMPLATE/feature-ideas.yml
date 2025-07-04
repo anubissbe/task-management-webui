@@ -1,0 +1,54 @@
+title: "[IDEA] "
+labels: ["enhancement", "discussion"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 💡 Feature Idea Template
+        
+        Thanks for sharing your idea! Please provide as much detail as possible to help the community understand and discuss your suggestion.
+        
+  - type: textarea
+    id: description
+    attributes:
+      label: Feature Description
+      description: Describe the feature you'd like to see in ProjectHub-MCP
+      placeholder: |
+        A clear and concise description of the feature.
+        What problem does it solve?
+        Who would benefit from this feature?
+    validations:
+      required: true
+      
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Use Case
+      description: Describe a real-world scenario where this feature would be useful
+      placeholder: |
+        Example: "As a project manager, I want to..."
+        
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Have you considered any workarounds or alternative solutions?
+      
+  - type: textarea
+    id: implementation
+    attributes:
+      label: Implementation Ideas
+      description: If you have thoughts on how this could be implemented, share them here
+      placeholder: |
+        - Technical approach
+        - UI/UX considerations
+        - API changes needed
+        
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution
+      options:
+        - label: I'm willing to help implement this feature
+        - label: I can help with testing
+        - label: I can help with documentation

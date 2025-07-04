@@ -709,7 +709,11 @@ app.get('/api/dashboard', (req, res) => {
 
 // Add logging middleware to debug CORS
 app.use((req, res, next) => {
-    console.log(`${new Date().toISOString()} - ${req.method} ${req.path} - Origin: ${req.headers.origin}`);
+    // Sanitize user input to prevent log injection
+    const origin = (req.headers.origin || 'none').replace(/[\n\r]/g, '');
+    const method = req.method.replace(/[\n\r]/g, '');
+    const path = req.path.replace(/[\n\r]/g, '');
+    console.log(`${new Date().toISOString()} - ${method} ${path} - Origin: ${origin}`);
     next();
 });
 

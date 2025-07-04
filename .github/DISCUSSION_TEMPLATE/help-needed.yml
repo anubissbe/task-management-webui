@@ -1,0 +1,90 @@
+title: "[HELP] "
+labels: ["help wanted", "question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🙏 Need Help?
+        
+        We're here to help! Please provide detailed information about your issue so the community can assist you effectively.
+        
+        **Before posting, please check:**
+        - [📖 Documentation Wiki](https://github.com/anubissbe/ProjectHub-Mcp/wiki)
+        - [🔍 Existing Discussions](https://github.com/anubissbe/ProjectHub-Mcp/discussions)
+        - [🐛 Known Issues](https://github.com/anubissbe/ProjectHub-Mcp/issues)
+        
+  - type: dropdown
+    id: help-type
+    attributes:
+      label: What do you need help with?
+      options:
+        - Installation/Setup
+        - Configuration
+        - Deployment
+        - AI Integration
+        - API Usage
+        - Performance
+        - Security
+        - Other
+    validations:
+      required: true
+      
+  - type: textarea
+    id: description
+    attributes:
+      label: Problem Description
+      description: Describe what you're trying to do and what's not working
+      placeholder: |
+        Be as specific as possible. Include:
+        - What you expected to happen
+        - What actually happened
+        - Any error messages
+    validations:
+      required: true
+      
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment Details
+      description: Help us understand your setup
+      placeholder: |
+        - ProjectHub Version:
+        - Deployment Method: (Docker/Docker Compose/etc.)
+        - Operating System:
+        - Browser (if frontend issue):
+        - AI Assistant (if integration issue):
+      render: markdown
+    validations:
+      required: true
+      
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: If applicable, list the steps to reproduce the issue
+      placeholder: |
+        1. Go to '...'
+        2. Click on '...'
+        3. See error
+        
+  - type: textarea
+    id: tried
+    attributes:
+      label: What I've Tried
+      description: List any troubleshooting steps you've already attempted
+      
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant Logs
+      description: Include any relevant error messages or logs
+      render: shell
+      
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I've searched existing discussions
+        - label: I've checked the documentation
+        - label: I've included all relevant details
