@@ -28,7 +28,7 @@ ProjectHub-MCP provides a REST API that allows AI coding assistants to:
 
 ## Claude Code
 
-### Setup
+### Quick Setup
 
 1. **Add to CLAUDE.md** in your project root:
 
@@ -422,77 +422,6 @@ if (typeof module !== 'undefined' && module.exports) {
 }
 ```
 
-### Python Client
-
-```python
-import os
-import json
-import requests
-from datetime import datetime, timedelta
-from typing import Optional, Dict, Any
-
-class ProjectHubClient:
-    def __init__(self, api_url: Optional[str] = None, email: Optional[str] = None, password: Optional[str] = None):
-        self.api_url = api_url or os.getenv('PROJECTHUB_API', 'http://localhost:3009/api')
-        self.email = email or os.getenv('PROJECTHUB_EMAIL', 'admin@projecthub.com')
-        self.password = password or os.getenv('PROJECTHUB_PASSWORD', 'admin123')
-        self.token = None
-        self.token_expiry = None
-    
-    def ensure_authenticated(self) -> str:
-        if self.token and self.token_expiry and datetime.now() < self.token_expiry - timedelta(minutes=5):
-            return self.token
-        
-        response = requests.post(
-            f"{self.api_url}/auth/login",
-            json={"email": self.email, "password": self.password}
-        )
-        response.raise_for_status()
-        
-        data = response.json()
-        self.token = data['token']
-        
-        # Parse JWT expiry (simplified - use proper JWT library in production)
-        import base64
-        payload = json.loads(base64.b64decode(self.token.split('.')[1] + '=='))
-        self.token_expiry = datetime.fromtimestamp(payload['exp'])
-        
-        return self.token
-    
-    def request(self, endpoint: str, method: str = 'GET', data: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
-        token = self.ensure_authenticated()
-        
-        response = requests.request(
-            method,
-            f"{self.api_url}{endpoint}",
-            headers={'Authorization': f'Bearer {token}'},
-            json=data
-        )
-        
-        if response.status_code == 401:
-            self.token = None
-            return self.request(endpoint, method, data)
-        
-        response.raise_for_status()
-        return response.json() if response.content else {}
-    
-    def create_project(self, name: str, description: str = "", **kwargs) -> Dict[str, Any]:
-        return self.request('/projects', 'POST', {
-            'name': name,
-            'description': description,
-            'status': 'active',
-            **kwargs
-        })
-    
-    def create_task(self, project_id: str, title: str, **kwargs) -> Dict[str, Any]:
-        return self.request('/tasks', 'POST', {
-            'project_id': project_id,
-            'title': title,
-            'status': 'todo',
-            **kwargs
-        })
-```
-
 ## Best Practices
 
 ### 1. Automatic Project Creation
@@ -630,6 +559,13 @@ for (const task of tasks) {
 // AI automatically updates task status during implementation
 ```
 
+## Resources
+
+- **[2-Minute Claude Setup](../CLAUDE_QUICK_SETUP.md)** - Get started instantly
+- **[GitHub Repository](https://github.com/anubissbe/ProjectHub-Mcp)** - Source code
+- **[Wiki](https://github.com/anubissbe/ProjectHub-Mcp/wiki)** - Complete documentation
+- **[API Reference](https://github.com/anubissbe/ProjectHub-Mcp/wiki/API-Documentation)** - Full endpoint docs
+
 ## Contributing
 
 To add support for your AI coding assistant:
@@ -642,7 +578,7 @@ To add support for your AI coding assistant:
 
 - **Documentation**: [ProjectHub Wiki](https://github.com/anubissbe/ProjectHub-Mcp/wiki)
 - **Issues**: [GitHub Issues](https://github.com/anubissbe/ProjectHub-Mcp/issues)
-- **API Reference**: [API Documentation](../wiki/API-Documentation.md)
+- **Discussions**: [GitHub Discussions](https://github.com/anubissbe/ProjectHub-Mcp/discussions)
 
 ---
 
