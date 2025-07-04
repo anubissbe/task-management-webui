@@ -12,10 +12,10 @@ const API_BASE = (() => {
     
     // Default to direct backend connection
     if (host === 'localhost' || host === '127.0.0.1') {
-        return 'http://localhost:3008/api';
+        return 'http://localhost:3009/api';
     } else {
         // Use backend port for production deployments
-        return `${protocol}//${host}:3008/api`;
+        return `${protocol}//${host}:3009/api`;
     }
 })();
 
@@ -339,7 +339,12 @@ function projectHub() {
                     this.user = JSON.parse(storedUser);
                     this.isAuthenticated = true;
                     this.isAdmin = this.user.role === 'admin';
-                    console.log('✅ Restored authentication');
+                    console.log('✅ Restored authentication for:', this.user.email, 'role:', this.user.role);
+                    
+                    // Force reactive update to ensure Alpine.js state is properly synced
+                    this.$nextTick(() => {
+                        console.log('🔄 Authentication state synced');
+                    });
                 } catch (e) {
                     console.error('Failed to restore auth:', e);
                     localStorage.clear();
@@ -1445,24 +1450,49 @@ function projectHub() {
         
         async deleteUser(user) {
             console.log('Delete user clicked:', user);
-            console.log('Current user role:', this.user.role);
             
-            if (this.user.role !== 'admin') {
-                console.log('Not admin, returning');
+            // Always use localStorage as primary source for admin check (fixes Alpine.js state sync issues)
+            const storedUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            const storedToken = localStorage.getItem('token');
+            const isAdmin = storedUser?.role === 'admin';
+            
+            console.log('Stored user role:', storedUser?.role);
+            console.log('Is admin:', isAdmin);
+            
+            if (!isAdmin || !storedToken) {
+                console.log('Not admin or no token, returning');
+                alert('Admin access required to delete users');
                 return;
             }
             
             // Prevent deleting yourself
-            if (user.id === this.user.id) {
+            if (user.id === storedUser.id) {
                 alert("You cannot delete your own account!");
                 return;
             }
             
             if (confirm(`Are you sure you want to delete user ${user.email}?`)) {
-                const result = await api.delete(`/users/${user.id}`);
-                if (result) {
-                    await this.loadUsers();
-                    this.showNotification('User deleted successfully');
+                try {
+                    const response = await fetch(`${API_BASE}/users/${user.id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${storedToken}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        await this.loadUsers();
+                        this.showNotification('User deleted successfully', 'success');
+                        console.log('User deleted successfully');
+                    } else {
+                        const errorText = await response.text();
+                        console.error('Delete failed:', response.status, errorText);
+                        this.showNotification('Failed to delete user', 'error');
+                    }
+                } catch (error) {
+                    console.error('Delete error:', error);
+                    this.showNotification('Error deleting user', 'error');
                 }
             }
         },
