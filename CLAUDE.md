@@ -4,7 +4,7 @@ This file provides guidance to Claude Code when working with ProjectHub-MCP.
 
 ## 🚀 ProjectHub Integration
 
-ProjectHub API is available at: http://your-server-ip:3008/api
+ProjectHub API is available at: http://192.168.1.24:3009/api
 
 ### Authentication with Auto-Refresh
 
@@ -13,9 +13,9 @@ Use this JavaScript class for all ProjectHub API interactions:
 ```javascript
 class ProjectHubClient {
   constructor() {
-    this.apiUrl = 'http://your-server-ip:3008/api';
-    this.email = 'claude@projecthub.com';
-    this.password = 'your-secure-password';
+    this.apiUrl = 'http://192.168.1.24:3009/api';
+    this.email = 'admin@projecthub.com';
+    this.password = 'dev123';
     this.token = null;
     this.tokenExpiry = null;
   }
@@ -133,6 +133,18 @@ class ProjectHubClient {
     const query = projectId ? `?projectId=${projectId}` : '';
     return this.request(`/analytics${query}`);
   }
+
+  async deleteProject(projectId) {
+    return this.request(`/projects/${projectId}`, {
+      method: 'DELETE'
+    });
+  }
+
+  async deleteTask(taskId) {
+    return this.request(`/tasks/${taskId}`, {
+      method: 'DELETE'
+    });
+  }
 }
 
 // Initialize client
@@ -196,6 +208,20 @@ await projectHub.updateTask(taskId, {
 });
 ```
 
+#### Delete a Project (v4.8.0+)
+```javascript
+// Delete a project - this will also delete all associated tasks
+await projectHub.deleteProject(projectId);
+console.log('Project and all tasks deleted successfully');
+```
+
+#### Delete a Task
+```javascript
+// Delete a single task
+await projectHub.deleteTask(taskId);
+console.log('Task deleted successfully');
+```
+
 ### Best Practices
 
 1. **Always use the ProjectHubClient class** - It handles authentication and token refresh automatically
@@ -250,7 +276,7 @@ if (process.env.PROJECTHUB_API_URL) {
 
 ## 🔗 Quick Reference
 
-- **API Base**: `http://your-server-ip:3008/api`
-- **Default Credentials**: `developer@projecthub.com` / `dev123`
+- **API Base**: `http://192.168.1.24:3009/api`
+- **Default Credentials**: `admin@projecthub.com` / `dev123`
 - **Token Expiry**: 24 hours (auto-refreshes)
 - **Documentation**: [AI Integration Guide](https://github.com/anubissbe/ProjectHub-Mcp/blob/main/AI-Integration-Guide.md)
