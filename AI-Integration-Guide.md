@@ -29,22 +29,22 @@ Before integrating with any AI assistant:
 ### Setup Instructions
 
 1. **Add to CLAUDE.md** in your project root:
-   ```markdown
-   ## ProjectHub Integration
    
-   ProjectHub API is available at: http://your-server-ip:3008/api
+   We provide a complete [CLAUDE.md template](https://github.com/anubissbe/ProjectHub-Mcp/blob/main/CLAUDE.md) with auto-refreshing authentication. Copy it to your project root and update the credentials:
    
-   Authentication:
-   - Use Bearer token authentication
-   - Login first to get token: POST /api/auth/login
-   - Include token in headers: Authorization: Bearer <token>
+   ```bash
+   # Download the CLAUDE.md template
+   curl -o CLAUDE.md https://raw.githubusercontent.com/anubissbe/ProjectHub-Mcp/main/CLAUDE.md
    
-   Common operations:
-   - List projects: GET /api/projects
-   - Create project: POST /api/projects
-   - List tasks: GET /api/tasks?projectId=<id>
-   - Create task: POST /api/tasks
+   # Update the server URL and credentials
+   # Edit lines 8-10 in the ProjectHubClient constructor
    ```
+   
+   The template includes:
+   - ✅ Auto-refreshing Bearer token authentication
+   - ✅ Complete API client with error handling
+   - ✅ Common operation examples
+   - ✅ Best practices for project management
 
 2. **Configure in Claude Code settings**:
    ```json
@@ -370,7 +370,7 @@ For any MCP-compatible AI assistant:
 
 ## 🔑 API Authentication
 
-All AI assistants need to authenticate with ProjectHub. Here's the standard flow:
+All AI assistants need to authenticate with ProjectHub. Here's the complete authentication flow:
 
 ### 1. Create AI Agent User
 
@@ -390,6 +390,7 @@ curl -X POST http://your-server-ip:3008/api/auth/register \
 ### 2. Login to Get Token
 
 ```bash
+# Login request
 curl -X POST http://your-server-ip:3008/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{
@@ -399,17 +400,118 @@ curl -X POST http://your-server-ip:3008/api/auth/login \
 
 # Response:
 {
-  "token": "eyJhbGciOiJIUzI1NiIs...",
-  "user": { ... }
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEyMyIsImVtYWlsIjoiYWktYWdlbnRAcHJvamVjdGh1Yi5jb20iLCJpYXQiOjE2MjE1MzAwMDAsImV4cCI6MTYyMTYxNjQwMH0.abc123...",
+  "user": {
+    "id": "123",
+    "email": "ai-agent@projecthub.com",
+    "first_name": "AI",
+    "last_name": "Assistant",
+    "role": "developer"
+  }
 }
 ```
 
 ### 3. Use Token in Requests
 
 ```bash
+# Extract the token from the response and use it
 curl http://your-server-ip:3008/api/projects \
   -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIs..."
 ```
+
+### 4. Auto-Refresh Pattern
+
+Tokens expire after 24 hours. Implement auto-refresh:
+
+```javascript
+class ProjectHubClient {
+  constructor(email, password, apiUrl) {
+    this.email = email;
+    this.password = password;
+    this.apiUrl = apiUrl;
+    this.token = null;
+    this.tokenExpiry = null;
+  }
+
+  async ensureAuthenticated() {
+    // Check if token exists and is still valid
+    if (this.token && this.tokenExpiry && new Date() < this.tokenExpiry) {
+      return this.token;
+    }
+    
+    // Login to get new token
+    const response = await fetch(`${this.apiUrl}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: this.email,
+        password: this.password
+      })
+    });
+    
+    if (!response.ok) {
+      throw new Error('Authentication failed');
+    }
+    
+    const data = await response.json();
+    this.token = data.token;
+    
+    // Parse token to get expiry (JWT exp claim)
+    const payload = JSON.parse(atob(this.token.split('.')[1]));
+    this.tokenExpiry = new Date(payload.exp * 1000);
+    
+    return this.token;
+  }
+
+  async makeRequest(endpoint, options = {}) {
+    const token = await this.ensureAuthenticated();
+    
+    const response = await fetch(`${this.apiUrl}${endpoint}`, {
+      ...options,
+      headers: {
+        ...options.headers,
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    // If 401, token might be invalid, retry once
+    if (response.status === 401) {
+      this.token = null;
+      const newToken = await this.ensureAuthenticated();
+      
+      return fetch(`${this.apiUrl}${endpoint}`, {
+        ...options,
+        headers: {
+          ...options.headers,
+          'Authorization': `Bearer ${newToken}`,
+          'Content-Type': 'application/json'
+        }
+      });
+    }
+    
+    return response;
+  }
+}
+
+// Usage
+const client = new ProjectHubClient(
+  'ai-agent@projecthub.com',
+  'secure-password',
+  'http://your-server-ip:3008/api'
+);
+
+// All requests automatically handle authentication
+const projects = await client.makeRequest('/projects');
+```
+
+### Default Credentials (Development)
+
+For testing and development:
+- **Admin**: `admin@projecthub.com` / `admin123`
+- **Developer**: `developer@projecthub.com` / `dev123`
+
+**Note**: Always create dedicated AI users for production!
 
 ## 📋 Common Integration Patterns
 
