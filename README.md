@@ -11,8 +11,20 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue?logo=postgresql)](https://www.postgresql.org/)
 [![Docker](https://img.shields.io/badge/Docker-Ready-blue?logo=docker)](https://www.docker.com/)
 [![Status](https://img.shields.io/badge/Status-Production_Ready-brightgreen?style=for-the-badge)](https://github.com/anubissbe/ProjectHub-Mcp)
+[![Discussions](https://img.shields.io/github/discussions/anubissbe/ProjectHub-Mcp?label=Discussions&logo=github)](https://github.com/anubissbe/ProjectHub-Mcp/discussions)
 
 > 🎯 **Enterprise-grade project management system** with real-time collaboration, advanced analytics, team management, and seamless MCP (Model Context Protocol) integration
+
+## 🌟 Community
+
+<div align="center">
+
+[💬 **Join Discussions**](https://github.com/anubissbe/ProjectHub-Mcp/discussions) • 
+[🐛 **Report Issues**](https://github.com/anubissbe/ProjectHub-Mcp/issues) • 
+[📖 **Read Wiki**](https://github.com/anubissbe/ProjectHub-Mcp/wiki) • 
+[🤝 **Contribute**](CONTRIBUTING.md)
+
+</div>
 
 ## 🐳 Docker Hub Images
 
