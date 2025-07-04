@@ -31,12 +31,12 @@
 Pre-built images available:
 ```bash
 # Latest webhook-fixed images (RECOMMENDED)
-docker pull telkombe/projecthub-backend:latest          # PostgreSQL + Webhook proxy
-docker pull telkombe/projecthub-frontend:latest         # Updated frontend
+docker pull anubissbe/projecthub-backend:latest          # PostgreSQL + Webhook proxy
+docker pull anubissbe/projecthub-frontend:latest         # Updated frontend
 
 # Legacy images (may have webhook CORS issues)
 docker pull telkombe/projecthub-backend:complete-v4.7.1
-docker pull anubissbe/projecthub-mcp-frontend:latest    # Alternative
+docker pull anubissbe/projecthub-frontend:latest         # Previous version
 ```
 
 > ⚠️ **Important**: Use `:latest` tags for webhook functionality without CORS errors!
@@ -186,7 +186,7 @@ Deploy to your production server using the tested configuration:
 ssh username@your-server-ip
 
 # One-liner deployment with webhook fixes:
-docker stop projecthub-backend projecthub-frontend projecthub-postgres 2>/dev/null; docker rm projecthub-backend projecthub-frontend projecthub-postgres 2>/dev/null; docker network create root_projecthub-network 2>/dev/null; docker run -d --name projecthub-postgres -e POSTGRES_USER=projecthub -e POSTGRES_PASSWORD=projecthub_password -e POSTGRES_DB=projecthub_mcp -p 5433:5432 --network root_projecthub-network postgres:15-alpine && docker run -d --name projecthub-backend -p 3009:3010 -e DATABASE_URL=postgresql://projecthub:projecthub_password@projecthub-postgres:5432/projecthub_mcp -e JWT_SECRET=your-secret-key-here -e CORS_ORIGIN="*" --network root_projecthub-network telkombe/projecthub-backend:latest && docker run -d --name projecthub-frontend -p 5174:80 --network root_projecthub-network telkombe/projecthub-frontend:latest
+docker stop projecthub-backend projecthub-frontend projecthub-postgres 2>/dev/null; docker rm projecthub-backend projecthub-frontend projecthub-postgres 2>/dev/null; docker network create root_projecthub-network 2>/dev/null; docker run -d --name projecthub-postgres -e POSTGRES_USER=projecthub -e POSTGRES_PASSWORD=projecthub_password -e POSTGRES_DB=projecthub_mcp -p 5433:5432 --network root_projecthub-network postgres:15-alpine && docker run -d --name projecthub-backend -p 3009:3010 -e DATABASE_URL=postgresql://projecthub:projecthub_password@projecthub-postgres:5432/projecthub_mcp -e JWT_SECRET=your-secret-key-here -e CORS_ORIGIN="*" --network root_projecthub-network anubissbe/projecthub-backend:latest && docker run -d --name projecthub-frontend -p 5174:80 --network root_projecthub-network anubissbe/projecthub-frontend:latest
 
 # Verify deployment
 curl http://your-server-ip:5174/  # Frontend
@@ -252,7 +252,7 @@ For production deployment on your server, follow these tested steps:
 
 **One-liner deployment command:**
 ```bash
-ssh username@your-server-ip 'docker stop projecthub-backend projecthub-frontend projecthub-postgres 2>/dev/null; docker rm projecthub-backend projecthub-frontend projecthub-postgres 2>/dev/null; docker network create root_projecthub-network 2>/dev/null; docker run -d --name projecthub-postgres -e POSTGRES_USER=projecthub -e POSTGRES_PASSWORD=projecthub_password -e POSTGRES_DB=projecthub_mcp -p 5433:5432 --network root_projecthub-network postgres:15-alpine && docker run -d --name projecthub-backend -p 3008:3001 -e DATABASE_URL=postgresql://projecthub:projecthub_password@projecthub-postgres:5432/projecthub_mcp -e JWT_SECRET=your-secret-key-here -e CORS_ORIGIN="*" --network root_projecthub-network telkombe/projecthub-backend:complete-v4.7.1 && docker run -d --name projecthub-frontend -p 5174:80 --network root_projecthub-network telkombe/projecthub-frontend:latest'
+ssh username@your-server-ip 'docker stop projecthub-backend projecthub-frontend projecthub-postgres 2>/dev/null; docker rm projecthub-backend projecthub-frontend projecthub-postgres 2>/dev/null; docker network create root_projecthub-network 2>/dev/null; docker run -d --name projecthub-postgres -e POSTGRES_USER=projecthub -e POSTGRES_PASSWORD=projecthub_password -e POSTGRES_DB=projecthub_mcp -p 5433:5432 --network root_projecthub-network postgres:15-alpine && docker run -d --name projecthub-backend -p 3009:3010 -e DATABASE_URL=postgresql://projecthub:projecthub_password@projecthub-postgres:5432/projecthub_mcp -e JWT_SECRET=your-secret-key-here -e CORS_ORIGIN="*" --network root_projecthub-network anubissbe/projecthub-backend:latest && docker run -d --name projecthub-frontend -p 5174:80 --network root_projecthub-network anubissbe/projecthub-frontend:latest'
 ```
 
 #### 📋 Step-by-Step Deployment
@@ -285,18 +285,18 @@ ssh username@your-server-ip 'docker stop projecthub-backend projecthub-frontend 
    
    # Deploy backend (with ALL features)
    docker run -d --name projecthub-backend \
-     -p 3008:3001 \
+     -p 3009:3010 \
      -e DATABASE_URL=postgresql://projecthub:projecthub_password@projecthub-postgres:5432/projecthub_mcp \
      -e JWT_SECRET=your-secret-key-here \
      -e CORS_ORIGIN="*" \
      --network root_projecthub-network \
-     telkombe/projecthub-backend:complete-v4.7.1
+     anubissbe/projecthub-backend:latest
    
    # Deploy frontend (Synology-compatible)
    docker run -d --name projecthub-frontend \
      -p 5174:80 \
      --network root_projecthub-network \
-     telkombe/projecthub-frontend:latest
+     anubissbe/projecthub-frontend:latest
    ```
 
 4. **Verify Deployment**
@@ -319,8 +319,8 @@ ssh username@your-server-ip 'docker stop projecthub-backend projecthub-frontend 
 
 1. **Deploy with latest images** (important for webhook proxy):
    ```bash
-   docker pull telkombe/projecthub-backend:latest    # Has webhook proxy
-   docker pull telkombe/projecthub-frontend:latest   # Updated frontend
+   docker pull anubissbe/projecthub-backend:latest    # Has webhook proxy
+   docker pull anubissbe/projecthub-frontend:latest   # Updated frontend
    ```
 
 2. **Access ProjectHub**: http://your-server:5174
@@ -351,8 +351,8 @@ The latest backend includes a **webhook proxy service** that:
 - **Automatic triggers**: Task creation and completion
 
 #### Docker Images Used (LATEST & RECOMMENDED)
-- **Backend**: `telkombe/projecthub-backend:latest` (PostgreSQL + Webhook proxy)
-- **Frontend**: `telkombe/projecthub-frontend:latest` (Updated for webhook fix)
+- **Backend**: `anubissbe/projecthub-backend:latest` (PostgreSQL + Webhook proxy)
+- **Frontend**: `anubissbe/projecthub-frontend:latest` (Updated for webhook fix)
 - **Database**: `postgres:15-alpine`
 
 #### What's Fixed in Latest Images
