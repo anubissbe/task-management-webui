@@ -681,26 +681,14 @@ function projectHub() {
         
         // Test webhook
         async testWebhook(webhook) {
-            // Send a test payload to the webhook URL
+            // Test webhook through backend API to avoid CORS issues
             try {
-                const response = await fetch(webhook.url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-ProjectHub-Event': 'test'
-                    },
-                    body: JSON.stringify({
-                        event: 'test',
-                        webhook_id: webhook.id,
-                        timestamp: new Date().toISOString(),
-                        message: 'This is a test webhook event from ProjectHub'
-                    })
-                });
+                const result = await api.post(`/webhooks/${webhook.id}/test`);
                 
-                if (response.ok) {
-                    this.showNotification('Webhook test successful!', 'success');
+                if (result.success) {
+                    this.showNotification('Webhook test successful! Check your Slack channel.', 'success');
                 } else {
-                    this.showNotification(`Webhook test failed: ${response.status}`, 'error');
+                    this.showNotification(`Webhook test failed: ${result.error || 'Unknown error'}`, 'error');
                 }
             } catch (error) {
                 this.showNotification(`Webhook test failed: ${error.message}`, 'error');

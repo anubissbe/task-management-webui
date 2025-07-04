@@ -428,6 +428,81 @@ const sampleWebhooks = [
     }
 ];
 
+// Helper function to trigger webhook notifications
+async function triggerWebhookNotification(event, data) {
+    const activeWebhooks = sampleWebhooks.filter(w => 
+        w.active && w.events.includes(event)
+    );
+    
+    for (const webhook of activeWebhooks) {
+        try {
+            let message;
+            
+            // Format message based on event type
+            switch (event) {
+                case 'task.created':
+                    message = {
+                        text: `New task created: ${data.title}`,
+                        blocks: [{
+                            type: 'header',
+                            text: {
+                                type: 'plain_text',
+                                text: '🆕 New Task Created'
+                            }
+                        }, {
+                            type: 'section',
+                            fields: [
+                                {
+                                    type: 'mrkdwn',
+                                    text: `*Task:* ${data.title}`
+                                },
+                                {
+                                    type: 'mrkdwn',
+                                    text: `*Project:* ${data.projectName || 'N/A'}`
+                                },
+                                {
+                                    type: 'mrkdwn',
+                                    text: `*Priority:* ${data.priority || 'medium'}`
+                                },
+                                {
+                                    type: 'mrkdwn',
+                                    text: `*Created by:* ${data.createdBy || 'System'}`
+                                }
+                            ]
+                        }]
+                    };
+                    break;
+                    
+                case 'task.completed':
+                    message = {
+                        text: `Task completed: ${data.title}`,
+                        blocks: [{
+                            type: 'section',
+                            text: {
+                                type: 'mrkdwn',
+                                text: `✅ *Task Completed*\n"${data.title}" has been marked as complete!`
+                            }
+                        }]
+                    };
+                    break;
+                    
+                default:
+                    message = { text: `ProjectHub event: ${event}` };
+            }
+            
+            await fetch(webhook.url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(message)
+            });
+            
+            webhook.last_triggered = new Date().toISOString();
+        } catch (error) {
+            console.error(`Webhook notification error for ${webhook.name}:`, error);
+        }
+    }
+}
+
 // Health check endpoint
 app.get('/health', (req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
@@ -476,7 +551,7 @@ app.get('/api/projects/:id/tasks', (req, res) => {
     res.json(projectTasks);
 });
 
-app.post('/api/tasks', (req, res) => {
+app.post('/api/tasks', async (req, res) => {
     const newTask = {
         id: `task-${Date.now()}`,
         ...req.body,
@@ -484,20 +559,61 @@ app.post('/api/tasks', (req, res) => {
         updated_at: new Date().toISOString()
     };
     sampleTasks.push(newTask);
+    
+    // Find project name for the task
+    const project = sampleProjects.find(p => p.id === newTask.project_id);
+    
+    // Trigger webhook notification
+    try {
+        await triggerWebhookNotification('task.created', {
+            title: newTask.title,
+            projectName: project ? project.name : 'Unknown Project',
+            priority: newTask.priority || 'medium',
+            createdBy: 'Current User' // In real app, get from req.user
+        });
+    } catch (error) {
+        console.error('Webhook notification error:', error);
+        // Don't fail the request if webhook fails
+    }
+    
     res.status(201).json(newTask);
 });
 
 // Update task
-app.put('/api/tasks/:id', (req, res) => {
+app.put('/api/tasks/:id', async (req, res) => {
     const taskId = req.params.id;
     const taskIndex = sampleTasks.findIndex(t => t.id === taskId);
     if (taskIndex !== -1) {
+        const oldTask = { ...sampleTasks[taskIndex] };
         sampleTasks[taskIndex] = {
             ...sampleTasks[taskIndex],
             ...req.body,
             updated_at: new Date().toISOString()
         };
-        res.json(sampleTasks[taskIndex]);
+        
+        const updatedTask = sampleTasks[taskIndex];
+        
+        // Check if task was completed
+        if (oldTask.status !== 'completed' && updatedTask.status === 'completed') {
+            // Find project name for the task
+            const project = sampleProjects.find(p => p.id === updatedTask.project_id);
+            
+            // Trigger webhook notification
+            try {
+                await triggerWebhookNotification('task.completed', {
+                    title: updatedTask.title,
+                    projectName: project ? project.name : 'Unknown Project',
+                    assignee: updatedTask.assignee || 'Unassigned',
+                    priority: updatedTask.priority || 'medium',
+                    completedBy: 'Current User' // In production, use req.user
+                });
+            } catch (error) {
+                console.error('Webhook notification error:', error);
+                // Don't fail the request if webhook fails
+            }
+        }
+        
+        res.json(updatedTask);
     } else {
         res.status(404).json({ error: 'Task not found' });
     }
@@ -554,6 +670,188 @@ app.delete('/api/webhooks/:id', (req, res) => {
     } else {
         res.status(404).json({ error: 'Webhook not found' });
     }
+});
+
+// Test webhook endpoint
+app.post('/api/webhooks/:id/test', async (req, res) => {
+    const webhookId = req.params.id;
+    const webhook = sampleWebhooks.find(w => w.id === webhookId);
+    
+    if (!webhook) {
+        return res.status(404).json({ error: 'Webhook not found' });
+    }
+    
+    if (!webhook.active) {
+        return res.status(400).json({ error: 'Webhook is not active' });
+    }
+    
+    try {
+        const testMessage = {
+            text: '✅ ProjectHub webhook test successful!',
+            blocks: [{
+                type: 'section',
+                text: {
+                    type: 'mrkdwn',
+                    text: '✅ *ProjectHub Webhook Test*\nYour webhook integration is working correctly!'
+                }
+            }]
+        };
+        
+        const response = await fetch(webhook.url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(testMessage)
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        // Update last triggered
+        webhook.last_triggered = new Date().toISOString();
+        
+        res.json({ success: true, message: 'Test notification sent successfully!' });
+    } catch (error) {
+        console.error('Webhook test error:', error);
+        res.status(400).json({ 
+            success: false, 
+            error: 'Failed to send test notification', 
+            details: error.message 
+        });
+    }
+});
+
+// Send notification through webhook
+app.post('/api/webhooks/notify', async (req, res) => {
+    const { event, data } = req.body;
+    
+    // Find all active webhooks that subscribe to this event
+    const activeWebhooks = sampleWebhooks.filter(w => 
+        w.active && w.events.includes(event)
+    );
+    
+    if (activeWebhooks.length === 0) {
+        return res.json({ success: true, message: 'No active webhooks for this event' });
+    }
+    
+    const results = [];
+    
+    for (const webhook of activeWebhooks) {
+        try {
+            let message;
+            
+            // Format message based on event type
+            switch (event) {
+                case 'task.created':
+                    message = {
+                        text: `New task created: ${data.title}`,
+                        blocks: [{
+                            type: 'header',
+                            text: {
+                                type: 'plain_text',
+                                text: '🆕 New Task Created'
+                            }
+                        }, {
+                            type: 'section',
+                            fields: [
+                                {
+                                    type: 'mrkdwn',
+                                    text: `*Task:* ${data.title}`
+                                },
+                                {
+                                    type: 'mrkdwn',
+                                    text: `*Project:* ${data.projectName || 'N/A'}`
+                                },
+                                {
+                                    type: 'mrkdwn',
+                                    text: `*Priority:* ${data.priority || 'medium'}`
+                                },
+                                {
+                                    type: 'mrkdwn',
+                                    text: `*Created by:* ${data.createdBy || 'System'}`
+                                }
+                            ]
+                        }]
+                    };
+                    break;
+                    
+                case 'task.completed':
+                    message = {
+                        text: `Task completed: ${data.title}`,
+                        blocks: [{
+                            type: 'section',
+                            text: {
+                                type: 'mrkdwn',
+                                text: `✅ *Task Completed*\n"${data.title}" has been marked as complete!`
+                            }
+                        }]
+                    };
+                    break;
+                    
+                case 'project.completed':
+                    message = {
+                        text: `Project completed: ${data.name}`,
+                        blocks: [{
+                            type: 'header',
+                            text: {
+                                type: 'plain_text',
+                                text: '🎉 Project Completed!'
+                            }
+                        }, {
+                            type: 'section',
+                            text: {
+                                type: 'mrkdwn',
+                                text: `*${data.name}* has been successfully completed!\n\nTotal tasks: ${data.totalTasks || 0}\nDuration: ${data.duration || 'N/A'}`
+                            }
+                        }]
+                    };
+                    break;
+                    
+                default:
+                    message = {
+                        text: `ProjectHub event: ${event}`,
+                        blocks: [{
+                            type: 'section',
+                            text: {
+                                type: 'mrkdwn',
+                                text: `*Event:* ${event}\n*Data:* ${JSON.stringify(data, null, 2)}`
+                            }
+                        }]
+                    };
+            }
+            
+            const response = await fetch(webhook.url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(message)
+            });
+            
+            if (response.ok) {
+                webhook.last_triggered = new Date().toISOString();
+                results.push({ webhook: webhook.name, success: true });
+            } else {
+                results.push({ 
+                    webhook: webhook.name, 
+                    success: false, 
+                    error: `HTTP ${response.status}` 
+                });
+            }
+        } catch (error) {
+            console.error(`Webhook error for ${webhook.name}:`, error);
+            results.push({ 
+                webhook: webhook.name, 
+                success: false, 
+                error: error.message 
+            });
+        }
+    }
+    
+    const allSuccess = results.every(r => r.success);
+    res.json({ 
+        success: allSuccess, 
+        results,
+        message: allSuccess ? 'All notifications sent' : 'Some notifications failed'
+    });
 });
 
 // Analytics endpoint
