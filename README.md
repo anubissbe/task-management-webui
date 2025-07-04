@@ -73,28 +73,45 @@ ProjectHub-MCP is a cutting-edge project management platform designed for modern
 - **MCP Protocol**: Native support for AI coding assistants
 - **Email Notifications**: Configurable alerts and digests
 
-## 🖼️ User Interface
+## 🖼️ Screenshots
 
+### Dashboard Overview
+![Dashboard](./screenshots/dashboard.png)
+*The main dashboard featuring a dark theme with signature orange (#ff6500) accents. Shows project cards with real-time status indicators and the "MCP ENHANCED" branding. Active projects are highlighted with orange borders.*
+
+### Kanban Board
+![Kanban Board](./screenshots/kanban-board.png)
+*Board selection view showing multiple project boards. Each board card displays project information with consistent dark theme styling and orange accent colors for interactive elements.*
+
+### Analytics Dashboard
+![Analytics](./screenshots/analytics-dashboard.png)
+*Comprehensive analytics with real-time data visualization. Features key metrics cards (169 total tasks, 15% completion rate), task completion trends, priority distribution pie chart, and team performance radar chart. All data is calculated in real-time with no mock data.*
+
+### Project Management with Delete Feature
+![Projects](./screenshots/projects-list.png)
+*Project management table showing the new DELETE functionality (v5.0.0). Each project row includes View and Delete buttons in the Actions column. The red Delete buttons provide safe cascade deletion with confirmation dialogs.*
+
+### User Interface Features
 <div align="center">
   <table>
     <tr>
       <td align="center">
-        <strong>🏠 Dashboard</strong><br/>
-        <sub>Real-time project overview with key metrics</sub>
+        <strong>🎨 Dark Theme</strong><br/>
+        <sub>Professional black (#0a0a0a) background with orange (#ff6500) accents</sub>
       </td>
       <td align="center">
-        <strong>📋 Kanban Board</strong><br/>
-        <sub>Drag-and-drop task management</sub>
+        <strong>📱 Responsive Design</strong><br/>
+        <sub>Optimized for desktop, tablet, and mobile devices</sub>
       </td>
     </tr>
     <tr>
       <td align="center">
-        <strong>📊 Analytics</strong><br/>
-        <sub>Interactive charts and performance metrics</sub>
+        <strong>⚡ Real-time Updates</strong><br/>
+        <sub>Live synchronization across all connected clients</sub>
       </td>
       <td align="center">
-        <strong>⚙️ Settings</strong><br/>
-        <sub>User management and system configuration</sub>
+        <strong>🔒 Secure Interface</strong><br/>
+        <sub>Role-based UI elements and protected actions</sub>
       </td>
     </tr>
   </table>
