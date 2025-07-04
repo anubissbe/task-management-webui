@@ -1,15 +1,19 @@
 {
   "name": "projecthub-backend",
   "version": "1.0.0",
-  "description": "Backend API for ProjectHub MCP",
-  "main": "complete_backend.js",
+  "description": "Backend API for ProjectHub MCP with PostgreSQL and Webhook Support",
+  "main": "server.js",
   "scripts": {
-    "start": "node complete_backend.js",
-    "dev": "nodemon complete_backend.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "pg": "^8.11.3",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "node-fetch": "^3.3.2"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
