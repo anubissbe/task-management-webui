@@ -143,8 +143,8 @@ Default credentials:
 
 ```bash
 # Pull latest images
-docker pull telkombe/projecthub-frontend:5.0.0
-docker pull telkombe/projecthub-backend:5.0.0
+docker pull anubissbe/projecthub-frontend:5.0.0
+docker pull anubissbe/projecthub-backend:5.0.0
 
 # Deploy with production config
 docker-compose -f docker-compose.prod.yml up -d
@@ -464,7 +464,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
   </p>
   <p>
     <a href="https://github.com/anubissbe/ProjectHub-Mcp">GitHub</a> •
-    <a href="https://hub.docker.com/u/telkombe">Docker Hub</a> •
+    <a href="https://hub.docker.com/u/anubissbe">Docker Hub</a> •
     <a href="https://github.com/anubissbe/ProjectHub-Mcp/releases">Releases</a>
   </p>
 </div>
