@@ -11,7 +11,7 @@
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "pg": "^8.11.3",
-    "bcryptjs": "^2.4.3",
+    "bcryptjs": "^3.0.0",
     "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
