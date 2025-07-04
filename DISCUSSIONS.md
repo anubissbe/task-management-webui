@@ -112,4 +112,4 @@ We're building something amazing together. Your ideas, feedback, and contributio
 
 ---
 
-*Last updated: July 2025 • Version 4.7.1*
+*Last updated: July 2025 • Version 4.8.0*

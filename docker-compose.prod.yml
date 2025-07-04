@@ -7,7 +7,7 @@ services:
     environment:
       POSTGRES_USER: ${DB_USER:-projecthub}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-projecthub123}
-      POSTGRES_DB: ${DB_NAME:-projecthub_mcp}
+      POSTGRES_DB: ${DB_NAME:-projecthub}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -36,7 +36,7 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3001
-      - DATABASE_URL=postgresql://${DB_USER:-projecthub}:${DB_PASSWORD:-projecthub123}@postgres:5432/${DB_NAME:-projecthub_mcp}
+      - DATABASE_URL=postgresql://${DB_USER:-projecthub}:${DB_PASSWORD:-projecthub123}@postgres:5432/${DB_NAME:-projecthub}
       - JWT_SECRET=${JWT_SECRET:-your-secret-key-here}
       - JWT_EXPIRES_IN=${JWT_EXPIRES_IN:-7d}
       - JWT_REFRESH_EXPIRES_IN=${JWT_REFRESH_EXPIRES_IN:-30d}

@@ -84,7 +84,7 @@ Once deployed, access ProjectHub at:
 Database connection:
 - **Host**: 192.168.1.24
 - **Port**: 5433
-- **Database**: projecthub_mcp
+- **Database**: projecthub
 - **User**: projecthub
 - **Password**: projecthub_secure_2025
 
@@ -121,7 +121,7 @@ sudo chown -R docker:docker /volume1/docker/projecthub
 
 ### Backup database
 ```bash
-sudo docker exec projecthub-postgres pg_dump -U projecthub projecthub_mcp > backup.sql
+sudo docker exec projecthub-postgres pg_dump -U projecthub projecthub > backup.sql
 ```
 
 ### Update deployment

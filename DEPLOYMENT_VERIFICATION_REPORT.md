@@ -63,7 +63,7 @@ docker run -d \
   --name projecthub-clean-backend \
   -p 3008:3001 \
   -e NODE_ENV=production \
-  -e DATABASE_URL=postgresql://projecthub:projecthub_password@projecthub-postgres:5432/projecthub_mcp \
+  -e DATABASE_URL=postgresql://projecthub:projecthub123@projecthub-postgres:5432/projecthub \
   -e CORS_ORIGIN="*" \
   --restart unless-stopped \
   telkombe/projecthub-backend:2.0.0

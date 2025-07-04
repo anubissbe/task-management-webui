@@ -6,8 +6,8 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_USER: projecthub
-      POSTGRES_PASSWORD: projecthub_password
-      POSTGRES_DB: projecthub_mcp
+      POSTGRES_PASSWORD: projecthub123
+      POSTGRES_DB: projecthub
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:

@@ -25,7 +25,7 @@ services:
     environment:
       - POSTGRES_USER=projecthub
       - POSTGRES_PASSWORD=projecthub123
-      - POSTGRES_DB=projecthub_mcp
+      - POSTGRES_DB=projecthub
     volumes:
       - ./pgdata:/var/lib/postgresql/data
     ports:
@@ -45,7 +45,7 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3000
-      - DATABASE_URL=postgresql://projecthub:projecthub123@postgres:5432/projecthub_mcp
+      - DATABASE_URL=postgresql://projecthub:projecthub123@postgres:5432/projecthub
       - JWT_ACCESS_SECRET=your_jwt_secret_here_min_32_chars
       - JWT_REFRESH_SECRET=your_refresh_secret_here_min_32_chars
     command: >
@@ -186,7 +186,7 @@ echo "  Health Check: http://192.168.1.24:3007/api/health"
 Once deployed, you can access:
 - Frontend: http://192.168.1.24:5174
 - Backend Health: http://192.168.1.24:3007/api/health
-- Database: postgresql://projecthub:projecthub123@192.168.1.24:5433/projecthub_mcp
+- Database: postgresql://projecthub:projecthub123@192.168.1.24:5433/projecthub
 
 ## What This Deploys
 

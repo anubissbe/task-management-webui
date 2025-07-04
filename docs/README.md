@@ -1,6 +1,6 @@
 # 📖 ProjectHub-MCP Documentation
 
-Welcome to the comprehensive documentation for ProjectHub-MCP v4.6.0 - the enterprise-grade project management system.
+Welcome to the comprehensive documentation for ProjectHub-MCP v4.8.0 - the enterprise-grade project management system.
 
 ## 🚀 Quick Navigation
 
@@ -38,11 +38,11 @@ Welcome to the comprehensive documentation for ProjectHub-MCP v4.6.0 - the enter
 
 ## 📋 Version Information
 
-- **Current Version**: 4.6.0
+- **Current Version 4.8.0
 - **Documentation Updated**: July 1, 2025
-- **Supported Versions**: 4.6.x (full support), 4.5.x (critical fixes only)
+- **Supported Version 4.8.x (full support), 4.5.x (critical fixes only)
 
-## 🔄 Recent Updates (v4.6.0)
+## 🔄 Recent Updates (v4.8.0)
 
 - ✅ **Major Repository Cleanup**: Removed 120+ outdated files
 - ✅ **Enhanced Security**: Comprehensive security scanning and fixes

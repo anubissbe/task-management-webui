@@ -80,7 +80,7 @@ If you need to ensure a fresh clean deployment:
    ssh -p 2222 Bert@192.168.1.24 "docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}'"
    
    # Verify database schema
-   ssh -p 2222 Bert@192.168.1.24 "docker exec projecthub-mcp-postgres psql -U projecthub -d projecthub_mcp -c '\dt'"
+   ssh -p 2222 Bert@192.168.1.24 "docker exec projecthub-mcp-postgres psql -U projecthub -d projecthub -c '\dt'"
    ```
 
 3. **Documentation**: Update project documentation with current service URLs

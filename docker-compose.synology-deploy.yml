@@ -7,7 +7,7 @@ services:
     environment:
       POSTGRES_USER: ${DB_USER:-projecthub}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-projecthub_secure_2025}
-      POSTGRES_DB: ${DB_NAME:-projecthub_mcp}
+      POSTGRES_DB: ${DB_NAME:-projecthub}
     volumes:
       - /volume1/docker/projecthub/postgres:/var/lib/postgresql/data
     ports:
@@ -57,7 +57,7 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3001
-      - DATABASE_URL=postgresql://${DB_USER:-projecthub}:${DB_PASSWORD:-projecthub_secure_2025}@postgres:5432/${DB_NAME:-projecthub_mcp}
+      - DATABASE_URL=postgresql://${DB_USER:-projecthub}:${DB_PASSWORD:-projecthub_secure_2025}@postgres:5432/${DB_NAME:-projecthub}
       - JWT_ACCESS_SECRET=${JWT_ACCESS_SECRET}
       - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}
       - JWT_EXPIRES_IN=${JWT_EXPIRES_IN:-7d}

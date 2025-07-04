@@ -77,7 +77,7 @@ ssh -p 2222 Bert@192.168.1.24 "docker ps --format 'table {{.Names}}\t{{.Image}}\
 ssh -p 2222 Bert@192.168.1.24 "docker ps | grep projecthub"
 
 # Verify database schema
-ssh -p 2222 Bert@192.168.1.24 "docker exec -it projecthub-mcp-postgres psql -U projecthub -d projecthub_mcp -c '\dt'"
+ssh -p 2222 Bert@192.168.1.24 "docker exec -it projecthub-mcp-postgres psql -U projecthub -d projecthub -c '\dt'"
 ```
 
 ### Next Steps

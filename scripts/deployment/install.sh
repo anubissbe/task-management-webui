@@ -15,7 +15,7 @@ NC='\033[0m' # No Color
 # Configuration
 POSTGRES_PASSWORD="projecthub_secure_2024"
 POSTGRES_USER="projecthub"
-POSTGRES_DB="projecthub_mcp"
+POSTGRES_DB="projecthub"
 JWT_SECRET=$(openssl rand -base64 32 2>/dev/null || echo "your-secret-key-$(date +%s)")
 
 # Functions

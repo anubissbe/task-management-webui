@@ -7,7 +7,7 @@ services:
     environment:
       POSTGRES_USER: projecthub
       POSTGRES_PASSWORD: projecthub_secure_2025
-      POSTGRES_DB: projecthub_mcp
+      POSTGRES_DB: projecthub
     volumes:
       - /volume1/docker/projecthub/postgres:/var/lib/postgresql/data
     ports:
@@ -26,7 +26,7 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3001
-      - DATABASE_URL=postgresql://projecthub:projecthub_secure_2025@postgres:5432/projecthub_mcp
+      - DATABASE_URL=postgresql://projecthub:projecthub_secure_2025@postgres:5432/projecthub
       - JWT_ACCESS_SECRET=projecthub_access_secret_change_me_in_production_min_32_chars
       - JWT_REFRESH_SECRET=projecthub_refresh_secret_change_me_in_production_min_32_chars
       - CORS_ORIGIN=http://192.168.1.24:5174

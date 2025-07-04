@@ -37,7 +37,7 @@ The real backend that connects to PostgreSQL has been built and packaged. Follow
      --network projecthub-mcp-server_projecthub-mcp-network \
      -p 3008:3001 \
      -e NODE_ENV=production \
-     -e DATABASE_URL=postgresql://projecthub:projecthub_password@projecthub-mcp-postgres:5432/projecthub_mcp \
+     -e DATABASE_URL=postgresql://projecthub:projecthub123@projecthub-mcp-postgres:5432/projecthub \
      -e CORS_ORIGIN="*" \
      --restart unless-stopped \
      projecthub-backend:latest
@@ -76,4 +76,4 @@ If the backend fails to start, check:
 1. Database connection: `docker logs projecthub-mcp-backend`
 2. Network connectivity: `docker network inspect projecthub-mcp-server_projecthub-mcp-network`
 3. PostgreSQL is running: `docker ps | grep postgres`
-4. Database exists: Connect to PostgreSQL and check `projecthub_mcp` database
+4. Database exists: Connect to PostgreSQL and check `projecthub` database

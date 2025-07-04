@@ -55,9 +55,9 @@ services:
     image: postgres:15-alpine
     container_name: projecthub-mcp-postgres
     environment:
-      POSTGRES_DB: projecthub_mcp
+      POSTGRES_DB: projecthub
       POSTGRES_USER: projecthub
-      POSTGRES_PASSWORD: projecthub_password
+      POSTGRES_PASSWORD: projecthub123
       POSTGRES_INITDB_ARGS: "--encoding=UTF8 --lc-collate=C --lc-ctype=C"
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -68,7 +68,7 @@ services:
       - projecthub-mcp-network
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U projecthub -d projecthub_mcp"]
+      test: ["CMD-SHELL", "pg_isready -U projecthub -d projecthub"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -79,7 +79,7 @@ services:
     container_name: projecthub-mcp-backend
     environment:
       NODE_ENV: production
-      DATABASE_URL: postgresql://projecthub:projecthub_password@postgres:5432/projecthub_mcp
+      DATABASE_URL: postgresql://projecthub:projecthub123@postgres:5432/projecthub
       CORS_ORIGIN: "*"
       JWT_SECRET: your-super-secret-jwt-key-change-in-production
       PORT: 3001
@@ -248,7 +248,7 @@ curl -f http://localhost:3007/health
 curl -f http://localhost:5174/
 
 # Test database
-docker exec projecthub-mcp-postgres pg_isready -U projecthub -d projecthub_mcp
+docker exec projecthub-mcp-postgres pg_isready -U projecthub -d projecthub
 ```
 
 ### Step 11: Check Logs

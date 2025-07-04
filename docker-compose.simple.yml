@@ -8,8 +8,8 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-projecthub}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-projecthub_password}
-      POSTGRES_DB: ${POSTGRES_DB:-projecthub_mcp}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-projecthub123}
+      POSTGRES_DB: ${POSTGRES_DB:-projecthub}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -17,7 +17,7 @@ services:
     networks:
       - projecthub-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-projecthub} -d ${POSTGRES_DB:-projecthub_mcp}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-projecthub} -d ${POSTGRES_DB:-projecthub}"]
       interval: 10s
       timeout: 5s
       retries: 5

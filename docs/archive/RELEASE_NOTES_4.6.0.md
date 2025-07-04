@@ -1,4 +1,4 @@
-# 🚀 ProjectHub-MCP v4.6.0 - Security Update
+# 🚀 ProjectHub-MCP v4.8.0 - Security Update
 
 ## 🔒 Security Improvements
 
@@ -12,7 +12,7 @@ This release focuses on addressing security warnings and improving the overall s
 - CodeQL now runs successfully with proper JavaScript analysis
 
 #### 📦 Version Updates
-- Updated all packages to version 4.6.0
+- Updated all packages to version 4.8.0
 - Synchronized versions across main, backend, and frontend packages
 
 #### 🔧 GitHub Actions Improvements
