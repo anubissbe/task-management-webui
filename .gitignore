@@ -205,7 +205,9 @@ deployment_package/
 
 # Archive packages (keep only official releases)
 projecthub-*.tar.gz
-!projecthub-deployment-package.tar.gz
+backend-deployment.tar.gz
 # Wiki clones
 ProjectHub-Mcp.wiki/
 wiki/projecthub-wiki/
+# Archive directory
+archive/
