@@ -15,7 +15,8 @@
 
 ## 💻 Development
 - [🏗️ Architecture](Architecture-Overview)
-- [🤖 AI Tools](AI-Development-Tools)
+- [🤖 AI Integration](AI-Integration-Setup)
+- [🔧 AI Development Tools](AI-Development-Tools)
 - [📡 API Docs](API-Documentation)
 
 ## 🚀 Deployment

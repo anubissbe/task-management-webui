@@ -16,12 +16,19 @@
 </div>
 
 <div align="center">
-  <a href="#-features">Features</a> •
   <a href="#-quick-start">Quick Start</a> •
-  <a href="#-documentation">Documentation</a> •
-  <a href="#-deployment">Deployment</a> •
+  <a href="#-screenshots">Screenshots</a> •
+  <a href="#-ai-integration">AI Setup</a> •
+  <a href="#-features">Features</a> •
   <a href="#-api-reference">API</a> •
   <a href="#-support">Support</a>
+</div>
+
+<div align="center">
+  <h3>🎯 Quick Links</h3>
+  <a href="./CLAUDE_QUICK_SETUP.md">🤖 Claude Code (2min setup)</a> •
+  <a href="./docs/AI_INTEGRATION_GUIDE.md">🚀 All AI Tools</a> •
+  <a href="https://github.com/anubissbe/ProjectHub-Mcp/wiki">📚 Wiki</a>
 </div>
 
 ---
@@ -324,27 +331,30 @@ const project = await response.json();
 
 ## 🤖 AI Integration
 
-ProjectHub-MCP includes native support for AI coding assistants:
+### 🎯 Quick Setup with Claude Code
 
-### Claude Code Integration
+```bash
+# 1. Start ProjectHub
+docker-compose up -d
 
-```javascript
-// Initialize ProjectHub client
-const projectHub = new ProjectHubClient();
+# 2. Add CLAUDE.md to your project
+echo '# CLAUDE.md\nAPI: http://localhost:3009/api\nLogin: admin@projecthub.com / admin123' > CLAUDE.md
 
-// Create project with AI assistance
-const project = await projectHub.createProject({
-  name: "AI-Powered Feature",
-  description: "Implement with Claude Code assistance",
-  workspace_id: "1",
-  status: "planning"
-});
+# 3. Ask Claude to create a project!
+```
 
-// AI can track progress
-await projectHub.updateTask(taskId, {
-  status: "in_progress",
-  ai_assisted: true
-});
+🚀 **[2-Minute Claude Setup Guide](./CLAUDE_QUICK_SETUP.md)** - Get started instantly!
+
+### Example AI Session
+```
+You: "Create a project for implementing user auth"
+Claude: "✅ Created project 'User Authentication' with 5 tasks"
+
+You: "I'm starting work on the JWT token task"
+Claude: "✅ Updated task to 'in_progress'"
+
+You: "Task is done, took 3 hours"
+Claude: "✅ Marked complete, logged 3 hours"
 ```
 
 ### Supported AI Tools
@@ -352,7 +362,13 @@ await projectHub.updateTask(taskId, {
 - ✅ GitHub Copilot
 - ✅ Cursor
 - ✅ Cline (VSCode)
+- ✅ Roo-Code
+- ✅ Continue.dev
+- ✅ Windsurf
 - ✅ Custom MCP clients
+
+📖 **[Complete AI Integration Guide](./docs/AI_INTEGRATION_GUIDE.md)** - Detailed setup for all AI assistants
+🎯 **[Claude Code Quick Start](./CLAUDE_QUICK_SETUP.md)** - 2-minute setup guide
 
 ## 🚦 Monitoring & Health
 
