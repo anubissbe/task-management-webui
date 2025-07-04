@@ -30,11 +30,16 @@
 
 Pre-built images available:
 ```bash
-# Working production images (v4.7.1)
+# Latest webhook-fixed images (RECOMMENDED)
+docker pull telkombe/projecthub-backend:latest          # PostgreSQL + Webhook proxy
+docker pull telkombe/projecthub-frontend:latest         # Updated frontend
+
+# Legacy images (may have webhook CORS issues)
 docker pull telkombe/projecthub-backend:complete-v4.7.1
-docker pull telkombe/projecthub-frontend:latest
-docker pull anubissbe/projecthub-mcp-frontend:latest  # Alternative
+docker pull anubissbe/projecthub-mcp-frontend:latest    # Alternative
 ```
+
+> ⚠️ **Important**: Use `:latest` tags for webhook functionality without CORS errors!
 
 <div align="center">
   <img src="docs/images/working-analytics.png" alt="ProjectHub-MCP Analytics Dashboard" width="800"/>
@@ -64,11 +69,12 @@ open http://localhost:8090
 
 **For production deployment on Synology NAS**, see the [Synology NAS Deployment Guide](#-synology-nas-deployment-guide) below.
 
-### 🔧 Important Fixes Applied (v4.7.1)
+### 🔧 Important Fixes Applied (Latest)
 
 This version includes critical fixes for common issues:
 - ✅ **Complete Backend**: All endpoints implemented (analytics, webhooks, users)
 - ✅ **Authentication Fixed**: No more hardcoded tokens or auth states
+- ✅ **Webhook CORS Fix**: Proxy-based webhooks prevent browser CORS errors
 - ✅ **Synology Compatible**: Nginx config works on Synology NAS
 - ✅ **Network Connectivity**: Proper Docker networking between services
 - ✅ **Database Integration**: Full PostgreSQL integration with connection pooling
@@ -76,7 +82,9 @@ This version includes critical fixes for common issues:
 That's it! ProjectHub-MCP will be running with:
 - 🗄️ **PostgreSQL Database**: `localhost:5433`
 - 🌐 **Frontend Interface**: `http://localhost:5174`
-- 📡 **API Backend**: `http://localhost:3008`
+- 📡 **API Backend**: `http://localhost:3009` ⚠️ **Updated Port**
+
+> 🔧 **Webhook Testing**: Go to Settings > Webhooks to test Slack integration without CORS errors!
 
 ## 📸 Screenshots
 
@@ -149,7 +157,8 @@ ProjectHub-MCP offers **dual frontend options** for different use cases:
                                  │
                     ┌─────────────────┐
                     │   API Backend   │
-                    │   Port 3007     │
+                    │   Port 3009     │
+                    │  (Webhook Proxy)│
                     └─────────────────┘
 ```
 
@@ -176,19 +185,19 @@ Deploy to your production server using the tested configuration:
 # SSH to your server
 ssh username@your-server-ip
 
-# One-liner deployment with ALL fixes:
-docker stop projecthub-backend projecthub-frontend projecthub-postgres 2>/dev/null; docker rm projecthub-backend projecthub-frontend projecthub-postgres 2>/dev/null; docker network create root_projecthub-network 2>/dev/null; docker run -d --name projecthub-postgres -e POSTGRES_USER=projecthub -e POSTGRES_PASSWORD=projecthub_password -e POSTGRES_DB=projecthub_mcp -p 5433:5432 --network root_projecthub-network postgres:15-alpine && docker run -d --name projecthub-backend -p 3008:3001 -e DATABASE_URL=postgresql://projecthub:projecthub_password@projecthub-postgres:5432/projecthub_mcp -e JWT_SECRET=your-secret-key-here -e CORS_ORIGIN="*" --network root_projecthub-network telkombe/projecthub-backend:complete-v4.7.1 && docker run -d --name projecthub-frontend -p 5174:80 --network root_projecthub-network telkombe/projecthub-frontend:latest
+# One-liner deployment with webhook fixes:
+docker stop projecthub-backend projecthub-frontend projecthub-postgres 2>/dev/null; docker rm projecthub-backend projecthub-frontend projecthub-postgres 2>/dev/null; docker network create root_projecthub-network 2>/dev/null; docker run -d --name projecthub-postgres -e POSTGRES_USER=projecthub -e POSTGRES_PASSWORD=projecthub_password -e POSTGRES_DB=projecthub_mcp -p 5433:5432 --network root_projecthub-network postgres:15-alpine && docker run -d --name projecthub-backend -p 3009:3010 -e DATABASE_URL=postgresql://projecthub:projecthub_password@projecthub-postgres:5432/projecthub_mcp -e JWT_SECRET=your-secret-key-here -e CORS_ORIGIN="*" --network root_projecthub-network telkombe/projecthub-backend:latest && docker run -d --name projecthub-frontend -p 5174:80 --network root_projecthub-network telkombe/projecthub-frontend:latest
 
 # Verify deployment
 curl http://your-server-ip:5174/  # Frontend
-curl http://your-server-ip:3008/health  # Backend API
+curl http://your-server-ip:3009/health  # Backend API (updated port)
 ```
 
 **Production URLs:**
 - 🌐 **Frontend**: http://your-server-ip:5174
-- 📡 **Backend API**: http://your-server-ip:3008
+- 📡 **Backend API**: http://your-server-ip:3009 ⚠️ **Updated Port**
 - 🗄️ **Database**: your-server-ip:5433
-- 🔧 **Default Login**: admin@projecthub.com / admin123
+- 🔧 **Default Login**: admin@projecthub.com / dev123
 
 > 💡 **Note**: Replace `your-server-ip` and `username` with your actual server details
 
@@ -299,15 +308,55 @@ ssh username@your-server-ip 'docker stop projecthub-backend projecthub-frontend 
    curl http://localhost:5174/
    
    # Test backend API
-   curl http://localhost:3008/health
+   curl http://localhost:3009/health
    ```
 
-#### Docker Images Used (TESTED & WORKING)
-- **Backend**: `telkombe/projecthub-backend:complete-v4.7.1` (includes ALL features)
-- **Frontend**: `telkombe/projecthub-frontend:latest`
+## 🔔 Webhook Integration (CORS-Free!)
+
+**NEW**: Webhook functionality now works without CORS errors!
+
+### 🚀 Quick Webhook Setup
+
+1. **Deploy with latest images** (important for webhook proxy):
+   ```bash
+   docker pull telkombe/projecthub-backend:latest    # Has webhook proxy
+   docker pull telkombe/projecthub-frontend:latest   # Updated frontend
+   ```
+
+2. **Access ProjectHub**: http://your-server:5174
+
+3. **Configure Slack Webhook**:
+   - Go to **Settings > Webhooks**
+   - Add your Slack webhook URL
+   - Click **"Test"** - No more CORS errors! ✅
+   - Enable events: `task.created`, `task.completed`
+
+4. **Test Notifications**:
+   - Create a new project and task
+   - Mark task as completed
+   - Check Slack for automatic notification! 🎉
+
+### 🔧 How the CORS Fix Works
+
+The latest backend includes a **webhook proxy service** that:
+- Intercepts webhook calls from the frontend
+- Makes the actual HTTP requests to Slack server-side
+- Returns results back to frontend
+- **No more browser CORS restrictions!**
+
+### 📋 Webhook Endpoints
+
+- **Test webhook**: `POST /api/webhooks/:id/test`
+- **Manage webhooks**: `GET/POST/PUT/DELETE /api/webhooks`
+- **Automatic triggers**: Task creation and completion
+
+#### Docker Images Used (LATEST & RECOMMENDED)
+- **Backend**: `telkombe/projecthub-backend:latest` (PostgreSQL + Webhook proxy)
+- **Frontend**: `telkombe/projecthub-frontend:latest` (Updated for webhook fix)
 - **Database**: `postgres:15-alpine`
 
-#### What's Fixed in These Images
+#### What's Fixed in Latest Images
+- ✅ **Webhook CORS Fix**: Proxy-based webhooks prevent browser CORS errors
 - ✅ **Complete Backend**: Analytics, webhooks, user management all implemented
 - ✅ **Auth Working**: Real JWT tokens, proper logout functionality
 - ✅ **Production Ready**: Nginx config that works on production servers
@@ -315,7 +364,7 @@ ssh username@your-server-ip 'docker stop projecthub-backend projecthub-frontend 
 - ✅ **Network Connectivity**: Proper Docker networking between services
 
 #### Troubleshooting
-- **Port conflicts**: Ensure ports 3008, 5174, and 5433 are available
+- **Port conflicts**: Ensure ports 3009, 5174, and 5433 are available
 - **Database issues**: Check PostgreSQL health with `docker exec projecthub-postgres pg_isready`
 - **Network problems**: Verify Docker network creation with `docker network ls`
 

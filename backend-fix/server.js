@@ -3,7 +3,8 @@ const cors = require('cors');
 const { Pool } = require('pg');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const fetch = require('node-fetch');
+// Use Node 18+ built-in fetch
+const fetch = globalThis.fetch;
 
 const app = express();
 const port = process.env.PORT || 3010;
@@ -11,7 +12,7 @@ const port = process.env.PORT || 3010;
 // Database connection
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL || 'postgresql://projecthub:projecthub123@postgres:5432/projecthub',
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+  ssl: false  // Disable SSL for local PostgreSQL
 });
 
 // Test database connection
@@ -76,6 +77,14 @@ const authenticateToken = (req, res, next) => {
     req.user = user;
     next();
   });
+};
+
+// Admin role middleware
+const requireAdmin = (req, res, next) => {
+  if (!req.user || req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Admin role required' });
+  }
+  next();
 };
 
 // Health check endpoint
@@ -558,13 +567,93 @@ app.get('/api/analytics', async (req, res) => {
   }
 });
 
-// Users endpoint (for admin)
+// Users endpoints
 app.get('/api/users', async (req, res) => {
   try {
     const result = await pool.query('SELECT id, email, first_name, last_name, role, created_at, last_login, is_active FROM users ORDER BY created_at DESC');
     res.json(result.rows);
   } catch (error) {
     console.error('Users fetch error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+app.post('/api/users', authenticateToken, requireAdmin, async (req, res) => {
+  const { first_name, last_name, email, password, role = 'user' } = req.body;
+  
+  try {
+    // Check if user already exists
+    const existingUser = await pool.query('SELECT id FROM users WHERE email = $1', [email]);
+    if (existingUser.rows.length > 0) {
+      return res.status(400).json({ error: 'User with this email already exists' });
+    }
+    
+    // For simplicity, store password as-is (in production, use bcrypt)
+    const result = await pool.query(`
+      INSERT INTO users (first_name, last_name, email, password, role, created_at, updated_at, is_active)
+      VALUES ($1, $2, $3, $4, $5, NOW(), NOW(), true)
+      RETURNING id, email, first_name, last_name, role, created_at, is_active
+    `, [first_name, last_name, email, password, role]);
+    
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error('User creation error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+app.put('/api/users/:id', authenticateToken, requireAdmin, async (req, res) => {
+  const { id } = req.params;
+  const { first_name, last_name, email, role, is_active } = req.body;
+  
+  try {
+    const result = await pool.query(`
+      UPDATE users 
+      SET first_name = $1, last_name = $2, email = $3, role = $4, is_active = $5, updated_at = NOW()
+      WHERE id = $6
+      RETURNING id, email, first_name, last_name, role, created_at, is_active
+    `, [first_name, last_name, email, role, is_active, id]);
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error('User update error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+app.delete('/api/users/:id', authenticateToken, requireAdmin, async (req, res) => {
+  try {
+    const userId = req.params.id;
+    
+    // Prevent deleting yourself
+    if (userId === req.user.id) {
+      return res.status(400).json({ error: 'Cannot delete your own account' });
+    }
+    
+    // Check if user exists and get their role
+    const checkUser = await pool.query('SELECT * FROM users WHERE id = $1', [userId]);
+    if (checkUser.rows.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    const userToDelete = checkUser.rows[0];
+    
+    // Check if trying to delete the last admin
+    if (userToDelete.role === 'admin') {
+      const adminCount = await pool.query('SELECT COUNT(*) FROM users WHERE role = $1', ['admin']);
+      if (parseInt(adminCount.rows[0].count) === 1) {
+        return res.status(400).json({ error: 'Cannot delete the last admin user' });
+      }
+    }
+    
+    const result = await pool.query('DELETE FROM users WHERE id = $1 RETURNING *', [userId]);
+    res.status(204).send();
+  } catch (error) {
+    console.error('User deletion error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });

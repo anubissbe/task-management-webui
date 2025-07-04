@@ -38,7 +38,7 @@ services:
       DATABASE_URL: postgresql://projecthub:${POSTGRES_PASSWORD:-projecthub123}@postgres:5432/projecthub
       CORS_ORIGIN: ${CORS_ORIGIN:-*}
     ports:
-      - "${BACKEND_PORT:-3007}:3010"
+      - "${BACKEND_PORT:-3009}:3010"
     networks:
       - projecthub-network
     healthcheck:
