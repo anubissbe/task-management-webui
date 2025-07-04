@@ -1,11 +1,11 @@
-# API Documentation v4.5.1
+# API Documentation v5.0.0
 
-The ProjectHub-MCP v4.5.1 provides a comprehensive REST API for all application functionality. This documentation covers all available endpoints, request/response formats, and WebSocket events for the production-ready enterprise project management system.
+The ProjectHub-MCP v5.0.0 provides a comprehensive REST API for all application functionality. This documentation covers all available endpoints, request/response formats, and WebSocket events for the production-ready enterprise project management system.
 
 ## 🔗 Base URL
 
 ```
-http://localhost:3001/api
+http://localhost:3009/api
 ```
 
 For production deployments, replace with your actual domain.
@@ -19,7 +19,7 @@ The API includes comprehensive authentication and authorization features:
 headers: {
   'Authorization': 'Bearer YOUR_JWT_TOKEN',
   'Content-Type': 'application/json',
-  'X-API-Version': '4.5.1'
+  'X-API-Version': '5.0.0'
 }
 
 // API Key authentication (for integrations)
@@ -136,12 +136,18 @@ Updates an existing project.
 ### Delete Project
 **DELETE** `/projects/:id`
 
-Deletes a project and all associated tasks.
+Deletes a project and all associated tasks (cascade deletion).
 
 **Parameters:**
 - `id` (required): Project UUID
 
 **Response:** 204 No Content
+
+**Notes:**
+- This endpoint will permanently delete the project and ALL associated tasks
+- The deletion is cascading - all tasks belonging to the project will be removed
+- This action cannot be undone
+- Requires authentication and appropriate permissions
 
 ### Get Project Statistics
 **GET** `/projects/:id/stats`

@@ -643,7 +643,7 @@ app.get('/api/analytics', async (req, res) => {
     const projectStats = await pool.query(`
       SELECT 
         COUNT(*) as total_projects,
-        COUNT(CASE WHEN status = 'active' THEN 1 END) as active_projects,
+        COUNT(CASE WHEN status IN ('active', 'in_progress') THEN 1 END) as active_projects,
         COUNT(CASE WHEN status = 'completed' THEN 1 END) as completed_projects
       FROM projects
     `);

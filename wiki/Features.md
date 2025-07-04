@@ -1,13 +1,15 @@
-# ProjectHub-MCP v4.5.1 Features
+# ProjectHub-MCP v5.0.0 Features
 
 ## 🎯 Core Features
 
 ### Project Management
-- **Create & Manage Projects** - Full CRUD operations for project lifecycle
+- **Complete CRUD Operations** - Create, Read, Update, and **Delete** projects
+- **Cascade Deletion** - Safely remove projects with all associated tasks
 - **Status Tracking** - 5 states: planning, active, paused, completed, cancelled
 - **Progress Visualization** - Real-time completion percentages
 - **Smart Validation** - Ensures all tasks complete before project completion
 - **Metadata Support** - Store custom project information
+- **Deletion Safeguards** - Confirmation dialogs with task count warnings
 
 ### Task Management
 - **Hierarchical Tasks** - Complete support for subtasks and dependencies

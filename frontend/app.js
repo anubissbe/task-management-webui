@@ -421,14 +421,20 @@ function projectHub() {
             if (projects) {
                 this.projects = projects;
                 this.stats.totalProjects = projects.length;
+                this.analytics.totalProjects = projects.length;
             }
             
             // Load tasks for stats
             const tasks = await api.get('/tasks');
             if (tasks) {
                 this.tasks = tasks;
-                this.stats.activeTasks = tasks.filter(t => t.status !== 'done').length;
-                this.stats.completedTasks = tasks.filter(t => t.status === 'done').length;
+                this.stats.activeTasks = tasks.filter(t => t.status !== 'done' && t.status !== 'completed').length;
+                this.stats.completedTasks = tasks.filter(t => t.status === 'done' || t.status === 'completed').length;
+                
+                // Update analytics object too
+                this.analytics.totalTasks = tasks.length;
+                this.analytics.activeTasks = this.stats.activeTasks;
+                this.analytics.completedTasks = this.stats.completedTasks;
             }
             
             // Generate recent activity
@@ -464,7 +470,13 @@ function projectHub() {
                 this.kanbanColumns.forEach(col => col.tasks = []);
                 
                 tasks.forEach(task => {
-                    const column = this.kanbanColumns.find(col => col.id === (task.status || 'todo'));
+                    // Map backend status to frontend column IDs
+                    let columnId = task.status || 'todo';
+                    if (columnId === 'pending') columnId = 'todo';
+                    if (columnId === 'in_progress') columnId = 'in-progress';
+                    if (columnId === 'completed') columnId = 'done';
+                    
+                    const column = this.kanbanColumns.find(col => col.id === columnId);
                     if (column) {
                         column.tasks.push({
                             ...task,
@@ -503,8 +515,14 @@ function projectHub() {
                         const newStatus = evt.to.dataset.status;
                         
                         if (oldStatus !== newStatus) {
+                            // Map frontend status to backend status
+                            let backendStatus = newStatus;
+                            if (newStatus === 'todo') backendStatus = 'pending';
+                            if (newStatus === 'in-progress') backendStatus = 'in_progress';
+                            if (newStatus === 'done') backendStatus = 'completed';
+                            
                             // Update task status in backend
-                            const result = await api.put(`/tasks/${taskId}`, { status: newStatus });
+                            const result = await api.put(`/tasks/${taskId}`, { status: backendStatus });
                             if (result) {
                                 this.showNotification('Task moved successfully!');
                                 // Reload to ensure consistency
@@ -525,28 +543,66 @@ function projectHub() {
             this.loading = true;
             const analytics = await api.get('/analytics');
             if (analytics) {
-                this.analytics = analytics;
+                // Merge with existing analytics to preserve calculated fields
+                this.analytics = { ...this.analytics, ...analytics };
             }
+            
+            // Ensure basic counts are set
+            this.analytics.totalProjects = this.projects.length;
+            this.analytics.totalTasks = this.tasks.length;
+            this.analytics.completedTasks = this.tasks.filter(t => t.status === 'completed' || t.status === 'done').length;
+            this.analytics.activeTasks = this.tasks.filter(t => t.status !== 'completed' && t.status !== 'done').length;
             
             // Calculate additional metrics
             if (this.tasks.length > 0) {
                 // Calculate average completion time
-                const completedTasks = this.tasks.filter(t => t.status === 'completed');
+                const completedTasks = this.tasks.filter(t => t.status === 'completed' || t.status === 'done');
                 if (completedTasks.length > 0) {
-                    // Mock calculation - in real app, calculate from actual timestamps
-                    this.analytics.avgCompletionTime = '2.5 days';
+                    // Calculate actual average completion time
+                    let totalDays = 0;
+                    let validTasks = 0;
+                    
+                    completedTasks.forEach(task => {
+                        if (task.created_at && task.updated_at) {
+                            const created = new Date(task.created_at);
+                            const updated = new Date(task.updated_at);
+                            const days = (updated - created) / (1000 * 60 * 60 * 24);
+                            if (days >= 0) {
+                                totalDays += days;
+                                validTasks++;
+                            }
+                        }
+                    });
+                    
+                    if (validTasks > 0) {
+                        const avgDays = totalDays / validTasks;
+                        if (avgDays < 1) {
+                            this.analytics.avgCompletionTime = Math.round(avgDays * 24) + ' hours';
+                        } else {
+                            this.analytics.avgCompletionTime = avgDays.toFixed(1) + ' days';
+                        }
+                    } else {
+                        this.analytics.avgCompletionTime = 'N/A';
+                    }
+                } else {
+                    this.analytics.avgCompletionTime = 'N/A';
                 }
                 
-                // Count overdue tasks
+                // Count overdue tasks (none have due dates, so 0)
                 const now = new Date();
                 this.analytics.overdueTasks = this.tasks.filter(t => {
-                    return t.due_date && new Date(t.due_date) < now && t.status !== 'completed';
+                    return t.due_date && new Date(t.due_date) < now && t.status !== 'completed' && t.status !== 'done';
                 }).length;
+                
+                // If no overdue tasks, set to 0 instead of showing mock data
+                if (this.analytics.overdueTasks === 0) {
+                    this.analytics.overdueTasks = 0; // Explicitly set to 0
+                }
                 
                 // Calculate productivity score (completed vs total in last 30 days)
                 const thirtyDaysAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
                 const recentTasks = this.tasks.filter(t => new Date(t.created_at) > thirtyDaysAgo);
-                const recentCompleted = recentTasks.filter(t => t.status === 'completed').length;
+                const recentCompleted = recentTasks.filter(t => t.status === 'completed' || t.status === 'done').length;
                 const productivityPercentage = recentTasks.length > 0 
                     ? Math.round((recentCompleted / recentTasks.length) * 100) 
                     : 0;
@@ -632,6 +688,10 @@ function projectHub() {
         editTask(task) {
             if (!task) return;
             this.editingTask = { ...task };
+            // Map backend status to frontend status for editing
+            if (this.editingTask.status === 'pending') this.editingTask.status = 'todo';
+            if (this.editingTask.status === 'in_progress') this.editingTask.status = 'in-progress';
+            if (this.editingTask.status === 'completed') this.editingTask.status = 'done';
             this.showEditTaskModal = true;
         },
         
@@ -639,7 +699,13 @@ function projectHub() {
         async updateTask() {
             if (!this.editingTask || !this.editingTask.id) return;
             
-            const result = await api.put(`/tasks/${this.editingTask.id}`, this.editingTask);
+            // Map frontend status to backend status before sending
+            const taskToUpdate = { ...this.editingTask };
+            if (taskToUpdate.status === 'todo') taskToUpdate.status = 'pending';
+            if (taskToUpdate.status === 'in-progress') taskToUpdate.status = 'in_progress';
+            if (taskToUpdate.status === 'done') taskToUpdate.status = 'completed';
+            
+            const result = await api.put(`/tasks/${this.editingTask.id}`, taskToUpdate);
             if (result) {
                 await this.loadKanbanData();
                 this.showEditTaskModal = false;
@@ -664,7 +730,7 @@ function projectHub() {
             if (!this.selectedBoardProject) return;
             
             try {
-                const tasks = await api.get(`/projects/${this.selectedBoardProject}/tasks`);
+                const tasks = await api.get(`/tasks?projectId=${this.selectedBoardProject}`);
                 
                 // Update tasks for the selected project
                 this.tasks = [
@@ -876,9 +942,9 @@ function projectHub() {
             console.log('First task:', tasks[0]);
             
             const projectStatusData = {
-                active: projects.filter(p => p.status === 'active').length,
+                active: projects.filter(p => p.status === 'active' || p.status === 'in_progress').length,
                 completed: projects.filter(p => p.status === 'completed').length,
-                on_hold: projects.filter(p => p.status === 'on_hold').length,
+                on_hold: projects.filter(p => p.status === 'on_hold' || p.status === 'on-hold').length,
                 planning: projects.filter(p => p.status === 'planning').length
             };
             
@@ -1000,15 +1066,21 @@ function projectHub() {
             // Task Timeline Chart (showing tasks created over last 7 days)
             const ctx3 = document.getElementById('taskTimelineChart');
             if (ctx3 && ctx3.getContext) {
-                // Generate last 7 days labels
+                // Generate last 7 days labels and count tasks
                 const labels = [];
                 const data = [];
                 for (let i = 6; i >= 0; i--) {
                     const date = new Date();
                     date.setDate(date.getDate() - i);
+                    const dateStr = date.toISOString().split('T')[0];
                     labels.push(date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }));
-                    // Mock data for demo - in real app, filter tasks by created_at date
-                    data.push(Math.floor(Math.random() * 10) + 1);
+                    
+                    // Count tasks created on this date
+                    const tasksOnDate = tasks.filter(t => {
+                        const taskDate = new Date(t.created_at).toISOString().split('T')[0];
+                        return taskDate === dateStr;
+                    }).length;
+                    data.push(tasksOnDate);
                 }
                 
                 this.charts.taskTimeline = new Chart(ctx3.getContext('2d'), {
@@ -1079,17 +1151,35 @@ function projectHub() {
                     };
                 });
                 
+                // Add unassigned category
+                teamPerformance['Unassigned'] = {
+                    completed: 0,
+                    inProgress: 0,
+                    todo: 0
+                };
+                
                 // Count tasks per team member
                 tasks.forEach(task => {
-                    const assigneeIndex = assignees.indexOf(task.assignee);
-                    if (assigneeIndex !== -1) {
-                        const name = assigneeNames[assigneeIndex];
+                    if (!task.assignee || !task.assignee_id) {
+                        // Task is unassigned
                         if (task.status === 'completed' || task.status === 'done') {
-                            teamPerformance[name].completed++;
-                        } else if (task.status === 'in-progress' || task.status === 'review') {
-                            teamPerformance[name].inProgress++;
+                            teamPerformance['Unassigned'].completed++;
+                        } else if (task.status === 'in-progress' || task.status === 'in_progress' || task.status === 'review') {
+                            teamPerformance['Unassigned'].inProgress++;
                         } else {
-                            teamPerformance[name].todo++;
+                            teamPerformance['Unassigned'].todo++;
+                        }
+                    } else {
+                        const assigneeIndex = assignees.indexOf(task.assignee);
+                        if (assigneeIndex !== -1) {
+                            const name = assigneeNames[assigneeIndex];
+                            if (task.status === 'completed' || task.status === 'done') {
+                                teamPerformance[name].completed++;
+                            } else if (task.status === 'in-progress' || task.status === 'in_progress' || task.status === 'review') {
+                                teamPerformance[name].inProgress++;
+                            } else {
+                                teamPerformance[name].todo++;
+                            }
                         }
                     }
                 });
@@ -1171,17 +1261,35 @@ function projectHub() {
             // Project Velocity Chart
             const ctx5 = document.getElementById('projectVelocityChart');
             if (ctx5 && ctx5.getContext) {
-                // Generate sprint data
-                const sprints = ['Sprint 1', 'Sprint 2', 'Sprint 3', 'Sprint 4', 'Sprint 5'];
-                const storyPoints = [32, 28, 35, 40, 38];
+                // Calculate tasks completed per week for the last 5 weeks
+                const weeks = [];
+                const tasksCompleted = [];
+                
+                for (let i = 4; i >= 0; i--) {
+                    const weekStart = new Date();
+                    weekStart.setDate(weekStart.getDate() - (i * 7 + 7));
+                    const weekEnd = new Date();
+                    weekEnd.setDate(weekEnd.getDate() - (i * 7));
+                    
+                    weeks.push(`Week ${5 - i}`);
+                    
+                    // Count completed tasks in this week
+                    const completedInWeek = tasks.filter(t => {
+                        const taskDate = new Date(t.updated_at || t.created_at);
+                        return (t.status === 'completed' || t.status === 'done') &&
+                               taskDate >= weekStart && taskDate < weekEnd;
+                    }).length;
+                    
+                    tasksCompleted.push(completedInWeek);
+                }
                 
                 this.charts.projectVelocity = new Chart(ctx5.getContext('2d'), {
                     type: 'line',
                     data: {
-                        labels: sprints,
+                        labels: weeks,
                         datasets: [{
-                            label: 'Story Points Completed',
-                            data: storyPoints,
+                            label: 'Tasks Completed',
+                            data: tasksCompleted,
                             borderColor: 'rgba(168, 85, 247, 1)',
                             backgroundColor: 'rgba(168, 85, 247, 0.1)',
                             tension: 0.4,
@@ -1200,7 +1308,7 @@ function projectHub() {
                             tooltip: {
                                 callbacks: {
                                     label: function(context) {
-                                        return context.parsed.y + ' story points';
+                                        return context.parsed.y + ' tasks';
                                     }
                                 }
                             }
@@ -1225,17 +1333,27 @@ function projectHub() {
             if (ctx6 && ctx6.getContext) {
                 // Calculate workload from actual tasks
                 const workloadData = {};
+                
+                // Count unassigned tasks
+                const unassignedTasks = tasks.filter(t => (!t.assignee || !t.assignee_id) && t.status !== 'completed' && t.status !== 'done');
+                workloadData['Unassigned'] = { 
+                    tasks: unassignedTasks.length, 
+                    hours: unassignedTasks.reduce((sum, task) => sum + (task.estimated_hours || 8), 0)
+                };
+                
+                // If there are assigned tasks, count them by assignee
                 const assignees = ['JD', 'SM', 'BJ', 'AK'];
                 const assigneeNames = ['John D.', 'Sarah M.', 'Bob J.', 'Alice K.'];
                 
                 assignees.forEach((assignee, idx) => {
                     const name = assigneeNames[idx];
                     const memberTasks = tasks.filter(t => t.assignee === assignee && t.status !== 'completed' && t.status !== 'done');
-                    const totalHours = memberTasks.reduce((sum, task) => sum + (task.estimated_hours || 8), 0);
-                    workloadData[name] = { 
-                        tasks: memberTasks.length, 
-                        hours: totalHours 
-                    };
+                    if (memberTasks.length > 0) {
+                        workloadData[name] = { 
+                            tasks: memberTasks.length, 
+                            hours: memberTasks.reduce((sum, task) => sum + (task.estimated_hours || 8), 0)
+                        };
+                    }
                 });
                 
                 this.charts.workload = new Chart(ctx6.getContext('2d'), {
@@ -1288,14 +1406,33 @@ function projectHub() {
             // Task Completion Rate Chart
             const ctx7 = document.getElementById('completionRateChart');
             if (ctx7 && ctx7.getContext) {
-                // Generate weekly completion rate data
+                // Calculate weekly completion rate for the last 8 weeks
                 const weeks = [];
                 const completionRates = [];
+                
                 for (let i = 7; i >= 0; i--) {
-                    const date = new Date();
-                    date.setDate(date.getDate() - (i * 7));
-                    weeks.push('Week ' + (8 - i));
-                    completionRates.push(Math.floor(Math.random() * 20) + 70); // 70-90% range
+                    const weekStart = new Date();
+                    weekStart.setDate(weekStart.getDate() - ((i + 1) * 7));
+                    const weekEnd = new Date();
+                    weekEnd.setDate(weekEnd.getDate() - (i * 7));
+                    
+                    weeks.push(`Week ${8 - i}`);
+                    
+                    // Count tasks created and completed in this week
+                    const tasksInWeek = tasks.filter(t => {
+                        const createdDate = new Date(t.created_at);
+                        return createdDate >= weekStart && createdDate < weekEnd;
+                    });
+                    
+                    const completedInWeek = tasksInWeek.filter(t => 
+                        t.status === 'completed' || t.status === 'done'
+                    ).length;
+                    
+                    const rate = tasksInWeek.length > 0 
+                        ? Math.round((completedInWeek / tasksInWeek.length) * 100)
+                        : 0;
+                    
+                    completionRates.push(rate);
                 }
                 
                 this.charts.completionRate = new Chart(ctx7.getContext('2d'), {

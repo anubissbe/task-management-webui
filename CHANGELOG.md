@@ -5,7 +5,77 @@ All notable changes to ProjectHub-MCP will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [4.5.1] - 2025-06-23 - 🎉 Production Release
+## [5.0.0] - 2025-01-04 - 🚀 Major Release
+
+### 🎯 Overview
+This major release introduces project deletion functionality, enhanced security features, real-time analytics improvements, and numerous bug fixes. The platform is now fully production-ready with enterprise-grade features.
+
+### ✨ New Features
+- **🗑️ Project Deletion**: Complete CRUD operations with cascade deletion
+  - Safe deletion with confirmation dialogs
+  - Automatic removal of associated tasks
+  - Task count warnings before deletion
+  - API endpoint: `DELETE /api/projects/:id`
+
+- **🔒 Enhanced Security**
+  - Rate limiting on all API endpoints
+  - Input sanitization for logs and user data
+  - SSRF protection for webhook URLs
+  - Improved JWT token handling
+  - Security headers and CORS configuration
+
+- **📊 Real-time Analytics**
+  - Removed all mock data - 100% real calculations
+  - Live task distribution charts
+  - Actual completion time tracking
+  - Dynamic overdue task counting
+  - Real-time project velocity metrics
+
+### 🐛 Bug Fixes
+- **Browser Caching**: Fixed aggressive 1-year cache causing update issues
+  - Reduced JS/CSS cache to 1 hour
+  - Added cache-busting for critical files
+  - Implemented proper cache headers
+
+- **Status Mapping**: Fixed frontend/backend status inconsistencies
+  - `pending` → `todo` mapping
+  - `in_progress` → `in-progress` mapping
+  - `completed` → `done` mapping
+
+- **Analytics Display**: Fixed empty analytics dashboard
+  - Populated both `stats` and `analytics` objects
+  - Fixed chart data population
+  - Corrected metric calculations
+
+### 🔧 Technical Improvements
+- **Code Quality**: Added security utilities module
+- **Database**: Optimized queries with proper indexes
+- **API**: Improved error handling and logging
+- **Frontend**: Better state management and error boundaries
+- **Docker**: Updated images with latest fixes
+
+### 📦 Dependencies
+- Updated to React 19.0.0
+- Updated all security-critical dependencies
+- Added rate-limiter-flexible package
+- Enhanced PostgreSQL connection pooling
+
+### 🔄 Breaking Changes
+- API now requires authentication for all endpoints (except health checks)
+- Changed default backend port from 3010 to 3009
+- Updated Docker image tags to use semantic versioning
+
+## [4.8.0] - 2024-12-30 - 🔔 Webhook Integration
+
+### Added
+- **Webhook System**: CORS-free webhook integration with backend proxy
+- **User Management**: Complete user CRUD with role protection
+- **Task Dependencies**: Link related tasks and track blockers
+- **Email Notifications**: Basic email notification system
+
+---
+
+## [4.5.1] - 2024-12-23 - 🎉 Production Release
 
 ### 🎯 Production Ready & Feature Complete
 This release marks the completion of ProjectHub-MCP as a production-ready, enterprise-grade project management system with all core features implemented, tested, and security-hardened.

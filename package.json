@@ -1,6 +1,6 @@
 {
   "name": "projecthub-mcp",
-  "version": "4.8.0",
+  "version": "5.0.0",
   "description": "Enterprise-grade project management system with real-time collaboration, advanced analytics, team management, and seamless MCP integration",
   "main": "index.js",
   "private": true,

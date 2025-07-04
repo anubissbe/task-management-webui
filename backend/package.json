@@ -1,6 +1,6 @@
 {
   "name": "projecthub-mcp-backend",
-  "version": "4.8.0",
+  "version": "5.0.0",
   "description": "ProjectHub-Mcp Backend API - MCP Enhanced Project Management with PostgreSQL integration, RESTful API, and real-time collaboration features",
   "main": "dist/index.js",
   "scripts": {
