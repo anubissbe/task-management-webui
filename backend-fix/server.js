@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 // Use Node 18+ built-in fetch
 const fetch = globalThis.fetch;
+const { sanitizeForLog, isValidWebhookUrl, checkRateLimit } = require('./security-utils');
 
 const app = express();
 const port = process.env.PORT || 3010;
@@ -64,6 +65,29 @@ app.use(express.json());
 
 // JWT Secret
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+
+// Rate limiting middleware
+const rateLimitMiddleware = (req, res, next) => {
+  const key = req.ip || 'unknown';
+  const endpoint = req.path;
+  
+  // Different limits for different endpoints
+  let maxRequests = 100;
+  if (endpoint.includes('/auth/login')) {
+    maxRequests = 5; // Strict limit for login attempts
+  } else if (endpoint.includes('/webhooks') && endpoint.includes('/test')) {
+    maxRequests = 10; // Limit webhook tests
+  }
+  
+  if (!checkRateLimit(`${key}:${endpoint}`, maxRequests, 60000)) {
+    return res.status(429).json({ error: 'Too many requests, please try again later' });
+  }
+  
+  next();
+};
+
+// Apply rate limiting to all routes
+app.use(rateLimitMiddleware);
 
 // Authentication middleware
 const authenticateToken = (req, res, next) => {
@@ -131,7 +155,7 @@ app.post('/api/auth/login', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Login error:', error);
+    console.error('Login error:', sanitizeForLog(error.message));
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -161,7 +185,7 @@ app.get('/api/projects', async (req, res) => {
     
     res.json(projects);
   } catch (error) {
-    console.error('Projects fetch error:', error);
+    console.error('Projects fetch error:', sanitizeForLog(error.message));
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -174,7 +198,7 @@ app.get('/api/projects/:id', async (req, res) => {
     }
     res.json(result.rows[0]);
   } catch (error) {
-    console.error('Project fetch error:', error);
+    console.error('Project fetch error:', sanitizeForLog(error.message));
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -191,7 +215,7 @@ app.post('/api/projects', async (req, res) => {
     
     res.status(201).json(result.rows[0]);
   } catch (error) {
-    console.error('Project creation error:', error);
+    console.error('Project creation error:', sanitizeForLog(error.message));
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -212,7 +236,7 @@ app.delete('/api/projects/:id', async (req, res) => {
     
     res.status(204).send();
   } catch (error) {
-    console.error('Project deletion error:', error);
+    console.error('Project deletion error:', sanitizeForLog(error.message));
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -245,7 +269,7 @@ app.get('/api/tasks', async (req, res) => {
     
     res.json(tasks);
   } catch (error) {
-    console.error('Tasks fetch error:', error);
+    console.error('Tasks fetch error:', sanitizeForLog(error.message));
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -276,12 +300,12 @@ app.post('/api/tasks', async (req, res) => {
         createdBy: req.user ? `${req.user.first_name || ''} ${req.user.last_name || ''}`.trim() : 'System'
       });
     } catch (webhookError) {
-      console.error('Webhook notification error:', webhookError);
+      console.error('Webhook notification error:', sanitizeForLog(webhookError.message));
     }
     
     res.status(201).json(task);
   } catch (error) {
-    console.error('Task creation error:', error);
+    console.error('Task creation error:', sanitizeForLog(error.message));
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -329,13 +353,13 @@ app.put('/api/tasks/:id', async (req, res) => {
           completedBy: req.user ? `${req.user.first_name || ''} ${req.user.last_name || ''}`.trim() : 'System'
         });
       } catch (webhookError) {
-        console.error('Webhook notification error:', webhookError);
+        console.error('Webhook notification error:', sanitizeForLog(webhookError.message));
       }
     }
     
     res.json(updatedTask);
   } catch (error) {
-    console.error('Task update error:', error);
+    console.error('Task update error:', sanitizeForLog(error.message));
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -348,7 +372,7 @@ app.delete('/api/tasks/:id', async (req, res) => {
     }
     res.status(204).send();
   } catch (error) {
-    console.error('Task deletion error:', error);
+    console.error('Task deletion error:', sanitizeForLog(error.message));
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -359,13 +383,18 @@ app.get('/api/webhooks', async (req, res) => {
     const result = await pool.query('SELECT * FROM webhooks ORDER BY created_at DESC');
     res.json(result.rows);
   } catch (error) {
-    console.error('Webhooks fetch error:', error);
+    console.error('Webhooks fetch error:', sanitizeForLog(error.message));
     res.status(500).json({ error: 'Internal server error' });
   }
 });
 
 app.post('/api/webhooks', async (req, res) => {
   const { name, url, events, active = true } = req.body;
+  
+  // Validate webhook URL
+  if (!isValidWebhookUrl(url)) {
+    return res.status(400).json({ error: 'Invalid webhook URL. Only HTTPS URLs to public endpoints are allowed.' });
+  }
   
   try {
     const result = await pool.query(`
@@ -376,7 +405,7 @@ app.post('/api/webhooks', async (req, res) => {
     
     res.status(201).json(result.rows[0]);
   } catch (error) {
-    console.error('Webhook creation error:', error);
+    console.error('Webhook creation error:', sanitizeForLog(error.message));
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -384,6 +413,11 @@ app.post('/api/webhooks', async (req, res) => {
 app.put('/api/webhooks/:id', async (req, res) => {
   const { id } = req.params;
   const { name, url, events, active } = req.body;
+  
+  // Validate webhook URL if provided
+  if (url && !isValidWebhookUrl(url)) {
+    return res.status(400).json({ error: 'Invalid webhook URL. Only HTTPS URLs to public endpoints are allowed.' });
+  }
   
   try {
     const result = await pool.query(`
@@ -399,7 +433,7 @@ app.put('/api/webhooks/:id', async (req, res) => {
     
     res.json(result.rows[0]);
   } catch (error) {
-    console.error('Webhook update error:', error);
+    console.error('Webhook update error:', sanitizeForLog(error.message));
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -412,7 +446,7 @@ app.delete('/api/webhooks/:id', async (req, res) => {
     }
     res.status(204).send();
   } catch (error) {
-    console.error('Webhook deletion error:', error);
+    console.error('Webhook deletion error:', sanitizeForLog(error.message));
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -427,6 +461,14 @@ app.post('/api/webhooks/:id/test', async (req, res) => {
       return res.status(404).json({ error: 'Webhook not found' });
     }
     
+    // Validate webhook URL before testing
+    if (!isValidWebhookUrl(webhook.url)) {
+      return res.status(400).json({ 
+        error: 'Invalid webhook URL', 
+        details: 'The webhook URL is not valid or points to a restricted endpoint.' 
+      });
+    }
+    
     const testMessage = {
       text: '✅ ProjectHub webhook test successful!',
       blocks: [{
@@ -438,26 +480,38 @@ app.post('/api/webhooks/:id/test', async (req, res) => {
       }]
     };
     
-    const response = await fetch(webhook.url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(testMessage)
-    });
+    // Set timeout to prevent hanging requests
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000); // 5 second timeout
     
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    try {
+      const response = await fetch(webhook.url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(testMessage),
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeout);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      
+      // Update last_triggered
+      await pool.query('UPDATE webhooks SET last_triggered = NOW() WHERE id = $1', [webhook.id]);
+      
+      res.json({ success: true, message: 'Test notification sent successfully!' });
+    } catch (fetchError) {
+      clearTimeout(timeout);
+      throw fetchError;
     }
-    
-    // Update last_triggered
-    await pool.query('UPDATE webhooks SET last_triggered = NOW() WHERE id = $1', [webhook.id]);
-    
-    res.json({ success: true, message: 'Test notification sent successfully!' });
   } catch (error) {
-    console.error('Webhook test error:', error);
+    console.error('Webhook test error:', sanitizeForLog(error.message));
     res.status(400).json({ 
       success: false, 
       error: 'Failed to send test notification', 
-      details: error.message 
+      details: error.name === 'AbortError' ? 'Request timeout' : 'Connection failed'
     });
   }
 });
@@ -470,6 +524,11 @@ async function triggerWebhookNotification(event, data) {
     
     for (const webhook of webhooks) {
       try {
+        // Skip invalid webhook URLs
+        if (!isValidWebhookUrl(webhook.url)) {
+          console.error(`Skipping invalid webhook URL for webhook ${webhook.id}`);
+          continue;
+        }
         let message;
         
         switch (event) {
@@ -532,21 +591,33 @@ async function triggerWebhookNotification(event, data) {
             };
         }
         
-        const response = await fetch(webhook.url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(message)
-        });
+        // Add timeout for webhook calls
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 5000);
         
-        if (response.ok) {
-          await pool.query('UPDATE webhooks SET last_triggered = NOW() WHERE id = $1', [webhook.id]);
+        try {
+          const response = await fetch(webhook.url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(message),
+            signal: controller.signal
+          });
+          
+          clearTimeout(timeout);
+          
+          if (response.ok) {
+            await pool.query('UPDATE webhooks SET last_triggered = NOW() WHERE id = $1', [webhook.id]);
+          }
+        } catch (fetchError) {
+          clearTimeout(timeout);
+          console.error(`Webhook ${webhook.id} error:`, sanitizeForLog(fetchError.message));
         }
       } catch (error) {
-        console.error(`Webhook ${webhook.id} error:`, error);
+        console.error(`Webhook ${webhook.id} error:`, sanitizeForLog(error.message));
       }
     }
   } catch (error) {
-    console.error('Webhook notification error:', error);
+    console.error('Webhook notification error:', sanitizeForLog(error.message));
   }
 }
 
@@ -583,7 +654,7 @@ app.get('/api/analytics', async (req, res) => {
       timestamp: new Date().toISOString()
     });
   } catch (error) {
-    console.error('Analytics error:', error);
+    console.error('Analytics error:', sanitizeForLog(error.message));
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -594,7 +665,7 @@ app.get('/api/users', async (req, res) => {
     const result = await pool.query('SELECT id, email, first_name, last_name, role, created_at, last_login, is_active FROM users ORDER BY created_at DESC');
     res.json(result.rows);
   } catch (error) {
-    console.error('Users fetch error:', error);
+    console.error('Users fetch error:', sanitizeForLog(error.message));
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -618,7 +689,7 @@ app.post('/api/users', authenticateToken, requireAdmin, async (req, res) => {
     
     res.status(201).json(result.rows[0]);
   } catch (error) {
-    console.error('User creation error:', error);
+    console.error('User creation error:', sanitizeForLog(error.message));
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -641,7 +712,7 @@ app.put('/api/users/:id', authenticateToken, requireAdmin, async (req, res) => {
     
     res.json(result.rows[0]);
   } catch (error) {
-    console.error('User update error:', error);
+    console.error('User update error:', sanitizeForLog(error.message));
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -674,7 +745,7 @@ app.delete('/api/users/:id', authenticateToken, requireAdmin, async (req, res) =
     const result = await pool.query('DELETE FROM users WHERE id = $1 RETURNING *', [userId]);
     res.status(204).send();
   } catch (error) {
-    console.error('User deletion error:', error);
+    console.error('User deletion error:', sanitizeForLog(error.message));
     res.status(500).json({ error: 'Internal server error' });
   }
 });
