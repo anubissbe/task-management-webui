@@ -691,4 +691,4 @@ if (process.env.DEBUG) {
 
 ---
 
-**Last Updated**: July 2025 • **API Version**: 4.7.1
+**Last Updated**: July 2025 • **API Version**: 4.8.0

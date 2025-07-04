@@ -102,12 +102,15 @@ The project uses Alpine.js v2.0.0 architecture with enhanced security:
 
 ## 🔍 Security Audit Log
 
-### Recent Security Improvements (v4.6.0 - July 2025)
+### Recent Security Improvements (v4.8.0 - July 2025)
+- **2025-07-04**: Added project deletion with cascade protection (v4.8.0)
+- **2025-07-04**: Enhanced authentication state management
+- **2025-07-03**: Fixed webhook CORS vulnerabilities with backend proxy
+- **2025-07-03**: Improved user deletion with admin protections
 - **2025-07-01**: Major repository cleanup and security hardening
 - **2025-07-01**: Resolved all CodeQL syntax errors and security warnings
 - **2025-07-01**: Enhanced CodeQL configuration with comprehensive exclusions
 - **2025-07-01**: Removed 120+ development artifacts and debug files
-- **2025-07-01**: Updated to version 4.6.0 with security improvements
 - **2025-07-01**: Implemented automated deployment with security scanning
 - **2025-07-01**: Added comprehensive input sanitization
 
@@ -207,15 +210,15 @@ We provide security updates for the following versions:
 
 | Version | Supported | Security Updates |
 | ------- | --------- | ---------------- |
-| 4.6.x   | ✅ | Full support with regular updates |
-| 4.5.x   | ⚠️ | Critical security fixes only |
-| 4.0.x   | ❌ | No longer supported |
-| < 4.0   | ❌ | No longer supported |
+| 4.8.x   | ✅ | Full support with regular updates |
+| 4.7.x   | ✅ | Security and bug fixes |
+| 4.6.x   | ⚠️ | Critical security fixes only |
+| < 4.6   | ❌ | No longer supported |
 
-**Recommendation**: Always use the latest version (4.6.x) for the best security posture.
+**Recommendation**: Always use the latest version (4.8.x) for the best security posture.
 
 ---
 
-**Last Updated**: July 1, 2025  
-**Version**: 4.6.0  
+**Last Updated**: July 4, 2025  
+**Version**: 4.8.0  
 **Next Security Review**: January 1, 2026

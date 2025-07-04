@@ -48,7 +48,7 @@ open http://localhost:5174
 ### Option 2: Production Server Deployment
 ```bash
 # One-liner for production deployment
-docker stop projecthub-backend projecthub-frontend projecthub-postgres 2>/dev/null; docker rm projecthub-backend projecthub-frontend projecthub-postgres 2>/dev/null; docker network create projecthub-network 2>/dev/null; docker run -d --name projecthub-postgres -e POSTGRES_USER=projecthub -e POSTGRES_PASSWORD=projecthub_password -e POSTGRES_DB=projecthub_mcp -p 5433:5432 --network projecthub-network postgres:15-alpine && docker run -d --name projecthub-backend -p 3009:3010 -e DATABASE_URL=postgresql://projecthub:projecthub_password@projecthub-postgres:5432/projecthub_mcp -e JWT_SECRET=your-secret-key-here -e CORS_ORIGIN="*" --network projecthub-network anubissbe/projecthub-backend:latest && docker run -d --name projecthub-frontend -p 5174:80 --network projecthub-network anubissbe/projecthub-frontend:latest
+docker stop projecthub-backend projecthub-frontend projecthub-postgres 2>/dev/null; docker rm projecthub-backend projecthub-frontend projecthub-postgres 2>/dev/null; docker network create projecthub-network 2>/dev/null; docker run -d --name projecthub-postgres -e POSTGRES_USER=projecthub -e POSTGRES_PASSWORD=projecthub123 -e POSTGRES_DB=projecthub -p 5433:5432 --network projecthub-network postgres:15-alpine && docker run -d --name projecthub-backend -p 3009:3010 -e DATABASE_URL=postgresql://projecthub:projecthub123@projecthub-postgres:5432/projecthub -e JWT_SECRET=your-secret-key-here -e CORS_ORIGIN="*" --network projecthub-network anubissbe/projecthub-backend:latest && docker run -d --name projecthub-frontend -p 5174:80 --network projecthub-network anubissbe/projecthub-frontend:latest
 ```
 
 **Access URLs:**
@@ -187,7 +187,7 @@ ProjectHub-MCP includes full Model Context Protocol (MCP) support for AI coding 
 ### Environment Variables
 ```bash
 # Database
-DATABASE_URL=postgresql://projecthub:password@localhost:5433/projecthub_mcp
+DATABASE_URL=postgresql://projecthub:projecthub123@localhost:5433/projecthub
 
 # Security
 JWT_SECRET=your-secure-secret-here
