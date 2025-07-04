@@ -1,219 +1,186 @@
 # 🚀 ProjectHub-MCP
 
-> 🚨 **IMPORTANT**: Use the commands in this README v4.7.1 for deployment. Previous versions had issues with authentication, missing endpoints, and Synology compatibility. The deployment commands below are TESTED and WORKING.
-
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/Version-4.7.1-blue.svg)](https://github.com/anubissbe/ProjectHub-Mcp/releases)
-[![Alpine.js](https://img.shields.io/badge/Alpine.js-3.0-blue?logo=alpinedotjs)](https://alpinejs.dev/)
-[![React](https://img.shields.io/badge/React-19.1.0-blue?logo=react)](https://reactjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?logo=typescript)](https://www.typescriptlang.org/)
+[![Version](https://img.shields.io/badge/Version-4.8.0-blue.svg)](https://github.com/anubissbe/ProjectHub-Mcp/releases)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-green?logo=node.js)](https://nodejs.org/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue?logo=postgresql)](https://www.postgresql.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue?logo=postgresql)](https://www.postgresql.org/)
 [![Docker](https://img.shields.io/badge/Docker-Ready-blue?logo=docker)](https://www.docker.com/)
-[![Status](https://img.shields.io/badge/Status-Production_Ready-brightgreen?style=for-the-badge)](https://github.com/anubissbe/ProjectHub-Mcp)
-[![Discussions](https://img.shields.io/github/discussions/anubissbe/ProjectHub-Mcp?label=Discussions&logo=github)](https://github.com/anubissbe/ProjectHub-Mcp/discussions)
+[![Status](https://img.shields.io/badge/Status-Production_Ready-brightgreen)](https://github.com/anubissbe/ProjectHub-Mcp)
 
-> 🎯 **Enterprise-grade project management system** with real-time collaboration, advanced analytics, team management, and seamless MCP (Model Context Protocol) integration
+> 🎯 **Enterprise-grade project management system** with real-time collaboration, advanced analytics, team management, webhook notifications, and complete CRUD operations including project deletion.
 
-## 🌟 Community
+## 🌟 Key Features
 
-<div align="center">
+### 🎯 **Complete Project Management**
+- 📋 **Full Project Lifecycle**: Create, read, update, and **delete** projects with cascade deletion
+- ✅ **Advanced Task System**: Priorities, assignments, status tracking, and dependencies
+- 📊 **Kanban Board**: Drag-and-drop interface with real-time updates
+- 🗑️ **Safe Deletion**: Confirmation dialogs with task count warnings
 
-[💬 **Join Discussions**](https://github.com/anubissbe/ProjectHub-Mcp/discussions) • 
-[🐛 **Report Issues**](https://github.com/anubissbe/ProjectHub-Mcp/issues) • 
-[📖 **Read Wiki**](https://github.com/anubissbe/ProjectHub-Mcp/wiki) • 
-[🤝 **Contribute**](CONTRIBUTING.md)
+### 👥 **Team Collaboration**
+- 🏢 **Role-Based Access**: Admin → Developer → User permissions
+- 👤 **User Management**: Create, edit, and delete users with admin protection
+- 🔐 **JWT Authentication**: Secure token-based authentication with auto-refresh
 
-</div>
+### 📊 **Analytics & Reporting**
+- 📈 **Interactive Dashboards**: Project and task analytics
+- 📉 **Progress Tracking**: Completion rates and productivity metrics
+- 🚀 **Real-time Updates**: Live data synchronization
+
+### 🔔 **Webhook Integration (CORS-Free)**
+- 🚀 **Slack Integration**: Automatic notifications for task/project events
+- 🔧 **Backend Proxy**: No more browser CORS errors
+- ✅ **Test Functionality**: Built-in webhook testing
+
+## 🐳 Quick Start (2 Minutes)
+
+### Option 1: One-Command Deployment
+```bash
+# Clone and start
+git clone https://github.com/anubissbe/ProjectHub-Mcp.git
+cd ProjectHub-Mcp
+docker-compose up -d
+
+# Access the application
+open http://localhost:5174
+```
+
+### Option 2: Production Server Deployment
+```bash
+# One-liner for production deployment
+docker stop projecthub-backend projecthub-frontend projecthub-postgres 2>/dev/null; docker rm projecthub-backend projecthub-frontend projecthub-postgres 2>/dev/null; docker network create projecthub-network 2>/dev/null; docker run -d --name projecthub-postgres -e POSTGRES_USER=projecthub -e POSTGRES_PASSWORD=projecthub_password -e POSTGRES_DB=projecthub_mcp -p 5433:5432 --network projecthub-network postgres:15-alpine && docker run -d --name projecthub-backend -p 3009:3010 -e DATABASE_URL=postgresql://projecthub:projecthub_password@projecthub-postgres:5432/projecthub_mcp -e JWT_SECRET=your-secret-key-here -e CORS_ORIGIN="*" --network projecthub-network anubissbe/projecthub-backend:latest && docker run -d --name projecthub-frontend -p 5174:80 --network projecthub-network anubissbe/projecthub-frontend:latest
+```
+
+**Access URLs:**
+- 🌐 **Frontend**: http://your-server:5174
+- 📡 **Backend API**: http://your-server:3009
+- 🗄️ **Database**: your-server:5433
+- 🔧 **Default Login**: admin@projecthub.com / dev123
 
 ## 🐳 Docker Hub Images
 
-Pre-built images available:
 ```bash
-# Latest webhook-fixed images (RECOMMENDED)
-docker pull anubissbe/projecthub-backend:latest          # PostgreSQL + Webhook proxy
-docker pull anubissbe/projecthub-frontend:latest         # Updated frontend
-
-# Legacy images (may have webhook CORS issues)
-docker pull telkombe/projecthub-backend:complete-v4.7.1
-docker pull anubissbe/projecthub-frontend:latest         # Previous version
+# Latest images with all features (RECOMMENDED)
+docker pull anubissbe/projecthub-backend:latest    # Complete API with project deletion
+docker pull anubissbe/projecthub-frontend:latest   # Full-featured UI
+docker pull postgres:15-alpine                     # Database
 ```
 
-> ⚠️ **Important**: Use `:latest` tags for webhook functionality without CORS errors!
+## ✨ What's New in v4.8.0
 
-<div align="center">
-  <img src="docs/images/working-analytics.png" alt="ProjectHub-MCP Analytics Dashboard" width="800"/>
-</div>
+### 🆕 **Project Deletion Feature**
+- ✅ **Complete CRUD**: Create, Read, Update, and **Delete** projects
+- 🔄 **Cascade Deletion**: Automatically removes associated tasks
+- ⚠️ **Smart Warnings**: Shows task count before deletion
+- 🛡️ **Confirmation Dialogs**: Prevents accidental deletions
 
-## 🚀 Quick Start
+### 🔧 **How to Delete Projects**
+1. **Via UI**: Projects → Select Project → Click trash icon
+2. **Via API**: `DELETE /api/projects/{id}` with Authorization header
 
-Get ProjectHub-MCP running in under 2 minutes:
+### 🐛 **Bug Fixes**
+- ✅ **Webhook CORS**: Fixed browser CORS errors with backend proxy
+- ✅ **Authentication**: Proper JWT token handling and refresh
+- ✅ **User Management**: Admin role protection and last-admin prevention
+- ✅ **Database**: Full PostgreSQL integration with connection pooling
 
+## 🛠️ Development
+
+### Prerequisites
+- Node.js 18+
+- Docker & Docker Compose
+- PostgreSQL 15+ (or use Docker)
+
+### Local Development
 ```bash
-# Clone the repository
+# Clone and setup
 git clone https://github.com/anubissbe/ProjectHub-Mcp.git
 cd ProjectHub-Mcp
 
-# Option 1: Use the fixed start script (Recommended)
-./start-fixed.sh
+# Start development environment
+docker-compose up -d
 
-# Option 2: Use Docker Compose with all fixes
-docker-compose -f docker-compose-fixed.yml up -d
-
-# Option 3: Use the original start script
-./start.sh
-
-# Open your browser
-open http://localhost:8090
+# Development URLs
+# Frontend: http://localhost:5174
+# Backend API: http://localhost:3009
+# Database: localhost:5433
 ```
 
-**For production deployment on Synology NAS**, see the [Synology NAS Deployment Guide](#-synology-nas-deployment-guide) below.
+## 📖 API Reference
 
-### 🔧 Important Fixes Applied (Latest)
+### Projects
+- `GET /api/projects` - List all projects
+- `GET /api/projects/:id` - Get single project
+- `POST /api/projects` - Create new project
+- `DELETE /api/projects/:id` - **Delete project and all tasks** ⚠️
 
-This version includes critical fixes for common issues:
-- ✅ **Complete Backend**: All endpoints implemented (analytics, webhooks, users)
-- ✅ **Authentication Fixed**: No more hardcoded tokens or auth states
-- ✅ **Webhook CORS Fix**: Proxy-based webhooks prevent browser CORS errors
-- ✅ **Synology Compatible**: Nginx config works on Synology NAS
-- ✅ **Network Connectivity**: Proper Docker networking between services
-- ✅ **Database Integration**: Full PostgreSQL integration with connection pooling
+### Tasks
+- `GET /api/tasks` - List all tasks
+- `POST /api/tasks` - Create new task
+- `PUT /api/tasks/:id` - Update task
+- `DELETE /api/tasks/:id` - Delete task
 
-That's it! ProjectHub-MCP will be running with:
-- 🗄️ **PostgreSQL Database**: `localhost:5433`
-- 🌐 **Frontend Interface**: `http://localhost:5174`
-- 📡 **API Backend**: `http://localhost:3009` ⚠️ **Updated Port**
+### Webhooks
+- `GET /api/webhooks` - List webhooks
+- `POST /api/webhooks` - Create webhook
+- `PUT /api/webhooks/:id` - Update webhook
+- `POST /api/webhooks/:id/test` - Test webhook (CORS-free)
+- `DELETE /api/webhooks/:id` - Delete webhook
 
-> 🔧 **Webhook Testing**: Go to Settings > Webhooks to test Slack integration without CORS errors!
+### Authentication
+- `POST /api/auth/login` - Login and get JWT token
 
-## 📸 Screenshots
+## 🔔 Webhook Setup (CORS-Free)
 
-<div align="center">
+### Slack Integration
+1. Create Slack webhook URL in your workspace
+2. Go to ProjectHub → Settings → Webhooks
+3. Add webhook with events: `task.created`, `task.completed`
+4. Click **Test** - works without CORS errors! ✅
 
-### 🏠 Project Management Dashboard
-<img src="docs/images/working-homepage.png" alt="Modern Project Management Interface" width="800"/>
+### Events
+- `task.created` - New task notifications
+- `task.completed` - Task completion notifications
+- `project.created` - New project notifications (coming soon)
 
-### 📊 Analytics Dashboard
-<img src="docs/images/working-analytics.png" alt="Advanced Analytics Dashboard" width="800"/>
+## 🔒 Security
 
-### ✅ Task Management Interface
-<img src="docs/images/current-calendar.png" alt="Modern Task Management Interface" width="800"/>
+- 🛡️ **JWT Authentication** with secure token management
+- 🔐 **Role-Based Access Control** (Admin/Developer/User)
+- 🚨 **Input Validation** and SQL injection prevention
+- 🛠️ **Admin Protection**: Cannot delete self or last admin user
+- ⚠️ **Cascade Safety**: Warns before deleting projects with tasks
 
-</div>
-
-## ✨ Key Features
-
-### 🎯 **Project & Task Management**
-- 📋 **Full Project Lifecycle**: Planning → Active → Completed with status tracking
-- ✅ **Advanced Task System**: Priorities, estimates, dependencies, and custom fields
-- 📊 **Kanban Board**: Drag-and-drop interface with real-time updates
-- 📅 **Calendar Integration**: Deadline visualization and scheduling
-- 🔗 **Task Dependencies**: Complex workflow management
-
-### 👥 **Team Collaboration**
-- 🏢 **Multi-Tenant Workspaces**: Complete data isolation
-- 👤 **Role-Based Access**: Admin → Manager → Developer → Viewer
-- 📧 **Team Invitations**: Token-based secure invitations
-- 🛡️ **Project-Level Security**: Granular access control
-
-### 📊 **Analytics & Reporting**
-- 📈 **Interactive Dashboards**: Customizable widgets and charts
-- 📉 **Burndown Charts**: Sprint progress tracking
-- 🚀 **Velocity Analysis**: Team performance metrics
-- 📤 **Export Options**: PDF, Excel, CSV with branding
-- 🔍 **Advanced Filtering**: Date ranges and custom criteria
-
-### 🔧 **Technical Excellence**
-- 🐳 **Containerized**: Docker-ready deployment
-- 🔒 **Secure**: JWT authentication, HMAC webhooks
-- 📱 **Responsive**: Mobile-first design
-- 🌐 **API-First**: RESTful API with OpenAPI documentation
-- 🔄 **Real-Time**: WebSocket integration for live updates
-
-## 🛠️ Architecture
-
-ProjectHub-MCP offers **dual frontend options** for different use cases:
-
-### 🪶 **Alpine.js Frontend** (Recommended)
-- **Ultra-lightweight**: ~50KB total bundle size
-- **Lightning fast**: Sub-second load times
-- **Perfect for**: Embedded use, low-bandwidth, simple deployments
-- **Port**: `8090`
-
-### ⚛️ **React Frontend** (Enterprise)
-- **Feature-rich**: Full TypeScript enterprise UI
-- **Advanced features**: Complex state management, animations
-- **Perfect for**: Large teams, complex workflows, enterprise deployments
-- **Port**: `3000`
+## 🏗️ Architecture
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Alpine.js     │    │     React       │    │   PostgreSQL    │
-│   Frontend      │    │   Frontend      │    │   Database      │
-│   Port 8090     │    │   Port 3000     │    │   Port 5433     │
+│   Frontend      │    │   Backend       │    │   PostgreSQL    │
+│   (Nginx)       │    │   (Node.js)     │    │   Database      │
+│   Port 5174     │◄──►│   Port 3009     │◄──►│   Port 5433     │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
-         │                       │                       │
-         └───────────────────────┼───────────────────────┘
-                                 │
-                    ┌─────────────────┐
-                    │   API Backend   │
-                    │   Port 3009     │
-                    │  (Webhook Proxy)│
-                    └─────────────────┘
+         │                       │
+         └───────────────────────┘
+              Webhook Proxy
+           (Eliminates CORS)
 ```
 
-## 📦 Deployment Options
+## 🚀 Use Cases
 
-### 🎯 **Option 1: One-Command Start (Recommended)**
-```bash
-./start.sh
-```
+- 🏢 **Enterprise Teams**: Multi-project management with role control
+- 💻 **Software Development**: Sprint planning and task tracking
+- 📋 **Task Management**: Personal and team productivity
+- 📊 **Project Analytics**: Performance insights and reporting
+- 🔗 **Team Integration**: Slack notifications and webhook automation
 
-### 🐳 **Option 2: Docker Compose**
-```bash
-# Alpine.js frontend (lightweight)
-docker-compose -f docker-compose.demo.yml up -d
+## 🤖 AI Assistant Integration
 
-# Full React frontend
-docker-compose up -d
-```
+ProjectHub-MCP includes full Model Context Protocol (MCP) support for AI coding assistants:
 
-### 🏢 **Option 3: Production Server Deployment**
-Deploy to your production server using the tested configuration:
-
-```bash
-# SSH to your server
-ssh username@your-server-ip
-
-# One-liner deployment with webhook fixes:
-docker stop projecthub-backend projecthub-frontend projecthub-postgres 2>/dev/null; docker rm projecthub-backend projecthub-frontend projecthub-postgres 2>/dev/null; docker network create root_projecthub-network 2>/dev/null; docker run -d --name projecthub-postgres -e POSTGRES_USER=projecthub -e POSTGRES_PASSWORD=projecthub_password -e POSTGRES_DB=projecthub_mcp -p 5433:5432 --network root_projecthub-network postgres:15-alpine && docker run -d --name projecthub-backend -p 3009:3010 -e DATABASE_URL=postgresql://projecthub:projecthub_password@projecthub-postgres:5432/projecthub_mcp -e JWT_SECRET=your-secret-key-here -e CORS_ORIGIN="*" --network root_projecthub-network anubissbe/projecthub-backend:latest && docker run -d --name projecthub-frontend -p 5174:80 --network root_projecthub-network anubissbe/projecthub-frontend:latest
-
-# Verify deployment
-curl http://your-server-ip:5174/  # Frontend
-curl http://your-server-ip:3009/health  # Backend API (updated port)
-```
-
-**Production URLs:**
-- 🌐 **Frontend**: http://your-server-ip:5174
-- 📡 **Backend API**: http://your-server-ip:3009 ⚠️ **Updated Port**
-- 🗄️ **Database**: your-server-ip:5433
-- 🔧 **Default Login**: admin@projecthub.com / dev123
-
-> 💡 **Note**: Replace `your-server-ip` and `username` with your actual server details
-
-### ⚙️ **Option 4: Manual Setup**
-```bash
-# 1. Start PostgreSQL
-docker run -d --name postgres \
-  -e POSTGRES_USER=projecthub \
-  -e POSTGRES_PASSWORD=projecthub_password \
-  -e POSTGRES_DB=projecthub_mcp \
-  -p 5433:5432 postgres:16-alpine
-
-# 2. Start Alpine.js frontend
-cd new-frontend && docker build -t projecthub-frontend .
-docker run -d -p 8090:80 projecthub-frontend
-```
+- ✅ **Claude Code** - Native MCP integration
+- ✅ **Cline (VSCode)** - Full API support
+- ✅ **GitHub Copilot** - API integration
+- ✅ **Cursor** - Workflow automation
 
 ## 🔧 Configuration
 
@@ -224,313 +191,82 @@ DATABASE_URL=postgresql://projecthub:password@localhost:5433/projecthub_mcp
 
 # Security
 JWT_SECRET=your-secure-secret-here
-WEBHOOK_SECRET=your-webhook-secret-here
 
-# Email (Optional)
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=your-email@example.com
-SMTP_PASS=your-app-password
+# CORS (use * for development only)
+CORS_ORIGIN=http://localhost:5174
 ```
 
-### Advanced Configuration
-- 📝 **Full docs**: See [docs/](docs/) directory
-- 🔐 **Security**: [SECURITY.md](SECURITY.md)
-- 🚀 **Deployment**: [docs/deployment/](docs/deployment/)
-- 📖 **Wiki**: [wiki/](wiki/) for detailed guides
-
-### 🏢 Production Server Deployment Guide
-
-For production deployment on your server, follow these tested steps:
-
-#### Prerequisites
-- SSH access to your server
-- Docker installed
-- Ports 3008, 5174, and 5433 available
-
-#### ⚡ Quick Deployment (Recommended)
-
-**One-liner deployment command:**
-```bash
-ssh username@your-server-ip 'docker stop projecthub-backend projecthub-frontend projecthub-postgres 2>/dev/null; docker rm projecthub-backend projecthub-frontend projecthub-postgres 2>/dev/null; docker network create root_projecthub-network 2>/dev/null; docker run -d --name projecthub-postgres -e POSTGRES_USER=projecthub -e POSTGRES_PASSWORD=projecthub_password -e POSTGRES_DB=projecthub_mcp -p 5433:5432 --network root_projecthub-network postgres:15-alpine && docker run -d --name projecthub-backend -p 3009:3010 -e DATABASE_URL=postgresql://projecthub:projecthub_password@projecthub-postgres:5432/projecthub_mcp -e JWT_SECRET=your-secret-key-here -e CORS_ORIGIN="*" --network root_projecthub-network anubissbe/projecthub-backend:latest && docker run -d --name projecthub-frontend -p 5174:80 --network root_projecthub-network anubissbe/projecthub-frontend:latest'
-```
-
-#### 📋 Step-by-Step Deployment
-
-1. **Connect to Synology NAS**
-   ```bash
-   ssh username@your-server-ip
-   ```
-
-2. **Clean Previous Deployment**
-   ```bash
-   # Stop and remove any existing containers
-   docker stop projecthub-backend projecthub-frontend projecthub-postgres 2>/dev/null
-   docker rm projecthub-backend projecthub-frontend projecthub-postgres 2>/dev/null
-   ```
-
-3. **Deploy Working Version**
-   ```bash
-   # Create network
-   docker network create root_projecthub-network 2>/dev/null
-   
-   # Deploy database
-   docker run -d --name projecthub-postgres \
-     -e POSTGRES_USER=projecthub \
-     -e POSTGRES_PASSWORD=projecthub_password \
-     -e POSTGRES_DB=projecthub_mcp \
-     -p 5433:5432 \
-     --network root_projecthub-network \
-     postgres:15-alpine
-   
-   # Deploy backend (with ALL features)
-   docker run -d --name projecthub-backend \
-     -p 3009:3010 \
-     -e DATABASE_URL=postgresql://projecthub:projecthub_password@projecthub-postgres:5432/projecthub_mcp \
-     -e JWT_SECRET=your-secret-key-here \
-     -e CORS_ORIGIN="*" \
-     --network root_projecthub-network \
-     anubissbe/projecthub-backend:latest
-   
-   # Deploy frontend (Synology-compatible)
-   docker run -d --name projecthub-frontend \
-     -p 5174:80 \
-     --network root_projecthub-network \
-     anubissbe/projecthub-frontend:latest
-   ```
-
-4. **Verify Deployment**
-   ```bash
-   # Check all containers are running
-   docker ps | grep projecthub
-   
-   # Test frontend
-   curl http://localhost:5174/
-   
-   # Test backend API
-   curl http://localhost:3009/health
-   ```
-
-## 🔔 Webhook Integration (CORS-Free!)
-
-**NEW**: Webhook functionality now works without CORS errors!
-
-### 🚀 Quick Webhook Setup
-
-1. **Deploy with latest images** (important for webhook proxy):
-   ```bash
-   docker pull anubissbe/projecthub-backend:latest    # Has webhook proxy
-   docker pull anubissbe/projecthub-frontend:latest   # Updated frontend
-   ```
-
-2. **Access ProjectHub**: http://your-server:5174
-
-3. **Configure Slack Webhook**:
-   - Go to **Settings > Webhooks**
-   - Add your Slack webhook URL
-   - Click **"Test"** - No more CORS errors! ✅
-   - Enable events: `task.created`, `task.completed`
-
-4. **Test Notifications**:
-   - Create a new project and task
-   - Mark task as completed
-   - Check Slack for automatic notification! 🎉
-
-### 🔧 How the CORS Fix Works
-
-The latest backend includes a **webhook proxy service** that:
-- Intercepts webhook calls from the frontend
-- Makes the actual HTTP requests to Slack server-side
-- Returns results back to frontend
-- **No more browser CORS restrictions!**
-
-### 📋 Webhook Endpoints
-
-- **Test webhook**: `POST /api/webhooks/:id/test`
-- **Manage webhooks**: `GET/POST/PUT/DELETE /api/webhooks`
-- **Automatic triggers**: Task creation and completion
-
-#### Docker Images Used (LATEST & RECOMMENDED)
-- **Backend**: `anubissbe/projecthub-backend:latest` (PostgreSQL + Webhook proxy)
-- **Frontend**: `anubissbe/projecthub-frontend:latest` (Updated for webhook fix)
-- **Database**: `postgres:15-alpine`
-
-#### What's Fixed in Latest Images
-- ✅ **Webhook CORS Fix**: Proxy-based webhooks prevent browser CORS errors
-- ✅ **Complete Backend**: Analytics, webhooks, user management all implemented
-- ✅ **Auth Working**: Real JWT tokens, proper logout functionality
-- ✅ **Production Ready**: Nginx config that works on production servers
-- ✅ **No Mock Data**: Clean database, no hardcoded sample data
-- ✅ **Network Connectivity**: Proper Docker networking between services
-
-#### Troubleshooting
-- **Port conflicts**: Ensure ports 3009, 5174, and 5433 are available
-- **Database issues**: Check PostgreSQL health with `docker exec projecthub-postgres pg_isready`
-- **Network problems**: Verify Docker network creation with `docker network ls`
-
-#### Post-Deployment Security
-- Change default JWT secret in backend environment
-- Update database password from default
-- Review and update default admin credentials
-
-#### Additional Resources
-- `DEPLOYMENT_INSTRUCTIONS.md` - Complete deployment guide
-- `deploy-clean-to-synology.sh` - Automated deployment script
-- `verify-deployment.sh` - Deployment verification script
-- `docker-compose.clean.yml` - Clean deployment configuration
-
-## 🛠️ Development
-
-### Prerequisites
-- Node.js 18+
-- Docker & Docker Compose
-- PostgreSQL 16 (or use Docker)
-
-### Local Development
-```bash
-# 1. Clone and setup
-git clone https://github.com/anubissbe/ProjectHub-Mcp.git
-cd ProjectHub-Mcp
-
-# 2. Start development environment
-./start.sh --dev
-
-# 3. Development URLs
-# Alpine.js: http://localhost:8090
-# React: http://localhost:3000
-# API: http://localhost:3007
-# Database: localhost:5433
-```
-
-### Available Scripts
-```bash
-# Deployment
-./start.sh                # Start in development mode
-./start.sh --production   # Start in production mode
-./start.sh --stop         # Stop all services
-./start.sh --logs         # Show logs
-./start.sh --health       # Check service health
-./start.sh --clean        # Clean up everything
-
-# Development (in respective directories)
-npm run dev               # Start development server
-npm run build             # Build for production
-npm run test              # Run tests
-npm run lint              # Run linting
-```
-
-## 🤖 AI Assistant Integration
-
-ProjectHub-MCP includes full support for AI coding assistants through the Model Context Protocol (MCP). This allows AI agents to manage projects, create tasks, and track progress automatically.
-
-### Quick Setup for AI Assistants
-
-1. **Deploy ProjectHub** (see deployment section above)
-2. **Install MCP Server**:
-   ```bash
-   cd mcp-server
-   npm install
-   ```
-3. **Configure your AI assistant** (see [AI Integration Guide](AI-Integration-Guide.md))
-
-### Supported AI Assistants
-- ✅ **Claude Code** - Full MCP integration
-- ✅ **Cline (VSCode)** - Native MCP support
-- ✅ **Gemini CLI** - Custom tool integration
-- ✅ **GitHub Copilot** - API integration
-- ✅ **Cursor** - API rules configuration
-- ✅ **Windsurf (Codeium)** - Workflow automation
-- ✅ **Any MCP-compatible assistant**
-
-See the complete [AI Integration Guide](AI-Integration-Guide.md) for detailed setup instructions.
-
-## 📖 Documentation
-
-| 📚 Resource | 📝 Description |
-|-------------|----------------|
-| [🤖 AI Integration Guide](AI-Integration-Guide.md) | Setup for AI assistants |
-| [📁 docs/](docs/) | Complete documentation |
-| [📖 wiki/](wiki/) | User guides and tutorials |
-| [🏗️ PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) | Architecture overview |
-| [🔒 SECURITY.md](SECURITY.md) | Security policy |
-| [📋 CHANGELOG.md](CHANGELOG.md) | Version history |
-| [🤝 CONTRIBUTING.md](CONTRIBUTING.md) | Contribution guidelines |
-
-## 🔒 Security
-
-- 🛡️ **JWT Authentication** with refresh tokens
-- 🔐 **HMAC Webhook Security** for external integrations
-- 🚨 **Automated Security Scanning** with CodeQL and Trivy
-- 🔍 **Regular Dependency Updates** via Renovate
-- 📋 **Security Policy**: See [SECURITY.md](SECURITY.md)
-
-**Supported Versions**: Current version 4.6.x receives security updates.
-
-## 🤝 Contributing
-
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
-
-### Quick Contribution Setup
-```bash
-# 1. Fork the repository
-# 2. Clone your fork
-git clone https://github.com/yourusername/ProjectHub-Mcp.git
-
-# 3. Create a feature branch
-git checkout -b feature/amazing-feature
-
-# 4. Start development environment
-./start.sh --dev
-
-# 5. Make your changes and test
-# 6. Submit a pull request
+### Docker Compose Override
+```yaml
+# docker-compose.override.yml
+version: '3.8'
+services:
+  backend:
+    environment:
+      - JWT_SECRET=your-production-secret
+      - CORS_ORIGIN=https://yourdomain.com
+  
+  postgres:
+    environment:
+      - POSTGRES_PASSWORD=your-secure-password
 ```
 
 ## 📊 Project Stats
 
 - 🏗️ **Architecture**: Microservices with Docker
-- 📦 **Package Size**: Alpine.js ~50KB, React ~2MB
-- 🚀 **Performance**: <1s load time (Alpine.js)
-- 📱 **Mobile**: 100% responsive design
+- 📦 **Bundle Size**: Frontend ~150KB compressed
+- 🚀 **Performance**: <2s load time, real-time updates
+- 📱 **Responsive**: 100% mobile-compatible
 - 🌍 **Browsers**: Chrome, Firefox, Safari, Edge
-- 🔧 **APIs**: RESTful with OpenAPI documentation
+- 🔧 **APIs**: RESTful with comprehensive documentation
 
-## 🎯 Use Cases
+## 🛠️ Troubleshooting
 
-- 🏢 **Enterprise Teams**: Multi-workspace project management
-- 💻 **Software Development**: Sprint planning and tracking
-- 📋 **Task Management**: Personal and team productivity
-- 📊 **Analytics**: Project performance insights
-- 🔗 **Integration**: MCP ecosystem compatibility
-- 📱 **Mobile Teams**: Responsive mobile-first interface
+### Common Issues
 
-## 🚀 Roadmap
+**Port conflicts**: Ensure ports 3009, 5174, and 5433 are available
+```bash
+# Check ports
+netstat -tlnp | grep -E "(3009|5174|5433)"
+```
 
-- [ ] 🔄 **Real-time Collaboration**: Live editing and comments
-- [ ] 🤖 **AI Integration**: Intelligent task recommendations
-- [ ] 📱 **Mobile Apps**: Native iOS and Android applications
-- [ ] 🔌 **Plugin System**: Extensible architecture
-- [ ] 🌐 **Multi-language**: Internationalization support
+**Database connection**: Verify PostgreSQL health
+```bash
+docker exec projecthub-postgres pg_isready -U projecthub
+```
 
-See [ROADMAP.md](ROADMAP.md) for detailed planning.
+**Webhook CORS errors**: Use latest images with proxy fix
+```bash
+docker pull anubissbe/projecthub-backend:latest
+docker pull anubissbe/projecthub-frontend:latest
+```
+
+**Container networking**: Check Docker network
+```bash
+docker network ls | grep projecthub
+```
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## 🤝 Contributing
 
-- 🎨 **UI/UX**: Inspired by modern project management tools
-- 🔧 **Technology**: Built with industry-standard frameworks
-- 🌟 **Community**: Thanks to all contributors and users
-- 📚 **Documentation**: Comprehensive guides and examples
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+```bash
+# Quick contribution setup
+git clone https://github.com/anubissbe/ProjectHub-Mcp.git
+cd ProjectHub-Mcp
+docker-compose up -d
+# Make changes and submit PR
+```
 
 ## 📞 Support
 
 - 🐛 **Bug Reports**: [GitHub Issues](https://github.com/anubissbe/ProjectHub-Mcp/issues)
 - 💬 **Discussions**: [GitHub Discussions](https://github.com/anubissbe/ProjectHub-Mcp/discussions)
-- 📧 **Contact**: See [CONTRIBUTING.md](CONTRIBUTING.md) for contact information
-- 📖 **Documentation**: [docs/](docs/) and [wiki/](wiki/) directories
+- 📖 **Documentation**: [Wiki](https://github.com/anubissbe/ProjectHub-Mcp/wiki)
 
 ---
 
@@ -538,8 +274,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **🚀 Ready to revolutionize your project management?**
 
-[**Get Started**](https://github.com/anubissbe/ProjectHub-Mcp) • [**Documentation**](docs/) • [**Live Demo**](http://your-demo-url.com)
+[**Get Started**](https://github.com/anubissbe/ProjectHub-Mcp) • [**Live Demo**](http://localhost:5174) • [**Docker Hub**](https://hub.docker.com/u/anubissbe)
 
-*Built with ❤️ by the ProjectHub-MCP Team*
+*Built with ❤️ for the open source community*
 
 </div>
