@@ -358,10 +358,36 @@ npm run test              # Run tests
 npm run lint              # Run linting
 ```
 
+## 🤖 AI Assistant Integration
+
+ProjectHub-MCP includes full support for AI coding assistants through the Model Context Protocol (MCP). This allows AI agents to manage projects, create tasks, and track progress automatically.
+
+### Quick Setup for AI Assistants
+
+1. **Deploy ProjectHub** (see deployment section above)
+2. **Install MCP Server**:
+   ```bash
+   cd mcp-server
+   npm install
+   ```
+3. **Configure your AI assistant** (see [AI Integration Guide](AI-Integration-Guide.md))
+
+### Supported AI Assistants
+- ✅ **Claude Code** - Full MCP integration
+- ✅ **Cline (VSCode)** - Native MCP support
+- ✅ **Gemini CLI** - Custom tool integration
+- ✅ **GitHub Copilot** - API integration
+- ✅ **Cursor** - API rules configuration
+- ✅ **Windsurf (Codeium)** - Workflow automation
+- ✅ **Any MCP-compatible assistant**
+
+See the complete [AI Integration Guide](AI-Integration-Guide.md) for detailed setup instructions.
+
 ## 📖 Documentation
 
 | 📚 Resource | 📝 Description |
 |-------------|----------------|
+| [🤖 AI Integration Guide](AI-Integration-Guide.md) | Setup for AI assistants |
 | [📁 docs/](docs/) | Complete documentation |
 | [📖 wiki/](wiki/) | User guides and tutorials |
 | [🏗️ PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) | Architecture overview |

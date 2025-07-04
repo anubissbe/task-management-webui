@@ -1,0 +1,32 @@
+{
+  "name": "projecthub-mcp-server",
+  "version": "1.0.0",
+  "description": "MCP server wrapper for ProjectHub API integration",
+  "main": "projecthub-mcp-wrapper.js",
+  "bin": {
+    "projecthub-mcp": "./projecthub-mcp-wrapper.js"
+  },
+  "scripts": {
+    "start": "node projecthub-mcp-wrapper.js",
+    "test": "node test-connection.js"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "projecthub",
+    "ai-assistant",
+    "project-management"
+  ],
+  "author": "ProjectHub Team",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.5.0",
+    "axios": "^1.6.2"
+  },
+  "devDependencies": {
+    "dotenv": "^16.3.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
