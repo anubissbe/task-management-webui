@@ -196,6 +196,27 @@ app.post('/api/projects', async (req, res) => {
   }
 });
 
+app.delete('/api/projects/:id', async (req, res) => {
+  try {
+    const projectId = req.params.id;
+    
+    // First, delete all tasks associated with the project
+    await pool.query('DELETE FROM tasks WHERE project_id = $1', [projectId]);
+    
+    // Then delete the project
+    const result = await pool.query('DELETE FROM projects WHERE id = $1 RETURNING *', [projectId]);
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Project not found' });
+    }
+    
+    res.status(204).send();
+  } catch (error) {
+    console.error('Project deletion error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // Tasks endpoints
 app.get('/api/tasks', async (req, res) => {
   try {

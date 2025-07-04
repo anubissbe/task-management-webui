@@ -595,6 +595,28 @@ function projectHub() {
             }
         },
         
+        // Delete project
+        async deleteProject(project) {
+            if (!project) return;
+            
+            const taskCount = project.total_tasks || 0;
+            const confirmMessage = taskCount > 0 
+                ? `Are you sure you want to delete "${project.name}"? This will also delete ${taskCount} associated task(s).`
+                : `Are you sure you want to delete "${project.name}"?`;
+            
+            if (confirm(confirmMessage)) {
+                const result = await api.delete(`/projects/${project.id}`);
+                if (result !== null) {
+                    // Go back to projects list
+                    this.selectedProject = null;
+                    await this.loadProjects();
+                    this.showNotification('Project deleted successfully!');
+                } else {
+                    this.showNotification('Failed to delete project', 'error');
+                }
+            }
+        },
+        
         // Create new task
         async createTask() {
             const result = await api.post('/tasks', this.newTask);
