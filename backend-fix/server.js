@@ -278,6 +278,38 @@ app.post('/api/tasks', async (req, res) => {
   const { title, description, project_id, priority = 'medium', status = 'pending', assignee_id } = req.body;
   
   try {
+    // Validation: Ensure title is provided
+    if (!title || !title.trim()) {
+      return res.status(400).json({ 
+        error: 'Validation failed',
+        message: 'Task title is required' 
+      });
+    }
+    
+    // Validation: Ensure project_id is provided
+    if (!project_id) {
+      return res.status(400).json({ 
+        error: 'Validation failed',
+        message: 'Project selection is required. Please select a project for this task.' 
+      });
+    }
+    
+    // Verify project exists in database
+    const projectCheck = await pool.query(
+      'SELECT id, name FROM projects WHERE id = $1',
+      [project_id]
+    );
+    
+    if (projectCheck.rows.length === 0) {
+      return res.status(400).json({ 
+        error: 'Invalid project',
+        message: `Project with ID ${project_id} does not exist. Please select a valid project.` 
+      });
+    }
+    
+    const project = projectCheck.rows[0];
+    
+    // Create the task
     const result = await pool.query(`
       INSERT INTO tasks (title, description, project_id, priority, status, assignee_id, created_at, updated_at)
       VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW())
@@ -286,16 +318,12 @@ app.post('/api/tasks', async (req, res) => {
     
     const task = result.rows[0];
     
-    // Get project for webhook notification
-    const projectResult = await pool.query('SELECT name FROM projects WHERE id = $1', [project_id]);
-    const project = projectResult.rows[0];
-    
-    // Trigger webhook notification
+    // Trigger webhook notification with guaranteed project name
     try {
       await triggerWebhookNotification('task.created', {
         title: task.title,
         description: task.description,
-        projectName: project ? project.name : 'Unknown Project',
+        projectName: project.name,  // No fallback needed - project is validated
         priority: task.priority,
         createdBy: req.user ? `${req.user.first_name || ''} ${req.user.last_name || ''}`.trim() : 'System'
       });
@@ -348,7 +376,7 @@ app.put('/api/tasks/:id', async (req, res) => {
       try {
         await triggerWebhookNotification('task.completed', {
           title: updatedTask.title,
-          projectName: project ? project.name : 'Unknown Project',
+          projectName: project ? project.name : 'Unassigned',
           priority: updatedTask.priority,
           completedBy: req.user ? `${req.user.first_name || ''} ${req.user.last_name || ''}`.trim() : 'System'
         });
@@ -550,7 +578,7 @@ async function triggerWebhookNotification(event, data) {
                   },
                   {
                     type: 'mrkdwn',
-                    text: `*Project:* ${data.projectName || 'N/A'}`
+                    text: `*Project:* ${data.projectName || 'Unassigned'}`
                   },
                   {
                     type: 'mrkdwn',
