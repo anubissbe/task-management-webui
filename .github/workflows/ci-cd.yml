@@ -28,41 +28,39 @@ jobs:
       - name: 📦 Checkout code
         uses: actions/checkout@v4
 
-      - name: 🧪 Validate Alpine.js Frontend
-        working-directory: ./new-frontend
+      - name: 🧪 Validate Backend
+        working-directory: ./backend-fix
         run: |
-          echo "🔍 Validating Alpine.js frontend structure..."
+          echo "🔍 Validating backend structure..."
           
           # Check required files
-          test -f index-complete.html || { echo "❌ index-complete.html missing"; exit 1; }
-          test -f app-webhook-final.js || { echo "❌ app-webhook-final.js missing"; exit 1; }
+          test -f server.js || { echo "❌ server.js missing"; exit 1; }
+          test -f security-utils.js || { echo "❌ security-utils.js missing"; exit 1; }
           test -f Dockerfile || { echo "❌ Dockerfile missing"; exit 1; }
+          test -f package.json || { echo "❌ package.json missing"; exit 1; }
           
-          # Validate HTML structure
-          grep -q "x-data=\"projectHub()\"" index-complete.html || { echo "❌ Alpine.js initialization missing"; exit 1; }
-          grep -q "Alpine.js" index-complete.html || { echo "❌ Alpine.js CDN missing"; exit 1; }
-          
-          # Validate JavaScript
-          grep -q "Alpine.data('projectHub'," app-webhook-final.js || { echo "❌ Main Alpine component missing"; exit 1; }
-          grep -q "webhooks:" app-webhook-final.js || { echo "❌ Webhooks functionality missing"; exit 1; }
+          # Validate server.js structure
+          grep -q "app.post('/api/tasks'" server.js || { echo "❌ Task creation endpoint missing"; exit 1; }
+          grep -q "Project selection is required" server.js || { echo "❌ Project validation missing"; exit 1; }
           
           echo "✅ All validations passed!"
 
       - name: 🏗️ Test Docker Build
-        working-directory: ./new-frontend
         run: |
-          echo "🐳 Testing Docker build..."
-          docker build -t test-frontend:${{ github.sha }} .
-          echo "✅ Docker build successful!"
+          echo "🐳 Testing Docker builds..."
+          docker build -t test-backend:${{ github.sha }} ./backend-fix
+          docker build -t test-frontend:${{ github.sha }} ./frontend
+          echo "✅ Docker builds successful!"
 
       - name: 📝 Generate Test Report
         if: always()
         run: |
           echo "# 🧪 Test Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- Frontend Validation: ✅ Passed" >> $GITHUB_STEP_SUMMARY
-          echo "- Docker Build: ✅ Successful" >> $GITHUB_STEP_SUMMARY
-          echo "- Image Tag: test-frontend:${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Backend Validation: ✅ Passed" >> $GITHUB_STEP_SUMMARY
+          echo "- Docker Builds: ✅ Successful" >> $GITHUB_STEP_SUMMARY
+          echo "- Backend Image: test-backend:${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Frontend Image: test-frontend:${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
 
   build-and-publish:
     name: 🐳 Build & Publish
@@ -100,8 +98,8 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}-frontend
-            ${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}-frontend
+            ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}-backend
+            ${{ env.DOCKERHUB_USERNAME }}/projecthub-backend
           tags: |
             type=ref,event=branch
             type=ref,event=tag
@@ -109,16 +107,16 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=raw,value=latest,enable={{is_default_branch}}
           labels: |
-            org.opencontainers.image.title=ProjectHub Frontend
-            org.opencontainers.image.description=Alpine.js-powered project management platform
+            org.opencontainers.image.title=ProjectHub Backend
+            org.opencontainers.image.description=ProjectHub API backend with task validation
             org.opencontainers.image.vendor=ProjectHub
             
       - name: 🏗️ Build and push Docker image
         uses: docker/build-push-action@v6
         id: build
         with:
-          context: ./new-frontend
-          file: ./new-frontend/Dockerfile
+          context: ./backend-fix
+          file: ./backend-fix/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -138,12 +136,12 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### GitHub Container Registry" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-          echo "ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}-frontend:latest" >> $GITHUB_STEP_SUMMARY
+          echo "ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}-backend:latest" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Docker Hub" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-          echo "docker.io/${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}-frontend:latest" >> $GITHUB_STEP_SUMMARY
+          echo "docker.io/${{ env.DOCKERHUB_USERNAME }}/projecthub-backend:latest" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "## 🔍 Image Details" >> $GITHUB_STEP_SUMMARY
@@ -173,7 +171,7 @@ jobs:
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "### 🎯 Quick Start" >> $GITHUB_STEP_SUMMARY
             echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
-            echo "docker run -d -p 8090:80 ghcr.io/${{ github.repository_owner }}/projecthub-mcp-frontend:latest" >> $GITHUB_STEP_SUMMARY
+            echo "docker run -d -p 3009:3010 ghcr.io/${{ github.repository_owner }}/projecthub-mcp-backend:latest" >> $GITHUB_STEP_SUMMARY
             echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
           else
             echo "## ❌ Deployment Failed" >> $GITHUB_STEP_SUMMARY
