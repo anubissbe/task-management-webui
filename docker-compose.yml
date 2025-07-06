@@ -1,5 +1,15 @@
 version: '3.8'
 
+# ProjectHub Docker Compose Configuration
+# 
+# IMPORTANT: Create a .env file with:
+#   JWT_SECRET=your-secure-random-string-here
+#   POSTGRES_PASSWORD=projecthub123 (or your custom password)
+#
+# Quick start:
+#   echo "JWT_SECRET=$(openssl rand -base64 32)" > .env
+#   docker-compose up -d
+
 services:
   postgres:
     image: postgres:15-alpine
@@ -35,9 +45,11 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3010
+      # IMPORTANT: Uses container name 'postgres' not localhost or external IP
       DATABASE_URL: postgresql://projecthub:${POSTGRES_PASSWORD:-projecthub123}@postgres:5432/projecthub
       CORS_ORIGIN: ${CORS_ORIGIN:-*}
-      JWT_SECRET: ${JWT_SECRET:-generate-a-secure-random-secret-here}
+      # CRITICAL: Must set JWT_SECRET in .env file for security!
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET environment variable is required}
     ports:
       - "${BACKEND_PORT:-3009}:3010"
     networks:

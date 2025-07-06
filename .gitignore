@@ -4,10 +4,13 @@
 
 # Environment Variables
 .env
+.env.*
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+.env.production
+!.env.example
 
 # Dependency directories
 node_modules/
@@ -83,6 +86,8 @@ docker-compose.override.yml
 *.pfx
 secrets/
 private/
+ssl/
+certbot/
 
 # Local development
 .local/
@@ -176,9 +181,9 @@ dump_*.sql
 !*example.js
 !*template.js
 
-# Production configurations
-docker-compose.prod.yml
-docker-compose.production.yml
+# Production configurations (keep these in repo for documentation)
+# docker-compose.prod.yml
+# docker-compose.production.yml
 
 # Monitoring and analytics
 .vscode/settings.json

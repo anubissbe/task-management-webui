@@ -137,6 +137,24 @@ ProjectHub-MCP is a cutting-edge project management platform designed for modern
 - 4GB RAM minimum
 - Ports 3009, 5174, 5433 available
 
+### ⚠️ Important Configuration Notes
+
+1. **JWT_SECRET**: You MUST set a secure JWT_SECRET in your environment or `.env` file:
+   ```bash
+   export JWT_SECRET="your-very-secure-random-string-here"
+   # Or add to .env file:
+   # JWT_SECRET=your-very-secure-random-string-here
+   ```
+
+2. **Database Password**: The default admin password is `admin123`. On first login, you may need to update it:
+   ```bash
+   # If authentication fails, update the admin password:
+   docker exec projecthub-postgres psql -U projecthub -d projecthub -c \
+     "UPDATE users SET password = '\$2a\$10\$ILQeDcYjXZBPJDIAiA.PnOgs1rqZaYecV5dVLmjKdoFViZGX1W1.W' WHERE email = 'admin@projecthub.com';"
+   ```
+
+3. **Network Configuration**: All containers must be on the same Docker network (`projecthub-network`)
+
 ### 🐳 Docker Deployment (Recommended)
 
 ```bash
@@ -144,14 +162,26 @@ ProjectHub-MCP is a cutting-edge project management platform designed for modern
 git clone https://github.com/anubissbe/ProjectHub-Mcp.git
 cd ProjectHub-Mcp
 
+# Create .env file with secure JWT secret
+echo "JWT_SECRET=$(openssl rand -base64 32)" > .env
+echo "POSTGRES_PASSWORD=projecthub123" >> .env
+
 # Start all services
 docker-compose up -d
+
+# Wait for services to be healthy (important!)
+sleep 10
 
 # Verify deployment
 docker-compose ps
 
-# View logs
-docker-compose logs -f
+# Check backend logs for successful database connection
+docker logs projecthub-backend | grep "Connected to PostgreSQL"
+
+# Test authentication
+curl -X POST http://localhost:3009/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@projecthub.com","password":"admin123"}'
 ```
 
 Access the application:
@@ -166,15 +196,30 @@ Default credentials:
 ### 🏢 Production Deployment
 
 ```bash
+# Create secure environment file
+cat > .env.production << EOF
+JWT_SECRET=$(openssl rand -base64 32)
+POSTGRES_PASSWORD=$(openssl rand -base64 16)
+CORS_ORIGIN=https://your-domain.com
+NODE_ENV=production
+EOF
+
 # Pull latest images
-docker pull anubissbe/projecthub-frontend:5.0.0
-docker pull anubissbe/projecthub-backend:5.0.0
+docker pull anubissbe/projecthub:latest
+docker pull anubissbe/projecthub-frontend:latest
 
 # Deploy with production config
-docker-compose -f docker-compose.prod.yml up -d
+docker-compose --env-file .env.production up -d
 
-# Setup SSL/TLS (optional)
-# See documentation for nginx reverse proxy setup
+# Wait for database to initialize
+sleep 15
+
+# Set admin password (if using custom password)
+docker exec projecthub-postgres psql -U projecthub -d projecthub -c \
+  "UPDATE users SET password = '\$2a\$10\$ILQeDcYjXZBPJDIAiA.PnOgs1rqZaYecV5dVLmjKdoFViZGX1W1.W' WHERE email = 'admin@projecthub.com';"
+
+# Verify deployment
+curl http://localhost:3009/health
 ```
 
 ## 🏗️ Architecture
