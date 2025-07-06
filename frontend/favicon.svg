@@ -1,12 +1,58 @@
 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
+    <!-- Background gradient -->
     <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#000000;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#1a1a1a;stop-opacity:1" />
+      <stop offset="0%" style="stop-color:#0a0a0a;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#1a1a1a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0a0a0a;stop-opacity:1" />
     </linearGradient>
+    
+    <!-- Orange gradient for accents -->
+    <linearGradient id="orangeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff6500;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#cc5200;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Glow effect -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
   </defs>
-  <rect width="32" height="32" rx="6" fill="url(#bgGrad)" stroke="#f97316" stroke-width="1"/>
-  <text x="8" y="22" fill="white" font-family="Arial, sans-serif" font-size="12" font-weight="bold">P</text>
-  <text x="18" y="22" fill="#f97316" font-family="Arial, sans-serif" font-size="12" font-weight="bold">h</text>
-  <circle cx="26" cy="8" r="2" fill="#f97316" opacity="0.8"/>
+  
+  <!-- Background with rounded corners -->
+  <rect width="32" height="32" rx="8" fill="url(#bgGrad)"/>
+  
+  <!-- Orange border glow -->
+  <rect width="32" height="32" rx="8" fill="none" stroke="url(#orangeGrad)" stroke-width="1" opacity="0.5" filter="url(#glow)"/>
+  
+  <!-- Project nodes -->
+  <g>
+    <!-- Central hub -->
+    <circle cx="16" cy="16" r="4" fill="url(#orangeGrad)" filter="url(#glow)"/>
+    
+    <!-- Connected nodes -->
+    <circle cx="8" cy="8" r="2.5" fill="#ff6500" opacity="0.8"/>
+    <circle cx="24" cy="8" r="2.5" fill="#ff6500" opacity="0.8"/>
+    <circle cx="8" cy="24" r="2.5" fill="#ff6500" opacity="0.8"/>
+    <circle cx="24" cy="24" r="2.5" fill="#ff6500" opacity="0.8"/>
+    
+    <!-- Connection lines -->
+    <line x1="12" y1="12" x2="8" y2="8" stroke="#ff6500" stroke-width="1" opacity="0.4"/>
+    <line x1="20" y1="12" x2="24" y2="8" stroke="#ff6500" stroke-width="1" opacity="0.4"/>
+    <line x1="12" y1="20" x2="8" y2="24" stroke="#ff6500" stroke-width="1" opacity="0.4"/>
+    <line x1="20" y1="20" x2="24" y2="24" stroke="#ff6500" stroke-width="1" opacity="0.4"/>
+  </g>
+  
+  <!-- P letter overlay -->
+  <path d="M10 20V12h4c2.2 0 4 1.8 4 4s-1.8 4-4 4h-2m0-4h2" 
+        fill="none" 
+        stroke="white" 
+        stroke-width="1.5" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"
+        opacity="0.9"/>
 </svg>
