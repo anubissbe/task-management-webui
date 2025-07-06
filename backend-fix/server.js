@@ -63,8 +63,12 @@ app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
 app.use(express.json());
 
-// JWT Secret
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+// JWT Secret - must be provided via environment variable
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  console.error('FATAL: JWT_SECRET environment variable is not set');
+  process.exit(1);
+}
 
 // Rate limiting middleware
 const rateLimitMiddleware = (req, res, next) => {
@@ -128,8 +132,8 @@ app.post('/api/auth/login', async (req, res) => {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
     
-    // For development, allow simple password or check bcrypt
-    const validPassword = password === 'dev123' || await bcrypt.compare(password, user.password);
+    // Verify password using bcrypt
+    const validPassword = await bcrypt.compare(password, user.password);
     
     if (!validPassword) {
       return res.status(401).json({ error: 'Invalid credentials' });
