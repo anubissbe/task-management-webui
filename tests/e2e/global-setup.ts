@@ -44,31 +44,32 @@ async function setupTestUsers(page: any) {
   // Admin user should already exist from migration
   // Create additional test users for E2E tests
   
+  // gitleaks:allow - These are test credentials for E2E testing only
   const testUsers = [
     {
       email: 'test@projecthub.local',
-      password: 'testpassword123',
+      password: 'testpassword123', // gitleaks:allow
       firstName: 'Test',
       lastName: 'User',
       role: 'developer'
     },
     {
       email: 'manager@projecthub.local',
-      password: 'managerpass',
+      password: 'managerpass', // gitleaks:allow
       firstName: 'Test',
       lastName: 'Manager',
       role: 'manager'
     },
     {
       email: 'viewer@projecthub.local',
-      password: 'viewerpass',
+      password: 'viewerpass', // gitleaks:allow
       firstName: 'Test',
       lastName: 'Viewer',
       role: 'viewer'
     },
     {
       email: 'member@projecthub.local',
-      password: 'memberpass',
+      password: 'memberpass', // gitleaks:allow
       firstName: 'Team',
       lastName: 'Member',
       role: 'developer'
@@ -102,7 +103,7 @@ async function setupTestProjects(page: any) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: 'admin@projecthub.local',
-          password: 'admin123'
+          password: 'admin123' // gitleaks:allow - test admin credential
         })
       });
       return response.json();

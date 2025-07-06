@@ -1,0 +1,80 @@
+# Gitleaks configuration for ProjectHub-Mcp
+# This file configures gitleaks to ignore known test/demo credentials
+
+title = "ProjectHub Gitleaks Configuration"
+
+[extend]
+# Extend the base configuration
+useDefault = true
+
+[[allow]]
+# Allow demo admin credentials in documentation
+description = "Demo admin credentials for local development"
+regexes = [
+    '''admin@projecthub\.com''',
+    '''admin123'''
+]
+paths = [
+    '''README\.md''',
+    '''CLAUDE_QUICK_SETUP\.md''',
+    '''docs/.*'''
+]
+
+[[allow]]
+# Allow test database password
+description = "Test database password for local PostgreSQL"
+regexes = [
+    '''projecthub123''',
+    '''POSTGRES_PASSWORD=projecthub123'''
+]
+paths = [
+    '''\.env\.example''',
+    '''docker-compose\.yml''',
+    '''docker-compose\..*\.yml'''
+]
+
+[[allow]]
+# Allow E2E test credentials
+description = "E2E test user credentials"
+paths = [
+    '''tests/e2e/.*\.ts''',
+    '''tests/.*\.test\.ts''',
+    '''tests/.*\.spec\.ts'''
+]
+
+[[allow]]
+# Allow git config email in build scripts
+description = "Git configuration email for commits"
+regexes = [
+    '''bert@telkom\.be'''
+]
+paths = [
+    '''scripts/.*\.sh'''
+]
+
+[[allow]]
+# Allow localhost URLs with credentials
+description = "Local development URLs"
+regexes = [
+    '''localhost:\d+''',
+    '''127\.0\.0\.1:\d+'''
+]
+
+# Additional allowlist for common test patterns
+[[allow]]
+description = "Common test account patterns"
+regexes = [
+    '''test@.*\.local''',
+    '''testpassword\d*''',
+    '''manager@.*\.local''',
+    '''managerpass''',
+    '''viewer@.*\.local''',
+    '''viewerpass''',
+    '''member@.*\.local''',
+    '''memberpass'''
+]
+paths = [
+    '''tests/.*''',
+    '''__tests__/.*''',
+    '''test/.*'''
+]

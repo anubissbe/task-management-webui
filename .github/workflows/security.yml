@@ -94,6 +94,8 @@ jobs:
       - name: 🔍 Gitleaks scan
         uses: gitleaks/gitleaks-action@v2
         continue-on-error: true
+        with:
+          config-path: .gitleaks.toml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
