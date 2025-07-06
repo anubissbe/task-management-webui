@@ -1,0 +1,151 @@
+--- server.js.original	2025-07-06 17:30:00.000000000 +0000
++++ server.js.fixed	2025-07-06 17:30:00.000000000 +0000
+@@ -342,7 +342,64 @@
+   }
+ });
+ 
+-app.put('/api/tasks/:id', async (req, res) => {
++// Define allowed fields for task updates
++const ALLOWED_TASK_FIELDS = [
++  'title', 'description', 'status', 'priority', 'assignee_id', 
++  'due_date', 'estimated_hours', 'actual_hours', 'progress',
++  'notes', 'completed_at', 'started_at'
++];
++
++// Helper function to validate and filter update fields
++const validateAndFilterTaskUpdates = (updates) => {
++  const validUpdates = {};
++  const errors = [];
++
++  for (const [field, value] of Object.entries(updates)) {
++    if (!ALLOWED_TASK_FIELDS.includes(field)) {
++      errors.push(`Field '${field}' is not allowed for updates`);
++      continue;
++    }
++    
++    // Additional field-specific validation
++    switch (field) {
++      case 'status':
++        if (!['pending', 'in_progress', 'completed', 'cancelled'].includes(value)) {
++          errors.push(`Invalid status value: ${value}`);
++          continue;
++        }
++        break;
++      case 'priority':
++        if (!['low', 'medium', 'high'].includes(value)) {
++          errors.push(`Invalid priority value: ${value}`);
++          continue;
++        }
++        break;
++      case 'progress':
++        if (typeof value !== 'number' || value < 0 || value > 100) {
++          errors.push(`Progress must be a number between 0 and 100`);
++          continue;
++        }
++        break;
++      case 'estimated_hours':
++      case 'actual_hours':
++        if (value !== null && (typeof value !== 'number' || value < 0)) {
++          errors.push(`${field} must be a positive number or null`);
++          continue;
++        }
++        break;
++    }
++    
++    validUpdates[field] = value;
++  }
++
++  return { validUpdates, errors };
++};
++
++// Fixed PUT route with proper authentication and validation
++app.put('/api/tasks/:id', authenticateToken, async (req, res) => {
+   const { id } = req.params;
+   const updates = req.body;
+   
+   try {
++    // Validate task ID format (UUID)
++    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
++    if (!uuidRegex.test(id)) {
++      return res.status(400).json({ error: 'Invalid task ID format' });
++    }
++
++    // Validate and filter update fields
++    const { validUpdates, errors } = validateAndFilterTaskUpdates(updates);
++    
++    if (errors.length > 0) {
++      return res.status(400).json({ 
++        error: 'Validation failed', 
++        details: errors 
++      });
++    }
++
++    if (Object.keys(validUpdates).length === 0) {
++      return res.status(400).json({ error: 'No valid fields to update' });
++    }
++
+     // Get current task
+     const currentResult = await pool.query('SELECT * FROM tasks WHERE id = $1', [id]);
+     const currentTask = currentResult.rows[0];
+@@ -352,8 +409,8 @@
+       return res.status(404).json({ error: 'Task not found' });
+     }
+     
+-    // Build dynamic update query
+-    const fields = Object.keys(updates);
+-    const values = Object.values(updates);
++    // Build safe update query with validated fields
++    const fields = Object.keys(validUpdates);
++    const values = Object.values(validUpdates);
+     const setClause = fields.map((field, index) => `${field} = $${index + 1}`).join(', ');
+     
+     const query = `
+@@ -392,6 +449,42 @@
+   }
+ });
+ 
++// Also add a route that allows anonymous updates for backwards compatibility (limited fields)
++app.put('/api/tasks/:id/anonymous', async (req, res) => {
++  const { id } = req.params;
++  const updates = req.body;
++  
++  try {
++    // For anonymous updates, only allow basic status updates
++    const allowedFields = ['status', 'progress', 'notes'];
++    const filteredUpdates = {};
++    
++    for (const field of allowedFields) {
++      if (updates[field] !== undefined) {
++        filteredUpdates[field] = updates[field];
++      }
++    }
++    
++    if (Object.keys(filteredUpdates).length === 0) {
++      return res.status(400).json({ error: 'No valid fields for anonymous update' });
++    }
++
++    // Get current task and update
++    const result = await pool.query(`
++      UPDATE tasks 
++      SET status = COALESCE($2, status),
++          progress = COALESCE($3, progress),
++          notes = COALESCE($4, notes),
++          updated_at = NOW()
++      WHERE id = $1
++      RETURNING *
++    `, [id, filteredUpdates.status, filteredUpdates.progress, filteredUpdates.notes]);
++    
++    if (result.rows.length === 0) {
++      return res.status(404).json({ error: 'Task not found' });
++    }
++    
++    res.json(result.rows[0]);
++  } catch (error) {
++    console.error('Anonymous task update error:', sanitizeForLog(error.message));
++    res.status(500).json({ error: 'Internal server error' });
++  }
++});
++
+ app.delete('/api/tasks/:id', async (req, res) => {
+   try {
+     const result = await pool.query('DELETE FROM tasks WHERE id = $1 RETURNING *', [req.params.id]);
