@@ -94,10 +94,9 @@ jobs:
       - name: 🔍 Gitleaks scan
         uses: gitleaks/gitleaks-action@v2
         continue-on-error: true
-        with:
-          config-path: .gitleaks.toml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_CONFIG: .gitleaks.toml
 
   docker-scan:
     name: 🐳 Docker Image Security
@@ -110,7 +109,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: 🏗️ Build Docker image
-        working-directory: ./new-frontend
+        working-directory: ./frontend
         run: |
           docker build -t projecthub-security-scan:${{ github.sha }} .
 
