@@ -102,7 +102,7 @@ jobs:
   docker-scan:
     name: Docker Image Security
     runs-on: ubuntu-latest
-    if: false  # Temporarily disabled to prevent queue issues
+    if: ${{ false }}  # Temporarily disabled to prevent queue issues
     timeout-minutes: 15
     
     steps:
