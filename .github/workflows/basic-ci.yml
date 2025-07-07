@@ -36,7 +36,7 @@ jobs:
           fi
           
           # Check frontend structure
-          if [ -f "frontend/index-complete.html" ]; then
+          if [ -f "frontend/index.html" ]; then
             echo "✅ Frontend exists"
           else
             echo "❌ Frontend missing"

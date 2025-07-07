@@ -82,7 +82,7 @@ jobs:
           fetch-depth: 0
 
       - name: 🔍 GitGuardian scan
-        if: secrets.GITGUARDIAN_API_KEY
+        if: ${{ secrets.GITGUARDIAN_API_KEY }}
         uses: GitGuardian/ggshield-action@v1
         continue-on-error: true
         env:
