@@ -6,90 +6,77 @@ This file provides guidance to Claude Code when working with ProjectHub-MCP.
 
 ProjectHub API is available at: http://192.168.1.24:3009/api
 
-### Authentication with Auto-Refresh
-
-Use this JavaScript class for all ProjectHub API interactions:
+### 🎯 Quick Start Example
 
 ```javascript
+// Create a project and add tasks in one go
+const project = await projectHub.createProject(
+  "Fix User Authentication Bug", 
+  "Resolve login issues reported by users"
+);
+
+await projectHub.createTask(
+  project.id, 
+  "Debug login endpoint", 
+  "Check JWT token validation", 
+  "high"
+);
+
+await projectHub.createTask(
+  project.id, 
+  "Fix password hashing", 
+  "Update bcrypt implementation", 
+  "high"
+);
+
+console.log(`✅ Created project ${project.name} with 2 tasks`);
+```
+
+### Simple Authentication
+
+Use this simplified JavaScript class for ProjectHub API interactions:
+
+```javascript
+// Simple ProjectHub client for quick API access
 class ProjectHubClient {
   constructor() {
     this.apiUrl = 'http://192.168.1.24:3009/api';
-    this.email = 'admin@projecthub.com';
-    this.password = 'dev123';
     this.token = null;
-    this.tokenExpiry = null;
   }
 
-  async ensureAuthenticated() {
-    // Check if token is still valid (with 5 minute buffer)
-    if (this.token && this.tokenExpiry && new Date() < new Date(this.tokenExpiry - 5 * 60 * 1000)) {
-      return this.token;
-    }
+  async login() {
+    if (this.token) return this.token; // Already logged in
     
-    console.log('Authenticating with ProjectHub...');
     const response = await fetch(`${this.apiUrl}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        email: this.email,
-        password: this.password
+        email: 'admin@projecthub.com',
+        password: 'admin123'
       })
     });
     
     if (!response.ok) {
-      throw new Error(`Authentication failed: ${response.statusText}`);
+      throw new Error(`Login failed: ${response.statusText}`);
     }
     
     const data = await response.json();
     this.token = data.token;
-    
-    // Parse JWT to get expiry
-    try {
-      const payload = JSON.parse(atob(this.token.split('.')[1]));
-      this.tokenExpiry = new Date(payload.exp * 1000);
-      console.log(`Token valid until: ${this.tokenExpiry.toISOString()}`);
-    } catch (e) {
-      // Default to 24 hours if can't parse
-      this.tokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000);
-    }
-    
+    console.log('✅ Authenticated with ProjectHub');
     return this.token;
   }
 
   async request(endpoint, options = {}) {
-    const token = await this.ensureAuthenticated();
+    await this.login(); // Ensure we're logged in
     
     const response = await fetch(`${this.apiUrl}${endpoint}`, {
       ...options,
       headers: {
-        'Authorization': `Bearer ${token}`,
+        'Authorization': `Bearer ${this.token}`,
         'Content-Type': 'application/json',
         ...options.headers
       }
     });
-    
-    // Handle token expiry
-    if (response.status === 401) {
-      console.log('Token expired, re-authenticating...');
-      this.token = null;
-      const newToken = await this.ensureAuthenticated();
-      
-      // Retry request with new token
-      const retryResponse = await fetch(`${this.apiUrl}${endpoint}`, {
-        ...options,
-        headers: {
-          'Authorization': `Bearer ${newToken}`,
-          'Content-Type': 'application/json',
-          ...options.headers
-        }
-      });
-      
-      if (!retryResponse.ok) {
-        throw new Error(`API request failed: ${retryResponse.statusText}`);
-      }
-      
-      return retryResponse.json();
-    }
     
     if (!response.ok) {
       throw new Error(`API request failed: ${response.statusText}`);
@@ -98,15 +85,15 @@ class ProjectHubClient {
     return response.json();
   }
 
-  // Convenience methods
+  // Quick methods for common operations
   async listProjects() {
     return this.request('/projects');
   }
 
-  async createProject(data) {
+  async createProject(name, description, status = 'active') {
     return this.request('/projects', {
       method: 'POST',
-      body: JSON.stringify(data)
+      body: JSON.stringify({ name, description, status })
     });
   }
 
@@ -115,39 +102,41 @@ class ProjectHubClient {
     return this.request(`/tasks${query}`);
   }
 
-  async createTask(data) {
+  async createTask(projectId, title, description = '', priority = 'medium') {
     return this.request('/tasks', {
       method: 'POST',
-      body: JSON.stringify(data)
+      body: JSON.stringify({
+        project_id: projectId,
+        title,
+        description,
+        priority,
+        status: 'todo'
+      })
     });
   }
 
-  async updateTask(taskId, data) {
+  async updateTask(taskId, updates) {
     return this.request(`/tasks/${taskId}`, {
       method: 'PUT',
-      body: JSON.stringify(data)
+      body: JSON.stringify(updates)
     });
+  }
+
+  async deleteProject(projectId) {
+    return this.request(`/projects/${projectId}`, { method: 'DELETE' });
+  }
+
+  async deleteTask(taskId) {
+    return this.request(`/tasks/${taskId}`, { method: 'DELETE' });
   }
 
   async getAnalytics(projectId = null) {
     const query = projectId ? `?projectId=${projectId}` : '';
     return this.request(`/analytics${query}`);
   }
-
-  async deleteProject(projectId) {
-    return this.request(`/projects/${projectId}`, {
-      method: 'DELETE'
-    });
-  }
-
-  async deleteTask(taskId) {
-    return this.request(`/tasks/${taskId}`, {
-      method: 'DELETE'
-    });
-  }
 }
 
-// Initialize client
+// Initialize client - ready to use
 const projectHub = new ProjectHubClient();
 ```
 
@@ -157,33 +146,29 @@ When asked to work with projects or tasks, use these patterns:
 
 #### Create a New Project
 ```javascript
-const project = await projectHub.createProject({
-  name: "React Authentication Refactor",
-  description: "Modernize authentication system with JWT tokens",
-  workspace_id: "1", // Default workspace
-  status: "planning"
-});
-console.log(`Created project: ${project.name} (ID: ${project.id})`);
+const project = await projectHub.createProject(
+  "React Authentication Refactor",
+  "Modernize authentication system with JWT tokens",
+  "active"
+);
+console.log(`✅ Created project: ${project.name} (ID: ${project.id})`);
 ```
 
 #### Create Tasks for a Feature
 ```javascript
 // Break down a feature into tasks
 const tasks = [
-  { title: "Audit current auth flow", priority: "high", estimate_hours: 2 },
-  { title: "Design JWT token structure", priority: "high", estimate_hours: 1 },
-  { title: "Implement token generation", priority: "medium", estimate_hours: 3 },
-  { title: "Add refresh token logic", priority: "medium", estimate_hours: 2 },
-  { title: "Write unit tests", priority: "medium", estimate_hours: 2 },
-  { title: "Update API documentation", priority: "low", estimate_hours: 1 }
+  { title: "Audit current auth flow", description: "Review existing authentication system", priority: "high" },
+  { title: "Design JWT token structure", description: "Define token payload and expiry", priority: "high" },
+  { title: "Implement token generation", description: "Create JWT signing logic", priority: "medium" },
+  { title: "Add refresh token logic", description: "Handle token refresh flow", priority: "medium" },
+  { title: "Write unit tests", description: "Test all auth components", priority: "medium" },
+  { title: "Update API documentation", description: "Document new auth endpoints", priority: "low" }
 ];
 
 for (const task of tasks) {
-  await projectHub.createTask({
-    project_id: project.id,
-    ...task,
-    status: "pending"
-  });
+  await projectHub.createTask(project.id, task.title, task.description, task.priority);
+  console.log(`✅ Created task: ${task.title}`);
 }
 ```
 
@@ -203,12 +188,12 @@ Project Status:
 ```javascript
 await projectHub.updateTask(taskId, {
   status: "in_progress",
-  progress: 60,
-  notes: "Implemented basic structure, working on error handling"
+  description: "Implemented basic structure, working on error handling"
 });
+console.log(`✅ Updated task ${taskId} to in_progress`);
 ```
 
-#### Delete a Project (v4.8.0+)
+#### Delete a Project (v5.0.0+)
 ```javascript
 // Delete a project - this will also delete all associated tasks
 await projectHub.deleteProject(projectId);
@@ -224,12 +209,12 @@ console.log('Task deleted successfully');
 
 ### Best Practices
 
-1. **Always use the ProjectHubClient class** - It handles authentication and token refresh automatically
+1. **Always use the ProjectHubClient class** - It handles authentication automatically
 2. **Create projects for major features** - Not for small fixes
-3. **Break down work into 1-4 hour tasks** - Easier to track progress
-4. **Update task status as you work** - Helps track actual vs estimated time
-5. **Use appropriate priorities** - high, medium, low
-6. **Add notes when updating tasks** - Provides context for status changes
+3. **Break down work into manageable tasks** - Easier to track progress
+4. **Update task status as you work** - Use 'todo', 'in_progress', 'done'
+5. **Use appropriate priorities** - 'high', 'medium', 'low'
+6. **Update descriptions when making progress** - Provides context for status changes
 
 ### Error Handling
 
@@ -277,6 +262,6 @@ if (process.env.PROJECTHUB_API_URL) {
 ## 🔗 Quick Reference
 
 - **API Base**: `http://192.168.1.24:3009/api`
-- **Default Credentials**: `admin@projecthub.com` / `dev123`
+- **Default Credentials**: `admin@projecthub.com` / `admin123`
 - **Token Expiry**: 24 hours (auto-refreshes)
 - **Documentation**: [AI Integration Guide](https://github.com/anubissbe/ProjectHub-Mcp/blob/main/AI-Integration-Guide.md)
