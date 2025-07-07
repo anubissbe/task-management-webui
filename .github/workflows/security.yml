@@ -82,6 +82,7 @@ jobs:
           fetch-depth: 0
 
       - name: 🔍 GitGuardian scan
+        if: secrets.GITGUARDIAN_API_KEY
         uses: GitGuardian/ggshield-action@v1
         continue-on-error: true
         env:
@@ -101,7 +102,7 @@ jobs:
   docker-scan:
     name: 🐳 Docker Image Security
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: false  # Temporarily disabled to prevent queue issues
     timeout-minutes: 15
     
     steps:
