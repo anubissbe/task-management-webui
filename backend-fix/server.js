@@ -93,6 +93,28 @@ const rateLimitMiddleware = (req, res, next) => {
 // Apply rate limiting to all routes
 app.use(rateLimitMiddleware);
 
+// Allowed fields for task updates - only fields that exist in the database
+const ALLOWED_TASK_UPDATE_FIELDS = [
+  'title',
+  'description',
+  'status',
+  'priority',
+  'assignee_id',
+  'assignee',
+  'due_date',
+  'estimated_hours',
+  'actual_hours'
+];
+
+// Map frontend field names to database field names
+const FIELD_MAPPING = {
+  'estimate_hours': 'estimated_hours',
+  'progress': null, // Not a database field, handled separately
+  'notes': 'description', // Map notes to description
+  'started_at': null, // Not in database
+  'completed_at': null // Not in database
+};
+
 // Authentication middleware
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
@@ -250,7 +272,11 @@ app.get('/api/tasks', async (req, res) => {
   try {
     const { projectId } = req.query;
     let query = `
-      SELECT t.*, p.name as project_name, u.first_name, u.last_name
+      SELECT t.*, p.name as project_name, u.first_name, u.last_name,
+        0 as progress,
+        NULL as started_at,
+        NULL as completed_at,
+        t.estimated_hours as estimate_hours
       FROM tasks t
       LEFT JOIN projects p ON t.project_id = p.id
       LEFT JOIN users u ON t.assignee_id = u.id
@@ -317,7 +343,7 @@ app.post('/api/tasks', async (req, res) => {
     const result = await pool.query(`
       INSERT INTO tasks (title, description, project_id, priority, status, assignee_id, created_at, updated_at)
       VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW())
-      RETURNING *
+      RETURNING *, 0 as progress, NULL as started_at, NULL as completed_at, estimated_hours as estimate_hours
     `, [title, description, project_id, priority, status, assignee_id]);
     
     const task = result.rows[0];
@@ -355,16 +381,42 @@ app.put('/api/tasks/:id', authenticateToken, async (req, res) => {
       return res.status(404).json({ error: 'Task not found' });
     }
     
+    // Filter and map fields
+    const allowedUpdates = {};
+    Object.keys(updates).forEach(key => {
+      // Check if field needs mapping
+      const mappedField = FIELD_MAPPING[key];
+      if (mappedField !== undefined) {
+        if (mappedField !== null) {
+          allowedUpdates[mappedField] = updates[key];
+        }
+        // Skip if mapped to null (not a database field)
+      } else if (ALLOWED_TASK_UPDATE_FIELDS.includes(key)) {
+        allowedUpdates[key] = updates[key];
+      }
+    });
+    
+    // If no valid fields to update, return current task with computed fields
+    if (Object.keys(allowedUpdates).length === 0) {
+      return res.json({
+        ...currentTask,
+        progress: 0,
+        started_at: null,
+        completed_at: null,
+        estimate_hours: currentTask.estimated_hours
+      });
+    }
+    
     // Build dynamic update query
-    const fields = Object.keys(updates);
-    const values = Object.values(updates);
+    const fields = Object.keys(allowedUpdates);
+    const values = Object.values(allowedUpdates);
     const setClause = fields.map((field, index) => `${field} = $${index + 1}`).join(', ');
     
     const query = `
       UPDATE tasks 
       SET ${setClause}, updated_at = NOW()
       WHERE id = $${fields.length + 1}
-      RETURNING *
+      RETURNING *, 0 as progress, NULL as started_at, NULL as completed_at, estimated_hours as estimate_hours
     `;
     
     const result = await pool.query(query, [...values, id]);

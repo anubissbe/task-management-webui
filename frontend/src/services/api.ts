@@ -14,14 +14,14 @@ const getApiUrl = () => {
   
   // For development, always use localhost
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-    return 'http://localhost:3001/api';
+    return 'http://localhost:3009/api';
   }
   
   // For production, use the same hostname as the frontend
   const protocol = window.location.protocol;
   const hostname = window.location.hostname;
   
-  return `${protocol}//${hostname}:3001/api`;
+  return `${protocol}//${hostname}:3009/api`;
 };
 
 const API_BASE_URL = getApiUrl();
