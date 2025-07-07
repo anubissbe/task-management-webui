@@ -6,15 +6,15 @@ on:
 
 jobs:
   debug:
-    name: 🔍 Debug Workflow Issues
+    name: Debug Workflow Issues
     runs-on: ubuntu-latest
     timeout-minutes: 5
     
     steps:
-      - name: 📦 Checkout code
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: 🔍 Debug Environment
+      - name: Debug Environment
         run: |
           echo "=== Environment Info ==="
           echo "Working directory: $(pwd)"
@@ -31,25 +31,25 @@ jobs:
           
           echo ""
           echo "=== Backend Directory ==="
-          ls -la backend-fix/ 2>/dev/null || echo "❌ backend-fix directory missing"
+          ls -la backend-fix/ 2>/dev/null || echo "backend-fix directory missing"
           
           echo ""
           echo "=== Frontend Directory ==="
-          ls -la frontend/ 2>/dev/null || echo "❌ frontend directory missing"
+          ls -la frontend/ 2>/dev/null || echo "frontend directory missing"
 
-      - name: 🧪 Test Basic Commands
+      - name: Test Basic Commands
         run: |
           echo "=== Testing File Checks ==="
           
           # Test backend files
           echo -n "Backend server.js: "
-          [ -f "backend-fix/server.js" ] && echo "✅ EXISTS" || echo "❌ MISSING"
+          [ -f "backend-fix/server.js" ] && echo "EXISTS" || echo "MISSING"
           
           echo -n "Backend package.json: "
-          [ -f "backend-fix/package.json" ] && echo "✅ EXISTS" || echo "❌ MISSING"
+          [ -f "backend-fix/package.json" ] && echo "EXISTS" || echo "MISSING"
           
           echo -n "Frontend index.html: "
-          [ -f "frontend/index.html" ] && echo "✅ EXISTS" || echo "❌ MISSING"
+          [ -f "frontend/index.html" ] && echo "EXISTS" || echo "MISSING"
           
           # Test grep commands
           echo ""
@@ -57,19 +57,19 @@ jobs:
           
           echo -n "Rate limit dependency: "
           if grep -q "express-rate-limit" backend-fix/package.json 2>/dev/null; then
-            echo "✅ FOUND"
+            echo "FOUND"
           else
-            echo "❌ NOT FOUND"
+            echo "NOT FOUND"
           fi
           
           echo -n "Rate limit implementation: "
           if grep -q "rateLimit" backend-fix/server.js 2>/dev/null; then
-            echo "✅ FOUND"
+            echo "FOUND"
           else
-            echo "❌ NOT FOUND"
+            echo "NOT FOUND"
           fi
 
-      - name: 🐳 Test Docker Commands
+      - name: Test Docker Commands
         run: |
           echo "=== Testing Docker ==="
           
@@ -78,15 +78,15 @@ jobs:
           
           echo ""
           echo "Testing backend Dockerfile exists:"
-          [ -f "backend-fix/Dockerfile" ] && echo "✅ Backend Dockerfile exists" || echo "❌ Backend Dockerfile missing"
+          [ -f "backend-fix/Dockerfile" ] && echo "Backend Dockerfile exists" || echo "Backend Dockerfile missing"
           
           echo ""
           echo "Testing frontend Dockerfile exists:"
-          [ -f "frontend/Dockerfile" ] && echo "✅ Frontend Dockerfile exists" || echo "❌ Frontend Dockerfile missing"
+          [ -f "frontend/Dockerfile" ] && echo "Frontend Dockerfile exists" || echo "Frontend Dockerfile missing"
 
-      - name: 📝 Summary
+      - name: Summary
         run: |
-          echo "# 🔍 Debug Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "# Debug Test Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "## Environment" >> $GITHUB_STEP_SUMMARY
           echo "- Working Directory: \$(pwd)" >> $GITHUB_STEP_SUMMARY
