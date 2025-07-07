@@ -371,6 +371,9 @@ function projectHub() {
                     case 'projects':
                         await this.loadProjects();
                         break;
+                    case 'board':
+                        // Don't load all tasks for board view - wait for project selection
+                        break;
                     case 'kanban':
                         await this.loadKanbanData();
                         break;
@@ -739,9 +742,14 @@ function projectHub() {
         
         // Load board tasks for selected project
         async loadBoardTasks() {
-            if (!this.selectedBoardProject) return;
+            if (!this.selectedBoardProject) {
+                // Clear kanban columns if no project selected
+                this.kanbanColumns.forEach(col => col.tasks = []);
+                return;
+            }
             
             try {
+                this.loading = true;
                 const tasks = await api.get(`/tasks?projectId=${this.selectedBoardProject}`);
                 
                 // Update tasks for the selected project
@@ -750,9 +758,36 @@ function projectHub() {
                     ...tasks
                 ];
                 
-                this.loadKanbanData();
+                // Clear existing columns
+                this.kanbanColumns.forEach(col => col.tasks = []);
+                
+                // Distribute tasks into columns - only for selected project
+                tasks.forEach(task => {
+                    // Map backend status to frontend column IDs
+                    let columnId = task.status || 'todo';
+                    if (columnId === 'pending') columnId = 'todo';
+                    if (columnId === 'in_progress') columnId = 'in-progress';
+                    if (columnId === 'completed') columnId = 'done';
+                    
+                    const column = this.kanbanColumns.find(col => col.id === columnId);
+                    if (column) {
+                        column.tasks.push({
+                            ...task,
+                            priority: task.priority || 'medium',
+                            assignee: task.assignee || ['JD', 'SM', 'BJ', 'AK'][Math.floor(Math.random() * 4)]
+                        });
+                    }
+                });
+                
+                this.loading = false;
+                
+                // Initialize drag and drop after DOM update
+                this.$nextTick(() => {
+                    this.initSortable();
+                });
             } catch (error) {
                 console.error('Error loading board tasks:', error);
+                this.loading = false;
             }
         },
         
