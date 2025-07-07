@@ -1,0 +1,12 @@
+name: Super Simple Test
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hello World
+        run: echo "Hello GitHub Actions!"
