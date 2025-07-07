@@ -256,16 +256,16 @@ curl -X PUT http://localhost:3009/api/tasks/1 \
 ```bash
 # Check if admin user exists
 docker exec projecthub-postgres psql -U projecthub -d projecthub \
-  -c "SELECT email, created_at FROM users WHERE email = 'admin@projecthub.com';"
+  -c "SELECT email, created_at FROM users WHERE email = 'admin@projecthub.local';"
 
 # Reset admin password if needed
 docker exec projecthub-postgres psql -U projecthub -d projecthub \
-  -c "UPDATE users SET password = '\$2a\$10\$ILQeDcYjXZBPJDIAiA.PnOgs1rqZaYecV5dVLmjKdoFViZGX1W1.W' WHERE email = 'admin@projecthub.com';"
+  -c "UPDATE users SET password = '\$2a\$10\$ILQeDcYjXZBPJDIAiA.PnOgs1rqZaYecV5dVLmjKdoFViZGX1W1.W' WHERE email = 'admin@projecthub.local';"
 
 # Test login
 curl -X POST http://localhost:3009/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"admin@projecthub.com","password":"admin123"}'
+  -d '{"email":"admin@projecthub.local","password":"admin123"}'
 ```
 
 ## 📊 Database Issues

@@ -88,12 +88,12 @@ CREATE TRIGGER update_tasks_updated_at BEFORE UPDATE ON tasks
 
 -- Insert sample data for development/testing
 
--- Insert default admin user (password: dev123)
+-- Insert default admin user (password: admin123)
 INSERT INTO users (id, email, password, first_name, last_name, role) 
 VALUES (
     '00000000-0000-0000-0000-000000000001',
     'admin@projecthub.com',
-    'dev123',
+    'admin123',
     'Admin',
     'User',
     'admin'

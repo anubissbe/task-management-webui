@@ -1,13 +1,13 @@
 # 📖 ProjectHub-MCP Documentation
 
-Welcome to the comprehensive documentation for ProjectHub-MCP v4.8.0 - the enterprise-grade project management system.
+Welcome to the comprehensive documentation for ProjectHub-MCP v5.0.0 - the enterprise-grade project management system.
 
 ## 🚀 Quick Navigation
 
 ### 🏁 **Getting Started**
-- [📖 Quick Start Guide](getting-started/README.md) - Get up and running in minutes
-- [💾 Installation Guide](getting-started/INSTALLATION.md) - Detailed installation instructions
-- [👋 First Steps](getting-started/FIRST_STEPS.md) - Your first project setup
+- [📖 Quick Start Guide](../QUICKSTART.md) - Get up and running in minutes
+- [💾 Installation Guide](../INSTALLATION.md) - Detailed installation instructions
+- [👋 First Steps](../README.md#quick-start) - Your first project setup
 
 ### 👥 **User Guides**
 - [📋 Project Management](user-guides/PROJECT_MANAGEMENT.md) - Creating and managing projects
@@ -15,10 +15,10 @@ Welcome to the comprehensive documentation for ProjectHub-MCP v4.8.0 - the enter
 - [📊 Analytics & Reporting](user-guides/ANALYTICS.md) - Understanding insights and reports
 
 ### 🔧 **API Documentation**
-- [🌐 API Overview](api/README.md) - RESTful API documentation
+- [🌐 API Overview](API.md) - RESTful API documentation
 - [🔐 Authentication](WEBHOOK_API.md) - API authentication and security
 - [📡 Webhooks](WEBHOOK_API.md) - Webhook integration guide
-- [🔗 MCP Protocol](api/MCP_PROTOCOL.md) - Model Context Protocol integration
+- [🔗 MCP Protocol](../mcp-server/README.md) - Model Context Protocol integration
 
 ### 🚀 **Deployment**
 - [🐳 Docker Deployment](deployment/DEPLOYMENT.md) - Container-based deployment
@@ -38,11 +38,11 @@ Welcome to the comprehensive documentation for ProjectHub-MCP v4.8.0 - the enter
 
 ## 📋 Version Information
 
-- **Current Version 4.8.0
-- **Documentation Updated**: July 1, 2025
-- **Supported Version 4.8.x (full support), 4.5.x (critical fixes only)
+- **Current Version**: 5.0.0
+- **Documentation Updated**: January 2025
+- **Supported Versions**: 5.0.x (full support), 4.8.x (critical fixes only)
 
-## 🔄 Recent Updates (v4.8.0)
+## 🔄 Recent Updates (v5.0.0)
 
 - ✅ **Major Repository Cleanup**: Removed 120+ outdated files
 - ✅ **Enhanced Security**: Comprehensive security scanning and fixes

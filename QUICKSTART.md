@@ -71,7 +71,7 @@ docker-compose up -d
 
 1. Open http://localhost:8090 in your browser
 2. Login with default credentials:
-   - **Email**: `admin@projecthub.local`
+   - **Email**: `admin@projecthub.com`
    - **Password**: `admin123`
 3. **Important**: Change the default password immediately!
 
@@ -95,7 +95,7 @@ Add to your project's configuration:
 ```bash
 # Add to your CLAUDE.md or project notes
 ProjectHub API: http://localhost:3009/api
-Login: admin@projecthub.local / your_new_password
+Login: admin@projecthub.com / your_new_password
 ```
 
 ### With other AI tools

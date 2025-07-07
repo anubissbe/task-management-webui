@@ -6,13 +6,13 @@ A modern ProjectHub frontend built with React, TypeScript, and Vite, providing a
 
 ### Prerequisites
 - Docker and Docker Compose
-- Backend server running on port 3009 (see `/tmp/complete_backend.js`)
+- Backend server running on port 3009 (see `backend-fix/complete_backend.js`)
 
 ### Running the Application
 
 1. **Start the Backend:**
    ```bash
-   cd /tmp
+   cd ../backend-fix
    node complete_backend.js
    ```
 
@@ -27,7 +27,7 @@ A modern ProjectHub frontend built with React, TypeScript, and Vite, providing a
    - Backend API: http://localhost:3009
 
 ### Login Credentials
-- **Admin**: admin@projecthub.local / admin123
+- **Admin**: admin@projecthub.com / admin123
 - **Developer**: developer@projecthub.local / dev123
 
 ## 📋 Features
@@ -72,7 +72,7 @@ A modern ProjectHub frontend built with React, TypeScript, and Vite, providing a
 ├── index-complete.html      # Main HTML file
 ├── app-webhook-final.js     # Main Alpine.js application
 ├── Dockerfile              # Container definition
-└── /tmp/complete_backend.js # Backend server
+└── backend-fix/complete_backend.js # Backend server
 ```
 
 ## 🎨 Design System
@@ -206,7 +206,7 @@ new-frontend/
 1. **Local Development:**
    ```bash
    # Start backend
-   node /tmp/complete_backend.js
+   node backend-fix/complete_backend.js
    
    # Serve frontend (development)
    python3 -m http.server 8080

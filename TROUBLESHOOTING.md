@@ -26,7 +26,7 @@ docker exec projecthub-backend env | grep JWT_SECRET
 docker stop projecthub-backend
 docker rm projecthub-backend
 docker run -d --name projecthub-backend \
-  -p 3009:3010 \
+  -p 3009:3009 \
   --network projecthub_projecthub-network \
   -e DATABASE_URL="postgresql://projecthub:projecthub123@projecthub-postgres:5432/projecthub" \
   -e JWT_SECRET="your-secure-jwt-secret-here" \
@@ -45,12 +45,12 @@ docker run -d --name projecthub-backend \
 ```bash
 # Update admin password to bcrypt hash of 'admin123'
 docker exec projecthub-postgres psql -U projecthub -d projecthub -c \
-  "UPDATE users SET password = '\$2a\$10\$ILQeDcYjXZBPJDIAiA.PnOgs1rqZaYecV5dVLmjKdoFViZGX1W1.W' WHERE email = 'admin@projecthub.com';"
+  "UPDATE users SET password = '\$2a\$10\$ILQeDcYjXZBPJDIAiA.PnOgs1rqZaYecV5dVLmjKdoFViZGX1W1.W' WHERE email = 'admin@projecthub.local';"
 
 # Test login
 curl -X POST http://localhost:3009/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"admin@projecthub.com","password":"admin123"}'
+  -d '{"email":"admin@projecthub.local","password":"admin123"}'
 ```
 
 ### Problem: Task updates return 401 Unauthorized
@@ -94,7 +94,7 @@ docker network inspect projecthub_projecthub-network
 docker stop projecthub-backend
 docker rm projecthub-backend
 docker run -d --name projecthub-backend \
-  -p 3009:3010 \
+  -p 3009:3009 \
   --network projecthub_projecthub-network \
   -e DATABASE_URL="postgresql://projecthub:projecthub123@projecthub-postgres:5432/projecthub" \
   -e JWT_SECRET="your-secure-jwt-secret-here" \
@@ -137,7 +137,7 @@ docker network ls
 
 # 2. Use existing projecthub network
 docker run -d --name projecthub-backend \
-  -p 3009:3010 \
+  -p 3009:3009 \
   --network projecthub_projecthub-network \
   -e DATABASE_URL="postgresql://projecthub:projecthub123@projecthub-postgres:5432/projecthub" \
   -e JWT_SECRET="your-secure-jwt-secret-here" \
@@ -170,7 +170,7 @@ curl http://localhost:3009/health
 docker stop projecthub-frontend
 docker rm projecthub-frontend
 docker run -d --name projecthub-frontend \
-  -p 5174:80 \
+  -p 8090:80 \
   --network projecthub_projecthub-network \
   -e API_URL="http://localhost:3009" \
   --restart unless-stopped \
@@ -189,7 +189,7 @@ docker run -d --name projecthub-frontend \
 ```bash
 # Find what's using the ports
 sudo lsof -i :3009
-sudo lsof -i :5174
+sudo lsof -i :8090
 sudo lsof -i :5433
 
 # Use different ports in docker-compose.yml or .env:
@@ -270,7 +270,7 @@ curl -s http://localhost:3009/health | jq . || echo "❌ API not responding"
 echo -e "\n🔐 Authentication Test:"
 curl -s -X POST http://localhost:3009/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"admin@projecthub.com","password":"admin123"}' | \
+  -d '{"email":"admin@projecthub.local","password":"admin123"}' | \
   jq -r 'if .token then "✅ Authentication working" else "❌ Authentication failed: " + .error end'
 
 echo -e "\n✨ Health check complete!"

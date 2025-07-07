@@ -14,7 +14,7 @@ npm install
 Set the following environment variables:
 
 ```bash
-export PROJECTHUB_API_URL="http://your-server-ip:3008/api"
+export PROJECTHUB_API_URL="http://your-server-ip:3009/api"
 export PROJECTHUB_EMAIL="ai-agent@projecthub.com"
 export PROJECTHUB_PASSWORD="your-secure-password"
 ```
@@ -22,7 +22,7 @@ export PROJECTHUB_PASSWORD="your-secure-password"
 Or create a `.env` file:
 
 ```env
-PROJECTHUB_API_URL=http://your-server-ip:3008/api
+PROJECTHUB_API_URL=http://your-server-ip:3009/api
 PROJECTHUB_EMAIL=ai-agent@projecthub.com
 PROJECTHUB_PASSWORD=your-secure-password
 ```
@@ -44,7 +44,7 @@ Add to your Claude Desktop configuration file:
       "command": "node",
       "args": ["/path/to/projecthub-mcp-server/mcp-server/projecthub-mcp-wrapper.js"],
       "env": {
-        "PROJECTHUB_API_URL": "http://your-server-ip:3008/api",
+        "PROJECTHUB_API_URL": "http://your-server-ip:3009/api",
         "PROJECTHUB_EMAIL": "claude@projecthub.com",
         "PROJECTHUB_PASSWORD": "secure-password"
       }
@@ -63,7 +63,7 @@ Add to your `.cline/mcp_servers.json`:
     "command": "node",
     "args": ["./node_modules/projecthub-mcp-server/projecthub-mcp-wrapper.js"],
     "env": {
-      "PROJECTHUB_API_URL": "http://your-server-ip:3008/api",
+      "PROJECTHUB_API_URL": "http://your-server-ip:3009/api",
       "PROJECTHUB_EMAIL": "cline@projecthub.com",
       "PROJECTHUB_PASSWORD": "secure-password"
     }
@@ -75,7 +75,7 @@ Add to your `.cline/mcp_servers.json`:
 
 ```bash
 # Start the MCP server
-PROJECTHUB_API_URL="http://your-server-ip:3008/api" \
+PROJECTHUB_API_URL="http://your-server-ip:3009/api" \
 PROJECTHUB_EMAIL="ai@projecthub.com" \
 PROJECTHUB_PASSWORD="password" \
 node projecthub-mcp-wrapper.js

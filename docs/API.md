@@ -686,7 +686,7 @@ Real-time updates are provided via WebSocket connection to `/socket.io/`:
 ```javascript
 import io from 'socket.io-client';
 
-const socket = io('ws://localhost:3001', {
+const socket = io('ws://localhost:3009', {
   auth: {
     token: accessToken
   }
@@ -703,7 +703,7 @@ socket.on('task:updated', (task) => {
 
 ```bash
 # 1. Create team
-curl -X POST http://localhost:3001/api/teams \
+curl -X POST http://localhost:3009/api/teams \
   -H "Authorization: Bearer $ACCESS_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -713,7 +713,7 @@ curl -X POST http://localhost:3001/api/teams \
   }'
 
 # 2. Invite member
-curl -X POST http://localhost:3001/api/teams/team-uuid/invite \
+curl -X POST http://localhost:3009/api/teams/team-uuid/invite \
   -H "Authorization: Bearer $ACCESS_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -726,11 +726,11 @@ curl -X POST http://localhost:3001/api/teams/team-uuid/invite \
 
 ```bash
 # Get advanced metrics
-curl -X GET "http://localhost:3001/api/reports/advanced-metrics?teamId=team-uuid" \
+curl -X GET "http://localhost:3009/api/reports/advanced-metrics?teamId=team-uuid" \
   -H "Authorization: Bearer $ACCESS_TOKEN"
 
 # Export dashboard as PDF
-curl -X POST http://localhost:3001/api/reports/export/dashboard-uuid \
+curl -X POST http://localhost:3009/api/reports/export/dashboard-uuid \
   -H "Authorization: Bearer $ACCESS_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -753,7 +753,7 @@ curl -X POST http://localhost:3001/api/reports/export/dashboard-uuid \
 import { ProjectHubAPI } from '@projecthub/api-client';
 
 const api = new ProjectHubAPI({
-  baseURL: 'http://localhost:3001/api',
+  baseURL: 'http://localhost:3009/api',
   accessToken: 'your-access-token'
 });
 
@@ -771,7 +771,7 @@ const dashboard = await api.reports.createDashboard({
 from projecthub_api import ProjectHubClient
 
 client = ProjectHubClient(
-    base_url='http://localhost:3001/api',
+    base_url='http://localhost:3009/api',
     access_token='your-access-token'
 )
 

@@ -8,7 +8,7 @@ Get ProjectHub-MCP v5.0.0 running in less than 5 minutes using Docker!
 
 - **Docker** 20.10+ and **Docker Compose** 2.0+
 - **4GB RAM** minimum
-- **Ports available**: 5174 (frontend), 3009 (backend), 5433 (PostgreSQL)
+- **Ports available**: 8090 (frontend), 3009 (backend), 5434 (PostgreSQL)
 
 ## 🐳 Docker Installation (Recommended)
 
@@ -35,12 +35,12 @@ curl http://localhost:3009/health
 ```
 
 **Access Points:**
-- 🌐 **Frontend**: http://localhost:5174
+- 🌐 **Frontend**: http://localhost:8090
 - 🔧 **Backend API**: http://localhost:3009
 - 📊 **Health Check**: http://localhost:3009/health
 
 **Default Login:**
-- **Email**: admin@projecthub.com
+- **Email**: admin@projecthub.local
 - **Password**: admin123
 
 ### Production Quick Deploy
@@ -80,10 +80,10 @@ JWT_SECRET=your-secure-jwt-secret-here
 POSTGRES_PASSWORD=your-secure-db-password
 
 # Optional
-CORS_ORIGIN=http://localhost:5174
+CORS_ORIGIN=http://localhost:8090
 NODE_ENV=production
 BACKEND_PORT=3009
-FRONTEND_PORT=5174
+FRONTEND_PORT=8090
 ```
 
 ### Docker Compose Configuration
@@ -99,7 +99,7 @@ services:
       POSTGRES_USER: projecthub
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-projecthub123}
     ports:
-      - "${POSTGRES_PORT:-5433}:5432"
+      - "${POSTGRES_PORT:-5434}:5432"
 
   backend:
     image: anubissbe/projecthub-backend:latest
@@ -112,7 +112,7 @@ services:
   frontend:
     image: anubissbe/projecthub-frontend:latest
     ports:
-      - "${FRONTEND_PORT:-5174}:80"
+      - "${FRONTEND_PORT:-8090}:80"
 ```
 
 ## 🏗️ Development Setup
@@ -133,7 +133,7 @@ npm install
 
 # 4. Configure backend environment
 echo "JWT_SECRET=dev-secret-key" > .env
-echo "DATABASE_URL=postgresql://projecthub:projecthub123@localhost:5433/projecthub" >> .env
+echo "DATABASE_URL=postgresql://projecthub:projecthub123@localhost:5434/projecthub" >> .env
 echo "NODE_ENV=development" >> .env
 echo "PORT=3009" >> .env
 
@@ -143,7 +143,7 @@ npm run dev
 # 6. In another terminal, start frontend
 cd ../frontend
 # Frontend uses live Alpine.js - just serve files
-python -m http.server 5174
+python -m http.server 8090
 # Or use any static file server
 ```
 
@@ -164,14 +164,14 @@ curl http://localhost:3009/api/health/db
 # Expected: {"status":"connected","database":"projecthub"}
 
 # Check frontend
-curl http://localhost:5174
+curl http://localhost:8090
 # Expected: HTML content of the application
 
 # Test authentication
 curl -X POST http://localhost:3009/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"admin@projecthub.com","password":"admin123"}'
-# Expected: {"token":"...", "user":{"email":"admin@projecthub.com"}}
+  -d '{"email":"admin@projecthub.local","password":"admin123"}'
+# Expected: {"token":"...", "user":{"email":"admin@projecthub.local"}}
 
 # View logs
 docker-compose logs -f
@@ -209,7 +209,7 @@ Set `CORS_ORIGIN` to your actual domain:
 
 ```bash
 # Development
-CORS_ORIGIN=http://localhost:5174
+CORS_ORIGIN=http://localhost:8090
 
 # Production
 CORS_ORIGIN=https://your-domain.com
@@ -227,8 +227,8 @@ docker-compose logs frontend
 
 # Check if ports are in use
 sudo lsof -i :3009
-sudo lsof -i :5174
-sudo lsof -i :5433
+sudo lsof -i :8090
+sudo lsof -i :5434
 ```
 
 **2. Database connection errors**
@@ -250,7 +250,7 @@ docker-compose up -d
 curl http://localhost:3009/health
 
 # Check CORS configuration
-curl -H "Origin: http://localhost:5174" \
+curl -H "Origin: http://localhost:8090" \
      -H "Access-Control-Request-Method: POST" \
      -H "Access-Control-Request-Headers: X-Requested-With" \
      -X OPTIONS http://localhost:3009/api/auth/login
@@ -260,11 +260,11 @@ curl -H "Origin: http://localhost:5174" \
 ```bash
 # Check if admin user exists
 docker exec projecthub-postgres psql -U projecthub -d projecthub \
-  -c "SELECT email, created_at FROM users WHERE email = 'admin@projecthub.com';"
+  -c "SELECT email, created_at FROM users WHERE email = 'admin@projecthub.local';"
 
 # Reset admin password (if needed)
 docker exec projecthub-postgres psql -U projecthub -d projecthub \
-  -c "UPDATE users SET password = '\$2a\$10\$ILQeDcYjXZBPJDIAiA.PnOgs1rqZaYecV5dVLmjKdoFViZGX1W1.W' WHERE email = 'admin@projecthub.com';"
+  -c "UPDATE users SET password = '\$2a\$10\$ILQeDcYjXZBPJDIAiA.PnOgs1rqZaYecV5dVLmjKdoFViZGX1W1.W' WHERE email = 'admin@projecthub.local';"
 ```
 
 ### Performance Issues

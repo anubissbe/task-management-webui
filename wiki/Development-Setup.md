@@ -1,6 +1,6 @@
 # Development Setup
 
-This guide covers setting up a complete development environment for the ProjectHub-MCP v4.5.1 project, including tools, dependencies, and workflow setup for this production-ready enterprise project management system.
+This guide covers setting up a complete development environment for the ProjectHub-MCP v5.0.0 project, including tools, dependencies, and workflow setup for this production-ready enterprise project management system.
 
 ## 💻 Prerequisites
 
@@ -93,7 +93,7 @@ POSTGRES_PASSWORD=mcp_secure_password_2024
 # Backend Configuration
 NODE_ENV=development
 PORT=3001
-CORS_ORIGIN=http://localhost:5173
+CORS_ORIGIN=http://localhost:8090
 
 # Frontend Configuration
 VITE_API_URL=http://localhost:3001/api
@@ -115,7 +115,7 @@ docker compose up -d postgres
 docker compose logs postgres
 
 # Connect to database (optional)
-docker exec -it task-management-postgres psql -U mcp_user -d mcp_learning
+docker exec -it projecthub-postgres psql -U mcp_user -d mcp_learning
 ```
 
 **Manual PostgreSQL Setup** (if not using Docker)
@@ -151,7 +151,7 @@ npm audit fix
 # Start development server
 npm run dev
 
-# Server will start at http://localhost:5173
+# Server will start at http://localhost:8090
 # Hot reload enabled for live updates
 ```
 
@@ -565,7 +565,7 @@ SELECT * FROM tasks;  # Query data
 ```bash
 # Find process using port
 lsof -i :3001
-lsof -i :5173
+lsof -i :8090
 
 # Kill process
 kill -9 <PID>

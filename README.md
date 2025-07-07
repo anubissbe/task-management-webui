@@ -101,7 +101,7 @@ ProjectHub-MCP is a cutting-edge project management platform designed for modern
 git clone https://github.com/anubissbe/ProjectHub-Mcp.git && cd ProjectHub-Mcp && cp .env.example .env && echo "JWT_SECRET=$(openssl rand -base64 32)" >> .env && docker-compose up -d
 ```
 
-**Then open**: http://localhost:8090 (admin@projecthub.local / admin123)
+**Then open**: http://localhost:8090 (admin@projecthub.com / admin123)
 
 > 🚀 **Uses pre-built Docker Hub images** - No building required! Pulls `anubissbe/projecthub-backend:latest` and `anubissbe/projecthub-frontend:latest`
 
@@ -124,7 +124,7 @@ graph TD
 
 | Frontend | Backend | Database |
 |----------|---------|----------|
-| React 19+ | Node.js 18+ | PostgreSQL 15+ |
+| React 19.1+ | Node.js 18+ | PostgreSQL 15+ |
 | TypeScript 5.8+ | Express 4.21 | Redis (optional) |
 | Vite 7.0+ | JWT Authentication | Docker containers |
 | Tailwind CSS 4.1+ | bcrypt encryption | Health monitoring |
@@ -170,7 +170,7 @@ const auth = await fetch('http://localhost:3009/api/auth/login', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
-    email: 'admin@projecthub.local',
+    email: 'admin@projecthub.com',
     password: 'admin123'
   })
 });
@@ -207,7 +207,7 @@ curl http://localhost:3009/health
 # 3. Use in Claude Code
 # Add to your project's CLAUDE.md:
 echo "ProjectHub API: http://localhost:3009/api" >> CLAUDE.md
-echo "Login: admin@projecthub.local / admin123" >> CLAUDE.md
+echo "Login: admin@projecthub.com / admin123" >> CLAUDE.md
 ```
 
 ### Supported AI Tools
