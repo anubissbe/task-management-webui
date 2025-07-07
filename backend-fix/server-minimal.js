@@ -1,7 +1,17 @@
 const express = require('express');
 const cors = require('cors');
+const rateLimit = require('express-rate-limit');
 const { Pool } = require('pg');
 const jwt = require('jsonwebtoken');
+
+// Security utility function to sanitize log output
+function sanitizeForLog(input) {
+  if (typeof input !== 'string') {
+    input = String(input);
+  }
+  // Remove control characters and newlines to prevent log injection
+  return input.replace(/[\r\n\x00-\x1f\x7f]/g, '');
+}
 
 const app = express();
 const port = process.env.PORT || 3010;
@@ -22,6 +32,28 @@ pool.connect((err, client, release) => {
   }
 });
 
+// Rate limiting middleware
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // Limit each IP to 5 authentication attempts per windowMs
+  message: {
+    error: 'Too many authentication attempts, please try again later.'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  message: {
+    error: 'Too many requests from this IP, please try again later.'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+app.use(generalLimiter);
 app.use(cors({ origin: '*' }));
 app.use(express.json());
 
@@ -34,9 +66,9 @@ app.get('/health', (req, res) => {
 });
 
 // Simplified auth endpoint
-app.post('/api/auth/login', async (req, res) => {
+app.post('/api/auth/login', authLimiter, async (req, res) => {
   const { email, password } = req.body;
-  console.log('Login attempt for:', email);
+  console.log('Login attempt for:', sanitizeForLog(email));
   
   try {
     const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);

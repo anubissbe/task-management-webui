@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const rateLimit = require('express-rate-limit');
 const { Pool } = require('pg');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -25,6 +26,29 @@ pool.connect((err, client, release) => {
     release();
   }
 });
+
+// Rate limiting middleware
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  message: {
+    error: 'Too many requests from this IP, please try again later.'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // Limit each IP to 5 authentication attempts per windowMs
+  message: {
+    error: 'Too many authentication attempts, please try again later.'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+app.use(generalLimiter);
 
 // CORS middleware
 const corsOptions = {
@@ -174,7 +198,7 @@ const validateAndFilterTaskUpdates = (updates) => {
 };
 
 // Fixed PUT route with proper authentication and validation
-app.put('/api/tasks/:id', authenticateToken, async (req, res) => {
+app.put('/api/tasks/:id', generalLimiter, authenticateToken, async (req, res) => {
   const { id } = req.params;
   const updates = req.body;
   
@@ -249,7 +273,7 @@ app.put('/api/tasks/:id', authenticateToken, async (req, res) => {
 });
 
 // Also add a route that allows anonymous updates for backwards compatibility (limited fields)
-app.put('/api/tasks/:id/anonymous', async (req, res) => {
+app.put('/api/tasks/:id/anonymous', generalLimiter, async (req, res) => {
   const { id } = req.params;
   const updates = req.body;
   

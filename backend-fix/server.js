@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const rateLimit = require('express-rate-limit');
 const { Pool } = require('pg');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -25,6 +26,40 @@ pool.connect((err, client, release) => {
     release();
   }
 });
+
+// Rate limiting middleware
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  message: {
+    error: 'Too many requests from this IP, please try again later.'
+  },
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // Limit each IP to 5 authentication attempts per windowMs
+  message: {
+    error: 'Too many authentication attempts, please try again later.'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const webhookLimiter = rateLimit({
+  windowMs: 5 * 60 * 1000, // 5 minutes
+  max: 10, // Limit webhook operations
+  message: {
+    error: 'Too many webhook requests, please try again later.'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Apply general rate limiting to all requests
+app.use(generalLimiter);
 
 // CORS middleware
 const corsOptions = {
@@ -143,7 +178,7 @@ app.get('/health', (req, res) => {
 });
 
 // Auth endpoints
-app.post('/api/auth/login', async (req, res) => {
+app.post('/api/auth/login', authLimiter, async (req, res) => {
   const { email, password } = req.body;
   
   try {
@@ -472,7 +507,7 @@ app.get('/api/webhooks', async (req, res) => {
   }
 });
 
-app.post('/api/webhooks', async (req, res) => {
+app.post('/api/webhooks', webhookLimiter, async (req, res) => {
   const { name, url, events, active = true } = req.body;
   
   // Validate webhook URL
@@ -536,7 +571,7 @@ app.delete('/api/webhooks/:id', async (req, res) => {
 });
 
 // Webhook test endpoint
-app.post('/api/webhooks/:id/test', async (req, res) => {
+app.post('/api/webhooks/:id/test', webhookLimiter, async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM webhooks WHERE id = $1', [req.params.id]);
     const webhook = result.rows[0];
