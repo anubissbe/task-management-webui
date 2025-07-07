@@ -87,7 +87,7 @@ ProjectHub-MCP is a cutting-edge project management platform designed for modern
 *Comprehensive analytics with real-time data visualization. All metrics are calculated live from actual database data.*
 
 ### Project Management
-![Projects](./docs/images/projects-list.png)
+![Projects](./docs/images/working-homepage.png)
 *Project management interface with full CRUD operations, including safe cascade deletion functionality.*
 
 ## 🚀 Quick Start
