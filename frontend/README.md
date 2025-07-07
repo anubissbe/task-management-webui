@@ -1,6 +1,6 @@
-# ProjectHub Frontend - React + TypeScript Implementation
+# ProjectHub Frontend - Alpine.js Implementation
 
-A modern ProjectHub frontend built with React, TypeScript, and Vite, providing a responsive and feature-rich project management interface.
+A lightweight ProjectHub frontend built with Alpine.js, providing a responsive and feature-rich project management interface.
 
 ## 🚀 Quick Start
 

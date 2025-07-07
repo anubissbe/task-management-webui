@@ -31,7 +31,7 @@ curl http://localhost:3009/health
 ```
 
 **That's it!** ProjectHub is now running at:
-- 🌐 **Web Interface**: http://localhost:8090
+- 🌐 **Web Interface**: http://localhost:5174
 - 🔧 **API**: http://localhost:3009
 
 ### Option 2: Docker Hub Images Only (Fastest - No Source Code)
@@ -69,7 +69,7 @@ docker-compose up -d
 
 ## 🎯 First Login
 
-1. Open http://localhost:8090 in your browser
+1. Open http://localhost:5174 in your browser
 2. Login with default credentials:
    - **Email**: `admin@projecthub.com`
    - **Password**: `admin123`
@@ -110,7 +110,7 @@ Use the REST API endpoints:
 ### Services won't start
 ```bash
 # Check what's using the ports
-sudo netstat -tulpn | grep -E "(3009|8090|5434)"
+sudo netstat -tulpn | grep -E "(3009|5174|5434)"
 
 # If ports are in use, change them in .env:
 echo "API_PORT=3010" >> .env
@@ -149,7 +149,7 @@ docker-compose restart frontend
 
 - [ ] All containers running: `docker-compose ps`
 - [ ] Backend healthy: `curl http://localhost:3009/health`
-- [ ] Frontend accessible: Open http://localhost:8090
+- [ ] Frontend accessible: Open http://localhost:5174
 - [ ] Can login with default credentials
 - [ ] Can create a test project
 - [ ] Can create a test task

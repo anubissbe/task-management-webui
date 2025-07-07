@@ -34,7 +34,7 @@ Follow these steps to get started:
    ```
 
 4. **Access the application:**
-   - Web Interface: http://localhost:8090
+   - Web Interface: http://localhost:5174
    - API: http://localhost:3009
    - MCP Server: http://localhost:3013
 
@@ -55,7 +55,7 @@ API_PORT=3009
 API_HOST=0.0.0.0
 
 # Frontend Configuration
-FRONTEND_PORT=8090
+FRONTEND_PORT=5174
 
 # MCP Server Configuration
 MCP_PORT=3013
@@ -113,7 +113,7 @@ services:
   frontend:
     image: anubissbe/projecthub-frontend:latest
     ports:
-      - "8090:80"
+      - "5174:80"
     depends_on:
       - backend
 
@@ -124,7 +124,7 @@ volumes:
 ### Network Configuration
 
 By default, ProjectHub uses these ports:
-- **8090**: Frontend web interface
+- **5174**: Frontend web interface
 - **3009**: Backend API
 - **3013**: MCP server
 - **5434**: PostgreSQL database
@@ -155,13 +155,13 @@ docker-compose logs postgres
 **Port conflicts:**
 ```bash
 # Check if ports are in use
-sudo netstat -tulpn | grep :8090
+sudo netstat -tulpn | grep :5174
 sudo netstat -tulpn | grep :3009
 ```
 
 ### Next Steps
 
-1. Access the web interface at http://localhost:8090
+1. Access the web interface at http://localhost:5174
 2. Create your first project
 3. Set up MCP integration with your AI tools
 4. Review the [User Guide](docs/README.md) for detailed usage instructions

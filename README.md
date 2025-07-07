@@ -32,7 +32,7 @@ ProjectHub-MCP is a cutting-edge project management platform designed for modern
 
 ### 🏆 Why Choose ProjectHub-MCP?
 
-- **🚀 Modern Stack**: React + TypeScript frontend, Node.js/Express backend, PostgreSQL database
+- **🚀 Modern Stack**: Alpine.js frontend, Node.js/Express backend, PostgreSQL database
 - **🎨 Professional UI**: Dark theme with custom orange branding (#ff6500)
 - **📊 Real Analytics**: Live dashboards with actual data calculations
 - **🤖 AI Ready**: Full Claude Code and MCP protocol integration
@@ -101,15 +101,23 @@ ProjectHub-MCP is a cutting-edge project management platform designed for modern
 git clone https://github.com/anubissbe/ProjectHub-Mcp.git && cd ProjectHub-Mcp && cp .env.example .env && echo "JWT_SECRET=$(openssl rand -base64 32)" >> .env && docker-compose up -d
 ```
 
-**Then open**: http://localhost:8090 (admin@projecthub.com / admin123)
+**Then open**: http://localhost:5174 (admin@projecthub.com / admin123)
 
 > 🚀 **Uses pre-built Docker Hub images** - No building required! Pulls `anubissbe/projecthub-backend:latest` and `anubissbe/projecthub-frontend:latest`
+
+### 🏭 Production Deployment
+
+**Production URLs** (update with your server details):
+- **Frontend**: http://your-server:5174
+- **Backend API**: http://your-server:3009
+- **Health**: http://your-server:3009/health
+- **Credentials**: admin@projecthub.com / admin123
 
 ## 🏗️ Architecture
 
 ```mermaid
 graph TD
-    A[React + TypeScript Frontend<br/>Port 8090] -->|REST API| B[Node.js Backend<br/>Port 3009]
+    A[Alpine.js Frontend<br/>Port 5174] -->|REST API| B[Node.js Backend<br/>Port 3009]
     B --> C[PostgreSQL DB<br/>Port 5434]
     B --> D[MCP Protocol]
     B --> E[Health Monitoring]
@@ -124,10 +132,10 @@ graph TD
 
 | Frontend | Backend | Database |
 |----------|---------|----------|
-| React 19.1+ | Node.js 18+ | PostgreSQL 15+ |
-| TypeScript 5.8+ | Express 4.21 | Redis (optional) |
-| Vite 7.0+ | JWT Authentication | Docker containers |
-| Tailwind CSS 4.1+ | bcrypt encryption | Health monitoring |
+| Alpine.js 3.x | Node.js 18+ | PostgreSQL 15+ |
+| Tailwind CSS 3.4 | Express 4.21 | Redis (optional) |
+| Chart.js 4.4 | JWT Authentication | Docker containers |
+| SortableJS | bcrypt encryption | Health monitoring |
 
 ## 📖 API Reference
 
@@ -245,7 +253,7 @@ curl http://localhost:3009/health
 curl http://localhost:3009/api/health/db
 
 # Frontend availability
-curl http://localhost:8090
+curl http://localhost:5174
 
 # Container status
 docker-compose ps
@@ -285,10 +293,10 @@ JWT_SECRET=your-secure-jwt-secret-here
 POSTGRES_PASSWORD=your-secure-db-password
 
 # Optional
-CORS_ORIGIN=http://localhost:8090
+CORS_ORIGIN=http://localhost:5174
 NODE_ENV=production
 BACKEND_PORT=3009
-FRONTEND_PORT=8090
+FRONTEND_PORT=5174
 ```
 
 ### Docker Configuration
@@ -306,7 +314,7 @@ services:
   frontend:
     image: anubissbe/projecthub-frontend:latest
     ports:
-      - "8090:80"
+      - "5174:80"
       
   postgres:
     image: postgres:15-alpine

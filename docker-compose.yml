@@ -47,7 +47,7 @@ services:
       DB_NAME: ${DB_NAME:-projecthub}
       DB_USER: ${DB_USER:-projecthub}
       DB_PASSWORD: ${DB_PASSWORD:-your_secure_password}
-      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:8090}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:5174}
       JWT_SECRET: ${JWT_SECRET:?JWT_SECRET environment variable is required}
       BCRYPT_ROUNDS: ${BCRYPT_ROUNDS:-12}
     ports:
@@ -69,7 +69,7 @@ services:
     environment:
       VITE_API_BASE_URL: ${API_BASE_URL:-http://localhost:3009}
     ports:
-      - "${FRONTEND_PORT:-8090}:80"
+      - "${FRONTEND_PORT:-5174}:80"
     networks:
       - projecthub-network
     healthcheck:
