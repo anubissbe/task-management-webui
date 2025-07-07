@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [ main ]
 
+permissions:
+  contents: read
+
 jobs:
   basic-tests:
     name: 🔍 Basic Validation
@@ -63,15 +66,13 @@ jobs:
       - name: 🐳 Test Docker Build (Backend)
         run: |
           echo "🐳 Testing backend Docker build..."
-          cd backend-fix
-          docker build -t projecthub-backend-test:latest .
+          docker build -t projecthub-backend-test:latest ./backend-fix
           echo "✅ Backend Docker build successful!"
 
       - name: 🐳 Test Docker Build (Frontend)
         run: |
           echo "🐳 Testing frontend Docker build..."
-          cd frontend
-          docker build -t projecthub-frontend-test:latest .
+          docker build -t projecthub-frontend-test:latest ./frontend
           echo "✅ Frontend Docker build successful!"
 
       - name: 📋 Generate Test Summary
