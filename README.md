@@ -74,21 +74,21 @@ ProjectHub-MCP is a cutting-edge project management platform designed for modern
 
 ## 🖼️ Screenshots
 
+### Login Screen
+![Login](./docs/images/login-screen.png)
+*Clean login interface with demo credentials shown. Features dark theme with signature orange (#ff6500) branding.*
+
 ### Dashboard Overview
 ![Dashboard](./docs/images/working-homepage.png)
-*Modern dashboard with dark theme and orange accents. Features project cards with real-time status indicators and progress tracking.*
+*Modern dashboard with live project and task statistics. Shows current workspace with 2 projects, 32 tasks, and real-time completion tracking.*
 
 ### Kanban Board
 ![Kanban Board](./docs/images/kanban-board.png)
-*Interactive kanban board with drag-and-drop functionality. Project switching now works correctly with proper task filtering.*
+*Interactive kanban board with project selector and task management. Clean interface ready for drag-and-drop functionality.*
 
 ### Analytics Dashboard
 ![Analytics](./docs/images/working-analytics.png)
-*Comprehensive analytics with real-time data visualization. All metrics are calculated live from actual database data.*
-
-### Project Management
-![Projects](./docs/images/working-homepage.png)
-*Project management interface with full CRUD operations, including safe cascade deletion functionality.*
+*Comprehensive analytics with real charts and live data. Features project status distribution, task priority breakdown, and activity timeline.*
 
 ## 🚀 Quick Start
 
