@@ -1,8 +1,0 @@
-name: Hello
-on:
-  push:
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "Test"
