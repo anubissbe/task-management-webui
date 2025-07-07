@@ -1,4 +1,4 @@
-name: 🔒 Security Analysis
+name: Security Analysis
 
 on:
   push:

@@ -1,4 +1,4 @@
-name: 🔍 Debug Test
+name: Debug Test
 
 on:
   push:
