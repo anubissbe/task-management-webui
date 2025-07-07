@@ -1,0 +1,75 @@
+# ProjectHub MCP - Docker Hub Images Only
+# This file uses only pre-built images from Docker Hub
+# Perfect for users who just want to run ProjectHub without source code
+
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:13
+    container_name: projecthub_postgres
+    environment:
+      POSTGRES_DB: ${DB_NAME:-projecthub}
+      POSTGRES_USER: ${DB_USER:-projecthub}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-your_secure_password}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "${DB_EXTERNAL_PORT:-5434}:5432"
+    networks:
+      - projecthub_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-projecthub}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  backend:
+    image: anubissbe/projecthub-backend:latest
+    container_name: projecthub_backend
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
+      - PORT=${API_PORT:-3009}
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=${DB_NAME:-projecthub}
+      - DB_USER=${DB_USER:-projecthub}
+      - DB_PASSWORD=${DB_PASSWORD:-your_secure_password}
+      - CORS_ORIGIN=${CORS_ORIGIN:-http://localhost:8090}
+      - JWT_SECRET=${JWT_SECRET:?JWT_SECRET environment variable is required}
+      - BCRYPT_ROUNDS=${BCRYPT_ROUNDS:-12}
+    ports:
+      - "${API_PORT:-3009}:${API_PORT:-3009}"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - projecthub_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${API_PORT:-3009}/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frontend:
+    image: anubissbe/projecthub-frontend:latest
+    container_name: projecthub_frontend
+    environment:
+      - VITE_API_BASE_URL=${API_BASE_URL:-http://localhost:3009}
+    ports:
+      - "${FRONTEND_PORT:-8090}:80"
+    depends_on:
+      - backend
+    networks:
+      - projecthub_network
+    restart: unless-stopped
+
+networks:
+  projecthub_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local

@@ -8,7 +8,7 @@ const port = process.env.PORT || 3010;
 
 // Database connection
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL || 'postgresql://projecthub:projecthub123@192.168.1.24:5434/projecthub',
+  connectionString: process.env.DATABASE_URL || 'postgresql://projecthub:projecthub123@localhost:5434/projecthub',
   ssl: false
 });
 

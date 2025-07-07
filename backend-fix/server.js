@@ -12,8 +12,8 @@ const port = process.env.PORT || 3010;
 
 // Database connection
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL || 'postgresql://projecthub:projecthub123@postgres:5432/projecthub',
-  ssl: false  // Disable SSL for local PostgreSQL
+  connectionString: process.env.DATABASE_URL || `postgresql://${process.env.DB_USER || 'projecthub'}:${process.env.DB_PASSWORD || 'your_secure_password'}@${process.env.DB_HOST || 'postgres'}:${process.env.DB_PORT || '5432'}/${process.env.DB_NAME || 'projecthub'}`,
+  ssl: process.env.DB_SSL === 'true'
 });
 
 // Test database connection

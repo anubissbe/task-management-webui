@@ -329,7 +329,7 @@ POST   /api/webhooks/:id/test # Test webhook
 ### CORS Configuration
 ```javascript
 app.use(cors({
-    origin: ['http://localhost:5174', 'http://192.168.1.24:5174'],
+    origin: ['http://localhost:5174', 'http://localhost:5174'],
     credentials: true
 }));
 ```

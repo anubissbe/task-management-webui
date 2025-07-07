@@ -16,7 +16,8 @@
 </div>
 
 <div align="center">
-  <a href="#-quick-start">Quick Start</a> •
+  <a href="QUICKSTART.md">🚀 Quick Start</a> •
+  <a href="INSTALLATION.md">📦 Installation</a> •
   <a href="#-screenshots">Screenshots</a> •
   <a href="#-ai-integration">AI Setup</a> •
   <a href="#-features">Features</a> •
@@ -91,62 +92,25 @@ ProjectHub-MCP is a cutting-edge project management platform designed for modern
 
 ## 🚀 Quick Start
 
-### Prerequisites
-- Docker & Docker Compose installed
-- 4GB RAM minimum
-- Ports 3009, 5174, 5433 available
+**Ready to start in 5 minutes?** → **[Follow the Quick Start Guide](QUICKSTART.md)**
 
-### 🐳 Docker Deployment (Recommended)
+**Need detailed installation help?** → **[Read the Installation Guide](INSTALLATION.md)**
 
+### TL;DR - One Command Setup
 ```bash
-# 1. Clone the repository
-git clone https://github.com/anubissbe/ProjectHub-Mcp.git
-cd ProjectHub-Mcp
-
-# 2. Create secure environment file
-echo "JWT_SECRET=$(openssl rand -base64 32)" > .env
-echo "POSTGRES_PASSWORD=projecthub123" >> .env
-
-# 3. Start all services
-docker-compose up -d
-
-# 4. Wait for services to initialize
-sleep 15
-
-# 5. Verify deployment
-docker-compose ps
-curl http://localhost:3009/health
+git clone https://github.com/anubissbe/ProjectHub-Mcp.git && cd ProjectHub-Mcp && cp .env.example .env && echo "JWT_SECRET=$(openssl rand -base64 32)" >> .env && docker-compose up -d
 ```
 
-**Access Points:**
-- 🌐 **Frontend**: http://localhost:5174
-- 🔧 **Backend API**: http://localhost:3009
-- 📊 **Health Check**: http://localhost:3009/health
+**Then open**: http://localhost:8090 (admin@projecthub.local / admin123)
 
-**Default Login:**
-- **Email**: admin@projecthub.com
-- **Password**: admin123
-
-### ⚡ Production Quick Deploy
-
-For production deployment on your server:
-
-```bash
-# Quick production setup
-curl -fsSL https://raw.githubusercontent.com/anubissbe/ProjectHub-Mcp/main/scripts/deployment/install.sh | bash
-
-# Or manual steps:
-docker pull anubissbe/projecthub-backend:latest
-docker pull anubissbe/projecthub-frontend:latest
-docker-compose --env-file .env.production up -d
-```
+> 🚀 **Uses pre-built Docker Hub images** - No building required! Pulls `anubissbe/projecthub-backend:latest` and `anubissbe/projecthub-frontend:latest`
 
 ## 🏗️ Architecture
 
 ```mermaid
 graph TD
-    A[Alpine.js Frontend<br/>Port 5174] -->|REST API| B[Node.js Backend<br/>Port 3009]
-    B --> C[PostgreSQL DB<br/>Port 5433]
+    A[Alpine.js Frontend<br/>Port 8090] -->|REST API| B[Node.js Backend<br/>Port 3009]
+    B --> C[PostgreSQL DB<br/>Port 5434]
     B --> D[MCP Protocol]
     B --> E[Health Monitoring]
     B --> F[Webhook System]
@@ -206,7 +170,7 @@ const auth = await fetch('http://localhost:3009/api/auth/login', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
-    email: 'admin@projecthub.com',
+    email: 'admin@projecthub.local',
     password: 'admin123'
   })
 });
@@ -243,7 +207,7 @@ curl http://localhost:3009/health
 # 3. Use in Claude Code
 # Add to your project's CLAUDE.md:
 echo "ProjectHub API: http://localhost:3009/api" >> CLAUDE.md
-echo "Login: admin@projecthub.com / admin123" >> CLAUDE.md
+echo "Login: admin@projecthub.local / admin123" >> CLAUDE.md
 ```
 
 ### Supported AI Tools
@@ -281,7 +245,7 @@ curl http://localhost:3009/health
 curl http://localhost:3009/api/health/db
 
 # Frontend availability
-curl http://localhost:5174
+curl http://localhost:8090
 
 # Container status
 docker-compose ps
@@ -321,10 +285,10 @@ JWT_SECRET=your-secure-jwt-secret-here
 POSTGRES_PASSWORD=your-secure-db-password
 
 # Optional
-CORS_ORIGIN=http://localhost:5174
+CORS_ORIGIN=http://localhost:8090
 NODE_ENV=production
 BACKEND_PORT=3009
-FRONTEND_PORT=5174
+FRONTEND_PORT=8090
 ```
 
 ### Docker Configuration
@@ -342,7 +306,7 @@ services:
   frontend:
     image: anubissbe/projecthub-frontend:latest
     ports:
-      - "5174:80"
+      - "8090:80"
       
   postgres:
     image: postgres:15-alpine

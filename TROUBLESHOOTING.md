@@ -32,7 +32,7 @@ docker run -d --name projecthub-backend \
   -e JWT_SECRET="your-secure-jwt-secret-here" \
   -e CORS_ORIGIN="*" \
   --restart unless-stopped \
-  anubissbe/projecthub:latest
+  projecthub-backend:latest
 ```
 
 ### Problem: "Invalid credentials" error
@@ -100,7 +100,7 @@ docker run -d --name projecthub-backend \
   -e JWT_SECRET="your-secure-jwt-secret-here" \
   -e CORS_ORIGIN="*" \
   --restart unless-stopped \
-  anubissbe/projecthub:latest
+  projecthub-backend:latest
 ```
 
 ### Problem: "column does not exist" errors
@@ -143,7 +143,7 @@ docker run -d --name projecthub-backend \
   -e JWT_SECRET="your-secure-jwt-secret-here" \
   -e CORS_ORIGIN="*" \
   --restart unless-stopped \
-  anubissbe/projecthub:latest
+  projecthub-backend:latest
 
 # 3. If network doesn't exist, create it
 docker network create projecthub-network
@@ -230,7 +230,7 @@ docker rm projecthub-backend
 **Solution:**
 ```bash
 # Pull latest image
-docker pull anubissbe/projecthub:latest
+docker pull projecthub-backend:latest
 
 # Or rebuild locally
 cd ProjectHub-Mcp

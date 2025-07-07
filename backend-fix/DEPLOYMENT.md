@@ -59,10 +59,10 @@ pm2 restart projecthub-backend
 ### Step 4: Verify Deployment
 ```bash
 # Test health endpoint
-curl http://192.168.1.24:3009/health
+curl http://localhost:3009/health
 
 # Test that PUT now requires authentication (should return 401)
-curl -X PUT http://192.168.1.24:3009/api/tasks/test-id \
+curl -X PUT http://localhost:3009/api/tasks/test-id \
   -H "Content-Type: application/json" \
   -d '{"status":"completed"}'
 
@@ -72,13 +72,13 @@ curl -X PUT http://192.168.1.24:3009/api/tasks/test-id \
 ### Step 5: Test with Authentication
 ```bash
 # Login to get token
-TOKEN=$(curl -X POST http://192.168.1.24:3009/api/auth/login \
+TOKEN=$(curl -X POST http://localhost:3009/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"admin@projecthub.com","password":"admin123"}' \
   | jq -r '.token')
 
 # Test authenticated update (with valid task ID)
-curl -X PUT http://192.168.1.24:3009/api/tasks/VALID_TASK_ID \
+curl -X PUT http://localhost:3009/api/tasks/VALID_TASK_ID \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $TOKEN" \
   -d '{"status":"completed","progress":100}'

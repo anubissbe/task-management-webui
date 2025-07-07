@@ -131,20 +131,20 @@ app.put('/api/tasks/:id/anonymous', async (req, res) => {
 
 ```bash
 # Test health
-curl http://192.168.1.24:3009/health
+curl http://localhost:3009/health
 
 # Test unauthenticated PUT (should return 401)
-curl -X PUT http://192.168.1.24:3009/api/tasks/test-id \
+curl -X PUT http://localhost:3009/api/tasks/test-id \
   -H "Content-Type: application/json" \
   -d '{"status":"completed"}'
 
 # Get auth token and test authenticated PUT
-TOKEN=$(curl -X POST http://192.168.1.24:3009/api/auth/login \
+TOKEN=$(curl -X POST http://localhost:3009/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"admin@projecthub.com","password":"admin123"}' \
   | jq -r '.token')
 
-curl -X PUT http://192.168.1.24:3009/api/tasks/VALID_TASK_ID \
+curl -X PUT http://localhost:3009/api/tasks/VALID_TASK_ID \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"status":"completed","progress":100}'
