@@ -4,15 +4,15 @@
   <img src="https://img.shields.io/badge/version-5.0.0-ff6500?style=for-the-badge" alt="Version">
   <img src="https://img.shields.io/badge/status-production-4CAF50?style=for-the-badge" alt="Status">
   <img src="https://img.shields.io/badge/docker-ready-2496ED?style=for-the-badge&logo=docker" alt="Docker Ready">
-  <img src="https://img.shields.io/badge/enterprise-grade-9c27b0?style=for-the-badge" alt="Enterprise Grade">
+  <img src="https://img.shields.io/badge/MCP-enabled-9c27b0?style=for-the-badge" alt="MCP Protocol">
   <img src="https://img.shields.io/badge/license-MIT-yellow?style=for-the-badge" alt="License">
 </div>
 
 <br/>
 
 <div align="center">
-  <h2>Enterprise Project Management Platform</h2>
-  <p><strong>Transform your development workflow with real-time collaboration, AI integration, and powerful analytics</strong></p>
+  <h2>🚀 Enterprise Project Management Platform</h2>
+  <p><strong>Modern, AI-integrated project management with real-time collaboration and powerful analytics</strong></p>
 </div>
 
 <div align="center">
@@ -20,14 +20,6 @@
   <a href="#-screenshots">Screenshots</a> •
   <a href="#-ai-integration">AI Setup</a> •
   <a href="#-features">Features</a> •
-  <a href="#-api-reference">API</a> •
-  <a href="#-support">Support</a>
-</div>
-
-<div align="center">
-  <h3>🎯 Quick Links</h3>
-  <a href="./CLAUDE_QUICK_SETUP.md">🤖 Claude Code (2min setup)</a> •
-  <a href="./docs/AI_INTEGRATION_GUIDE.md">🚀 All AI Tools</a> •
   <a href="https://github.com/anubissbe/ProjectHub-Mcp/wiki">📚 Wiki</a>
 </div>
 
@@ -39,198 +31,125 @@ ProjectHub-MCP is a cutting-edge project management platform designed for modern
 
 ### 🏆 Why Choose ProjectHub-MCP?
 
-- **🚀 Modern Stack**: React 19, TypeScript, Node.js 18+, PostgreSQL 15+
-- **🎨 Professional UI**: Dark theme with custom orange branding
-- **📊 Real Analytics**: Live dashboards with actual data (no mock data)
+- **🚀 Modern Stack**: Alpine.js frontend, Node.js/Express backend, PostgreSQL database
+- **🎨 Professional UI**: Dark theme with custom orange branding (#ff6500)
+- **📊 Real Analytics**: Live dashboards with actual data calculations
 - **🤖 AI Ready**: Full Claude Code and MCP protocol integration
-- **🔒 Enterprise Security**: JWT auth, rate limiting, input sanitization
-- **🐳 Container First**: Complete Docker orchestration
-- **⚡ Real-time**: WebSocket support for instant updates
+- **🔒 Enterprise Security**: JWT auth, bcrypt encryption, rate limiting
+- **🐳 Container First**: Complete Docker orchestration with health checks
+- **⚡ Real-time**: Instant updates with live data synchronization
 
 ## ✨ Features
 
 ### 📋 Project Management
-- **Complete CRUD Operations**: Create, read, update, and delete projects
-- **Cascade Deletion**: Safely remove projects with all associated tasks
-- **Multi-workspace Support**: Organize projects by teams or departments
-- **Status Tracking**: Planning → Active → On Hold → Completed → Archived
+- **Complete CRUD Operations**: Create, read, update, and delete projects with cascade deletion
+- **Status Tracking**: Planning → Active → Paused → Completed → Cancelled
+- **Progress Visualization**: Real-time progress bars and completion tracking
+- **Project Analytics**: Individual project metrics and performance insights
 
 ### ✅ Task Management
-- **Kanban Board**: Intuitive drag-and-drop interface
-- **Priority Levels**: High, Medium, Low with visual indicators
-- **Time Tracking**: Estimated vs actual time comparison
-- **Dependencies**: Link related tasks and track blockers
-- **Bulk Operations**: Update multiple tasks simultaneously
+- **Interactive Kanban Board**: Drag-and-drop interface with project switching
+- **Priority Levels**: High, Medium, Low with visual color coding
+- **Status Management**: Todo → In Progress → Done with seamless transitions
+- **Time Tracking**: Estimated vs actual time comparison and logging
+- **Task Dependencies**: Link related tasks and track blockers
 
 ### 📊 Analytics Dashboard
-- **Project Metrics**: Completion rates, velocity, burndown charts
-- **Team Performance**: Individual and team productivity insights
-- **Time Analysis**: Track estimates vs actual delivery
-- **Custom Reports**: Export data in multiple formats
+- **Real-Time Metrics**: Live calculation of project and task statistics
+- **Visual Charts**: Project status distribution, task priority breakdown
+- **Performance Tracking**: Team productivity and velocity measurements
+- **Data Export**: Export analytics in multiple formats
 
 ### 👥 Team Collaboration
-- **Role-Based Access**: Admin, Developer, User with granular permissions
-- **Real-time Updates**: See changes as they happen
-- **Activity Feed**: Track all project and task modifications
-- **@mentions**: Tag team members in comments
+- **Role-Based Access**: Admin controls with secure authentication
+- **Activity Tracking**: Monitor all project and task modifications
+- **User Management**: Secure login/logout with session management
 
 ### 🔔 Integrations
-- **Webhook Support**: Connect to Slack, Discord, Teams
-- **API Access**: Full RESTful API with comprehensive documentation
-- **MCP Protocol**: Native support for AI coding assistants
-- **Email Notifications**: Configurable alerts and digests
+- **Webhook Support**: Connect to Slack, Discord, Teams with CORS handling
+- **API Access**: Full RESTful API with comprehensive endpoints
+- **MCP Protocol**: Native support for AI coding assistants like Claude Code
+- **Health Monitoring**: Complete system health checks and status reporting
 
 ## 🖼️ Screenshots
 
 ### Dashboard Overview
-![Dashboard](./screenshots/dashboard.png)
-*The main dashboard featuring a dark theme with signature orange (#ff6500) accents. Shows project cards with real-time status indicators and the "MCP ENHANCED" branding. Active projects are highlighted with orange borders.*
+![Dashboard](./docs/images/working-homepage.png)
+*Modern dashboard with dark theme and orange accents. Features project cards with real-time status indicators and progress tracking.*
 
 ### Kanban Board
-![Kanban Board](./screenshots/kanban-board.png)
-*Board selection view showing multiple project boards. Each board card displays project information with consistent dark theme styling and orange accent colors for interactive elements.*
+![Kanban Board](./docs/images/kanban-board.png)
+*Interactive kanban board with drag-and-drop functionality. Project switching now works correctly with proper task filtering.*
 
 ### Analytics Dashboard
-![Analytics](./screenshots/analytics-dashboard.png)
-*Comprehensive analytics with real-time data visualization. Features key metrics cards (169 total tasks, 15% completion rate), task completion trends, priority distribution pie chart, and team performance radar chart. All data is calculated in real-time with no mock data.*
+![Analytics](./docs/images/working-analytics.png)
+*Comprehensive analytics with real-time data visualization. All metrics are calculated live from actual database data.*
 
-### Project Management with Delete Feature
-![Projects](./screenshots/projects-list.png)
-*Project management table showing the new DELETE functionality (v5.0.0). Each project row includes View and Delete buttons in the Actions column. The red Delete buttons provide safe cascade deletion with confirmation dialogs.*
-
-### User Interface Features
-<div align="center">
-  <table>
-    <tr>
-      <td align="center">
-        <strong>🎨 Dark Theme</strong><br/>
-        <sub>Professional black (#0a0a0a) background with orange (#ff6500) accents</sub>
-      </td>
-      <td align="center">
-        <strong>📱 Responsive Design</strong><br/>
-        <sub>Optimized for desktop, tablet, and mobile devices</sub>
-      </td>
-    </tr>
-    <tr>
-      <td align="center">
-        <strong>⚡ Real-time Updates</strong><br/>
-        <sub>Live synchronization across all connected clients</sub>
-      </td>
-      <td align="center">
-        <strong>🔒 Secure Interface</strong><br/>
-        <sub>Role-based UI elements and protected actions</sub>
-      </td>
-    </tr>
-  </table>
-</div>
-
-### 🎨 Design Philosophy
-- **Dark Theme**: Reduces eye strain during long coding sessions
-- **Orange Accents**: Consistent branding throughout the interface
-- **Responsive Design**: Works seamlessly on desktop and mobile
-- **Accessibility**: WCAG 2.1 AA compliant
+### Project Management
+![Projects](./docs/images/projects-list.png)
+*Project management interface with full CRUD operations, including safe cascade deletion functionality.*
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Docker & Docker Compose
+- Docker & Docker Compose installed
 - 4GB RAM minimum
 - Ports 3009, 5174, 5433 available
-
-### ⚠️ Important Configuration Notes
-
-1. **JWT_SECRET**: You MUST set a secure JWT_SECRET in your environment or `.env` file:
-   ```bash
-   export JWT_SECRET="your-very-secure-random-string-here"
-   # Or add to .env file:
-   # JWT_SECRET=your-very-secure-random-string-here
-   ```
-
-2. **Database Password**: The default admin password is `admin123`. On first login, you may need to update it:
-   ```bash
-   # If authentication fails, update the admin password:
-   docker exec projecthub-postgres psql -U projecthub -d projecthub -c \
-     "UPDATE users SET password = '\$2a\$10\$ILQeDcYjXZBPJDIAiA.PnOgs1rqZaYecV5dVLmjKdoFViZGX1W1.W' WHERE email = 'admin@projecthub.com';"
-   ```
-
-3. **Network Configuration**: All containers must be on the same Docker network (`projecthub-network`)
 
 ### 🐳 Docker Deployment (Recommended)
 
 ```bash
-# Clone the repository
+# 1. Clone the repository
 git clone https://github.com/anubissbe/ProjectHub-Mcp.git
 cd ProjectHub-Mcp
 
-# Create .env file with secure JWT secret
+# 2. Create secure environment file
 echo "JWT_SECRET=$(openssl rand -base64 32)" > .env
 echo "POSTGRES_PASSWORD=projecthub123" >> .env
 
-# Start all services
+# 3. Start all services
 docker-compose up -d
 
-# Wait for services to be healthy (important!)
-sleep 10
+# 4. Wait for services to initialize
+sleep 15
 
-# Verify deployment
+# 5. Verify deployment
 docker-compose ps
-
-# Check backend logs for successful database connection
-docker logs projecthub-backend | grep "Connected to PostgreSQL"
-
-# Test authentication
-curl -X POST http://localhost:3009/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email":"admin@projecthub.com","password":"admin123"}'
+curl http://localhost:3009/health
 ```
 
-Access the application:
+**Access Points:**
 - 🌐 **Frontend**: http://localhost:5174
-- 🔧 **API**: http://localhost:3009
+- 🔧 **Backend API**: http://localhost:3009
 - 📊 **Health Check**: http://localhost:3009/health
 
-Default credentials:
+**Default Login:**
 - **Email**: admin@projecthub.com
 - **Password**: admin123
 
-### 🏢 Production Deployment
+### ⚡ Production Quick Deploy
+
+For production deployment on your server:
 
 ```bash
-# Create secure environment file
-cat > .env.production << EOF
-JWT_SECRET=$(openssl rand -base64 32)
-POSTGRES_PASSWORD=$(openssl rand -base64 16)
-CORS_ORIGIN=https://your-domain.com
-NODE_ENV=production
-EOF
+# Quick production setup
+curl -fsSL https://raw.githubusercontent.com/anubissbe/ProjectHub-Mcp/main/scripts/deployment/install.sh | bash
 
-# Pull latest images
-docker pull anubissbe/projecthub:latest
+# Or manual steps:
+docker pull anubissbe/projecthub-backend:latest
 docker pull anubissbe/projecthub-frontend:latest
-
-# Deploy with production config
 docker-compose --env-file .env.production up -d
-
-# Wait for database to initialize
-sleep 15
-
-# Set admin password (if using custom password)
-docker exec projecthub-postgres psql -U projecthub -d projecthub -c \
-  "UPDATE users SET password = '\$2a\$10\$ILQeDcYjXZBPJDIAiA.PnOgs1rqZaYecV5dVLmjKdoFViZGX1W1.W' WHERE email = 'admin@projecthub.com';"
-
-# Verify deployment
-curl http://localhost:3009/health
 ```
 
 ## 🏗️ Architecture
 
 ```mermaid
 graph TD
-    A[React Frontend<br/>Port 5174] -->|REST API| B[Node.js Backend<br/>Port 3009]
+    A[Alpine.js Frontend<br/>Port 5174] -->|REST API| B[Node.js Backend<br/>Port 3009]
     B --> C[PostgreSQL DB<br/>Port 5433]
-    B --> D[Redis Cache<br/>Port 6379]
-    B --> E[WebSocket Server]
-    B --> F[MCP Server<br/>Port 3001]
+    B --> D[MCP Protocol]
+    B --> E[Health Monitoring]
+    B --> F[Webhook System]
     
     style A fill:#ff6500,stroke:#fff,color:#fff
     style B fill:#68a063,stroke:#fff,color:#fff
@@ -239,142 +158,78 @@ graph TD
 
 ### Technology Stack
 
-<table>
-<tr>
-<td width="50%">
+| Frontend | Backend | Database |
+|----------|---------|----------|
+| Alpine.js 3.x | Node.js 18+ | PostgreSQL 15+ |
+| Tailwind CSS 3.4 | Express 4.21 | Redis (optional) |
+| Chart.js 4.4 | JWT Authentication | Docker containers |
+| SortableJS | bcrypt encryption | Health monitoring |
 
-**Frontend**
-- ⚛️ React 19.0.0
-- 📘 TypeScript 5.6
-- 🎨 Tailwind CSS 3.4
-- 📊 Chart.js 4.4
-- 🔄 SortableJS
-- 🎯 Alpine.js
+## 📖 API Reference
 
-</td>
-<td width="50%">
+### Core Endpoints
 
-**Backend**
-- 🟢 Node.js 18+
-- 🚂 Express 4.21
-- 🐘 PostgreSQL 15+
-- 🔐 JWT Auth
-- 🔌 Socket.io
-- 📡 REST API
-
-</td>
-</tr>
-</table>
-
-## 📖 Documentation
-
-### 🔧 Configuration
-
-Create `.env` file in root directory:
-
-```env
-# Database
-DATABASE_URL=postgresql://projecthub:projecthub123@localhost:5432/projecthub_mcp
-
+```http
 # Authentication
-JWT_SECRET=your-super-secret-key-change-this
-SESSION_SECRET=another-secret-key
+POST   /api/auth/login          # User login
+POST   /api/auth/logout         # User logout
+GET    /api/auth/profile        # Get current user
 
-# API Configuration
-API_PORT=3009
-FRONTEND_PORT=5174
+# Projects
+GET    /api/projects            # List all projects
+POST   /api/projects            # Create new project
+GET    /api/projects/:id        # Get project details
+PUT    /api/projects/:id        # Update project
+DELETE /api/projects/:id        # Delete project (cascade)
 
-# CORS
-CORS_ORIGIN=http://localhost:5174
+# Tasks
+GET    /api/tasks               # List all tasks
+GET    /api/tasks?projectId=:id # Get tasks for project
+POST   /api/tasks               # Create new task
+PUT    /api/tasks/:id           # Update task
+DELETE /api/tasks/:id           # Delete task
 
-# Optional: Email
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=your-email@gmail.com
-SMTP_PASS=your-app-password
+# Analytics
+GET    /api/analytics           # Global analytics
+GET    /api/analytics?projectId=:id # Project analytics
 
-# Optional: Redis
-REDIS_URL=redis://localhost:6379
-
-# Optional: MCP
-MCP_SERVER_URL=http://localhost:3001
+# Health & Monitoring
+GET    /health                  # System health check
+GET    /metrics                 # Prometheus metrics
 ```
 
-### 🔐 Security Features
-
-- **Authentication**: JWT tokens with 24-hour expiry and refresh
-- **Authorization**: Role-based access control (RBAC)
-- **Rate Limiting**: API throttling to prevent abuse
-- **Input Validation**: Comprehensive sanitization
-- **SQL Injection**: Parameterized queries
-- **XSS Protection**: Content Security Policy
-- **HTTPS**: SSL/TLS encryption ready
-
-## 📡 API Reference
-
-### Authentication Endpoints
-
-```http
-POST   /api/auth/login       # User login
-POST   /api/auth/register    # New user registration
-POST   /api/auth/refresh     # Refresh JWT token
-GET    /api/auth/profile     # Get current user
-POST   /api/auth/logout      # Logout user
-```
-
-### Project Endpoints
-
-```http
-GET    /api/projects         # List all projects
-POST   /api/projects         # Create new project
-GET    /api/projects/:id     # Get project details
-PUT    /api/projects/:id     # Update project
-DELETE /api/projects/:id     # Delete project (cascade)
-GET    /api/projects/:id/stats # Project statistics
-```
-
-### Task Endpoints
-
-```http
-GET    /api/tasks            # List all tasks
-POST   /api/tasks            # Create new task
-GET    /api/tasks/:id        # Get task details
-PUT    /api/tasks/:id        # Update task
-DELETE /api/tasks/:id        # Delete task
-POST   /api/tasks/:id/move   # Move task between columns
-```
-
-### Analytics Endpoints
-
-```http
-GET    /api/analytics        # Global analytics
-GET    /api/analytics/projects/:id # Project analytics
-GET    /api/analytics/teams  # Team performance
-GET    /api/analytics/export # Export data
-```
-
-### Example API Usage
+### Example Usage
 
 ```javascript
-// Create a new project
-const response = await fetch('http://localhost:3009/api/projects', {
+// Authenticate and create a project
+const auth = await fetch('http://localhost:3009/api/auth/login', {
   method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer YOUR_JWT_TOKEN'
-  },
+  headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
-    name: 'New Feature Development',
-    description: 'Implement user authentication',
-    workspace_id: '1',
-    status: 'active'
+    email: 'admin@projecthub.com',
+    password: 'admin123'
   })
 });
 
-const project = await response.json();
+const { token } = await auth.json();
+
+const project = await fetch('http://localhost:3009/api/projects', {
+  method: 'POST',
+  headers: {
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    name: 'New Project',
+    description: 'Project description',
+    status: 'active'
+  })
+});
 ```
 
 ## 🤖 AI Integration
+
+ProjectHub-MCP provides native support for AI coding assistants through the MCP (Model Context Protocol).
 
 ### 🎯 Quick Setup with Claude Code
 
@@ -382,153 +237,171 @@ const project = await response.json();
 # 1. Start ProjectHub
 docker-compose up -d
 
-# 2. Add CLAUDE.md to your project
-echo '# CLAUDE.md\nAPI: http://localhost:3009/api\nLogin: admin@projecthub.com / admin123' > CLAUDE.md
+# 2. Test API connectivity
+curl http://localhost:3009/health
 
-# 3. Ask Claude to create a project!
-```
-
-🚀 **[2-Minute Claude Setup Guide](./CLAUDE_QUICK_SETUP.md)** - Get started instantly!
-
-### Example AI Session
-```
-You: "Create a project for implementing user auth"
-Claude: "✅ Created project 'User Authentication' with 5 tasks"
-
-You: "I'm starting work on the JWT token task"
-Claude: "✅ Updated task to 'in_progress'"
-
-You: "Task is done, took 3 hours"
-Claude: "✅ Marked complete, logged 3 hours"
+# 3. Use in Claude Code
+# Add to your project's CLAUDE.md:
+echo "ProjectHub API: http://localhost:3009/api" >> CLAUDE.md
+echo "Login: admin@projecthub.com / admin123" >> CLAUDE.md
 ```
 
 ### Supported AI Tools
-- ✅ Claude Code (Anthropic)
-- ✅ GitHub Copilot
-- ✅ Cursor
-- ✅ Cline (VSCode)
-- ✅ Roo-Code
-- ✅ Continue.dev
-- ✅ Windsurf
-- ✅ Custom MCP clients
 
-📖 **[Complete AI Integration Guide](./docs/AI_INTEGRATION_GUIDE.md)** - Detailed setup for all AI assistants
-🎯 **[Claude Code Quick Start](./CLAUDE_QUICK_SETUP.md)** - 2-minute setup guide
+- ✅ **Claude Code** (Anthropic) - Native MCP support
+- ✅ **GitHub Copilot** - API integration
+- ✅ **Cursor** - REST API calls
+- ✅ **Continue.dev** - Custom MCP client
+- ✅ **Windsurf** - API integration
+
+### Example AI Workflow
+
+```
+👤 You: "Create a project for implementing user authentication"
+🤖 Claude: "✅ Created project 'User Authentication System' with 5 tasks"
+
+👤 You: "Start working on the JWT implementation task"  
+🤖 Claude: "✅ Updated task status to 'in_progress'"
+
+👤 You: "Task completed, took 4 hours"
+🤖 Claude: "✅ Marked complete, logged 4 actual hours vs 3 estimated"
+```
+
+📖 **[Complete AI Integration Guide](./docs/AI_INTEGRATION_GUIDE.md)**
 
 ## 🚦 Monitoring & Health
 
 ### Health Check Endpoints
 
 ```bash
-# Frontend health
-curl http://localhost:5174/health
-
-# Backend health
+# System health (comprehensive)
 curl http://localhost:3009/health
 
-# Database health
-curl http://localhost:3009/health/db
+# Database connectivity  
+curl http://localhost:3009/api/health/db
 
-# Full system status
-curl http://localhost:3009/health/full
+# Frontend availability
+curl http://localhost:5174
+
+# Container status
+docker-compose ps
 ```
 
 ### Performance Metrics
-- **Page Load**: < 1.5 seconds
-- **API Response**: < 100ms average
-- **WebSocket Latency**: < 50ms
-- **Database Queries**: < 10ms
-- **Concurrent Users**: 1000+
 
-## 🧪 Testing
+- **API Response Time**: < 100ms average
+- **Database Queries**: < 50ms
+- **Page Load**: < 2 seconds
+- **Real-time Updates**: < 100ms latency
+
+## 🧪 Testing & Quality
 
 ```bash
-# Run all tests
+# Backend testing
+cd backend-fix
 npm test
 
-# Unit tests
-npm run test:unit
+# Health check testing
+npm run test:health
 
-# Integration tests
-npm run test:integration
+# API endpoint testing
+npm run test:api
 
-# E2E tests
-npm run test:e2e
-
-# Coverage report
-npm run test:coverage
+# Database testing
+npm run test:db
 ```
 
-## 📈 Changelog
+## 🔧 Configuration
 
-### v5.0.0 (2025-01-04)
-- ✨ Complete project deletion with cascade
-- 🔒 Enhanced security features (rate limiting, sanitization)
-- 📊 Real-time analytics with actual data
-- 🐛 Fixed browser caching issues
-- 🎨 UI/UX improvements
-- 📱 Improved mobile responsiveness
-- 🔄 Fixed status mapping between frontend and backend
-- 🚀 Performance optimizations
+### Environment Variables
 
-### v4.8.0 (2024-12-30)
+```env
+# Required
+JWT_SECRET=your-secure-jwt-secret-here
+POSTGRES_PASSWORD=your-secure-db-password
+
+# Optional
+CORS_ORIGIN=http://localhost:5174
+NODE_ENV=production
+BACKEND_PORT=3009
+FRONTEND_PORT=5174
+```
+
+### Docker Configuration
+
+```yaml
+# docker-compose.yml
+services:
+  backend:
+    image: anubissbe/projecthub-backend:latest
+    ports:
+      - "3009:3010"
+    environment:
+      JWT_SECRET: ${JWT_SECRET}
+      
+  frontend:
+    image: anubissbe/projecthub-frontend:latest
+    ports:
+      - "5174:80"
+      
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+```
+
+## 📈 Recent Updates
+
+### v5.0.0 (Latest)
+- ✅ **Fixed Kanban Board**: Project switching now works correctly
+- ✅ **Enhanced Security**: Improved JWT handling and bcrypt encryption
+- ✅ **Real Analytics**: All dashboard metrics calculated from live data
+- ✅ **Cascade Deletion**: Safe project deletion with task cleanup
+- ✅ **Docker Optimization**: Improved container health checks
+- ✅ **API Stability**: Fixed task update endpoints and field validation
+
+### v4.8.0
 - 🔔 Webhook integration with CORS proxy
-- 👤 User management system
-- 🎯 Task dependencies
-- 📧 Email notifications
+- 👤 Enhanced user management system
+- 📧 Email notification system
+- 🎯 Task dependency tracking
 
 [View Full Changelog](./CHANGELOG.md)
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see our [Contributing Guide](./CONTRIBUTING.md).
+We welcome contributions! Please follow these steps:
 
 ```bash
-# Setup development environment
-git clone https://github.com/anubissbe/ProjectHub-Mcp.git
+# 1. Fork and clone
+git clone https://github.com/YOUR_USERNAME/ProjectHub-Mcp.git
 cd ProjectHub-Mcp
-npm install
-npm run dev
 
-# Create feature branch
-git checkout -b feature/your-feature
+# 2. Create feature branch
+git checkout -b feature/your-feature-name
 
-# Make changes and test
+# 3. Make changes and test
+docker-compose up -d
 npm test
 
-# Submit pull request
+# 4. Submit pull request
 ```
 
 ### Development Guidelines
-- Follow TypeScript best practices
-- Write tests for new features
+- Follow existing code style and patterns
+- Add tests for new features
 - Update documentation
-- Follow conventional commits
+- Test with Docker containers
+- Ensure health checks pass
 
-## 📞 Support
+## 📞 Support & Documentation
 
-<table>
-<tr>
-<td align="center">
-  <a href="https://github.com/anubissbe/ProjectHub-Mcp/issues">
-    <strong>🐛 Bug Reports</strong><br/>
-    GitHub Issues
-  </a>
-</td>
-<td align="center">
-  <a href="https://github.com/anubissbe/ProjectHub-Mcp/discussions">
-    <strong>💬 Discussions</strong><br/>
-    Community Forum
-  </a>
-</td>
-<td align="center">
-  <a href="https://github.com/anubissbe/ProjectHub-Mcp/wiki">
-    <strong>📖 Documentation</strong><br/>
-    Wiki & Guides
-  </a>
-</td>
-</tr>
-</table>
+| Resource | Link | Description |
+|----------|------|-------------|
+| 🐛 **Bug Reports** | [GitHub Issues](https://github.com/anubissbe/ProjectHub-Mcp/issues) | Report bugs and issues |
+| 💬 **Discussions** | [GitHub Discussions](https://github.com/anubissbe/ProjectHub-Mcp/discussions) | Community support |
+| 📖 **Wiki** | [GitHub Wiki](https://github.com/anubissbe/ProjectHub-Mcp/wiki) | Complete documentation |
+| 🚀 **Releases** | [GitHub Releases](https://github.com/anubissbe/ProjectHub-Mcp/releases) | Latest versions |
 
 ## 📄 License
 
@@ -537,12 +410,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 <div align="center">
+  <p><strong>Built with ❤️ for modern development teams</strong></p>
   <p>
-    <strong>Built with ❤️ by the ProjectHub-MCP Team</strong>
-  </p>
-  <p>
-    <a href="https://github.com/anubissbe/ProjectHub-Mcp">GitHub</a> •
-    <a href="https://hub.docker.com/u/anubissbe">Docker Hub</a> •
-    <a href="https://github.com/anubissbe/ProjectHub-Mcp/releases">Releases</a>
+    <a href="https://github.com/anubissbe/ProjectHub-Mcp">⭐ Star on GitHub</a> •
+    <a href="https://hub.docker.com/u/anubissbe">🐳 Docker Hub</a> •
+    <a href="https://github.com/anubissbe/ProjectHub-Mcp/wiki">📚 Documentation</a>
   </p>
 </div>

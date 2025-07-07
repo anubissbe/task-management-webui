@@ -1,86 +1,79 @@
-<div align="center">
+# ProjectHub-MCP Wiki
 
-# 🚀 ProjectHub — MCP Wiki
+Welcome to the comprehensive documentation for **ProjectHub-MCP v5.0.0** - a modern, AI-integrated project management platform designed for development teams.
 
-<p style="font-size: 1.2em; color: #ff6500; font-weight: bold;">
-MCP-Enhanced Project Management Workspace
-</p>
+## 🚀 Quick Navigation
 
-Welcome to the comprehensive documentation for **ProjectHub-Mcp**!
+### Getting Started
+- **[Installation Guide](Installation-Guide)** - Complete setup instructions
+- **[Quick Start](Installation-Guide#quick-start)** - Get running in 5 minutes
+- **[Configuration](Installation-Guide#configuration)** - Environment setup
 
-## 🌟 Overview
+### Core Features
+- **[Project Management](Project-Management)** - Creating and managing projects
+- **[Task Management](Task-Management)** - Kanban boards and task tracking
+- **[Analytics Dashboard](Analytics-Dashboard)** - Real-time metrics and insights
+- **[User Interface](User-Interface-Overview)** - UI components and navigation
 
-**ProjectHub-Mcp** is a modern, enterprise-grade project management hub with **MCP (Model Context Protocol)** integration, featuring advanced task tracking, workflow templates, team collaboration, and comprehensive analytics. Built with React 19, TypeScript, and Node.js, it provides a powerful solution for managing projects with a distinctive **black and orange** branded interface.
+### AI Integration
+- **[AI Development Tools](AI-Development-Tools)** - Supported AI assistants
+- **[AI Integration Setup](AI-Integration-Setup)** - Configure AI tools
+- **[Claude Code Guide](AI-Integration-Setup#claude-code-setup)** - 2-minute setup
 
-## 📚 Documentation Sections
+### Technical Documentation
+- **[API Documentation](API-Documentation)** - REST API reference
+- **[Architecture Overview](Architecture-Overview)** - System design
+- **[Development Setup](Development-Setup)** - Local development
 
-### 🎯 Getting Started
-- [🚀 Quick Start](Installation-Guide) - Get running in under 2 minutes with `./start.sh`
-- [📦 Installation Guide](Installation-Guide) - Detailed installation instructions
-- [⚙️ Development Setup](Development-Setup) - Set up your development environment
-- [🐳 Docker Deployment](Production-Deployment) - Deploy with containers
-- [🔧 Troubleshooting](Troubleshooting) - Common issues and solutions
+### Support
+- **[Troubleshooting](Troubleshooting)** - Common issues and solutions
+- **[FAQ](FAQ)** - Frequently asked questions
 
-### 📚 User Guides
-- [🎨 User Interface Overview](User-Interface-Overview) - Navigate the black/orange UI
-- [✅ Task Management](Task-Management) - Master task workflows
-- [📁 Project Management](Project-Management) - Organize your projects
-- [📊 Analytics Dashboard](Analytics-Dashboard) - Track progress and metrics
-- [🌓 Theme & Branding](FAQ) - Customization options
+## 🎯 What's New in v5.0.0
 
-### 💻 Development
-- [🏗️ Architecture Overview](Architecture-Overview) - System design and patterns
-- [🤖 AI Development Tools](AI-Development-Tools) - MCP integration guide
-- [📡 API Documentation](API-Documentation) - RESTful endpoints
-- [🧪 Testing Guide](Development-Setup#testing) - Unit and E2E tests
-- [🤝 Contributing](https://github.com/anubissbe/ProjectHub-Mcp/blob/main/CONTRIBUTING.md) - Join the project
+### ✅ Major Fixes
+- **Kanban Board**: Fixed project switching - tasks now update correctly when switching between projects
+- **Cascade Deletion**: Safe project deletion that removes all associated tasks
+- **Real Analytics**: All dashboard metrics now calculate from live database data
+- **Enhanced Security**: Improved JWT handling and bcrypt encryption
 
-### 🚀 Deployment
-- [🐳 Production Deployment](Production-Deployment) - Container orchestration
-- [🔐 Environment Configuration](Installation-Guide#configuration) - Secrets and settings
-- [💾 PostgreSQL Setup](Architecture-Overview#database) - Database configuration
-- [🛡️ Security Best Practices](FAQ#security) - Secure your deployment
+### 🚀 Key Features
+- **Modern Architecture**: Alpine.js frontend with Node.js/Express backend
+- **Docker Ready**: Complete containerization with health monitoring
+- **AI Integration**: Native MCP protocol support for Claude Code and other AI assistants
+- **Real-time Updates**: Live synchronization across all connected clients
+- **Professional UI**: Dark theme with signature orange (#ff6500) branding
 
-### 🔮 Advanced Topics
-- [⚡ Real-time Updates](Architecture-Overview#websockets) - WebSocket integration
-- [🔌 MCP Server Integration](AI-Development-Tools) - Extend with MCP
-- [📈 Performance Tuning](Troubleshooting#performance) - Optimize for scale
-- [💾 Backup Strategies](FAQ#backup) - Data protection
+## 🏗️ System Overview
 
-## 🚀 Quick Links
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Frontend      │    │   Backend       │    │   Database      │
+│   Alpine.js     │◄──►│   Node.js       │◄──►│   PostgreSQL    │
+│   Port 5174     │    │   Port 3009     │    │   Port 5433     │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+         │                       │                       │
+         ▼                       ▼                       ▼
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Docker        │    │   Health        │    │   MCP           │
+│   Containers    │    │   Monitoring    │    │   Protocol      │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+```
 
-- **🐳 Deployment**: Docker containers (Frontend + Backend + PostgreSQL)
-- **📦 Container Images**: [ghcr.io/anubissbe/projecthub-mcp](https://github.com/anubissbe/ProjectHub-Mcp/pkgs)
-- **💻 GitHub Repository**: [ProjectHub-Mcp](https://github.com/anubissbe/ProjectHub-Mcp)
-- **🐛 Report Issues**: [GitHub Issues](https://github.com/anubissbe/ProjectHub-Mcp/issues)
-- **☕ Support Development**: [Buy Me A Coffee](https://www.buymeacoffee.com/anubissbe)
+## 🔗 Quick Links
 
-## 💡 Need Help?
+- **[🚀 Installation Guide](Installation-Guide)** - Start here for new installations
+- **[🤖 AI Integration](AI-Integration-Setup)** - Connect your AI assistant
+- **[📊 Features Overview](Features)** - Complete feature list
+- **[🔧 API Reference](API-Documentation)** - Developer documentation
+- **[❓ Troubleshooting](Troubleshooting)** - Solve common issues
 
-- Check the [FAQ](FAQ) for common questions
-- Browse the [Troubleshooting](Troubleshooting) guide
-- Create an [Issue](https://github.com/anubissbe/ProjectHub-Mcp/issues) for bug reports
-- Join our community discussions
+## 📞 Getting Help
 
-## 🔗 External Resources
-
-- [React Documentation](https://reactjs.org/docs)
-- [TypeScript Handbook](https://www.typescriptlang.org/docs)
-- [Docker Documentation](https://docs.docker.com)
-- [PostgreSQL Documentation](https://postgresql.org/docs)
+- **GitHub Issues**: [Report bugs](https://github.com/anubissbe/ProjectHub-Mcp/issues)
+- **Discussions**: [Community support](https://github.com/anubissbe/ProjectHub-Mcp/discussions)
+- **Wiki**: Complete documentation (you are here!)
 
 ---
 
-</div>
-
----
-
-<div align="center">
-
-**Last Updated**: January 2025 | **Version**: 5.0.0 | **Status**: Production Ready
-
-<p style="color: #ff6500; font-weight: bold;">
-🧡 Built with the signature black (#0a0a0a) and orange (#ff6500) theme 🧡
-</p>
-
-</div>
+**ProjectHub-MCP** is designed to streamline your development workflow with powerful project management tools and seamless AI integration. Get started with our [Installation Guide](Installation-Guide) or explore the [Features](Features) to learn more.
