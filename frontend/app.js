@@ -464,28 +464,40 @@ function projectHub() {
         // Load kanban data
         async loadKanbanData() {
             this.loading = true;
-            const tasks = await api.get('/tasks');
-            if (tasks) {
-                // Distribute tasks into columns
-                this.kanbanColumns.forEach(col => col.tasks = []);
-                
-                tasks.forEach(task => {
-                    // Map backend status to frontend column IDs
-                    let columnId = task.status || 'todo';
-                    if (columnId === 'pending') columnId = 'todo';
-                    if (columnId === 'in_progress') columnId = 'in-progress';
-                    if (columnId === 'completed') columnId = 'done';
-                    
-                    const column = this.kanbanColumns.find(col => col.id === columnId);
-                    if (column) {
-                        column.tasks.push({
-                            ...task,
-                            priority: task.priority || 'medium',
-                            assignee: ['JD', 'SM', 'BJ', 'AK'][Math.floor(Math.random() * 4)]
-                        });
-                    }
-                });
+            
+            // Clear existing columns
+            this.kanbanColumns.forEach(col => col.tasks = []);
+            
+            // If we're in board view with a selected project, only load those tasks
+            let tasksToLoad = [];
+            if (this.currentView === 'board' && this.selectedBoardProject) {
+                tasksToLoad = this.tasks.filter(t => t.project_id === this.selectedBoardProject);
+            } else {
+                // Otherwise load all tasks
+                const tasks = await api.get('/tasks');
+                if (tasks) {
+                    tasksToLoad = tasks;
+                }
             }
+            
+            // Distribute tasks into columns
+            tasksToLoad.forEach(task => {
+                // Map backend status to frontend column IDs
+                let columnId = task.status || 'todo';
+                if (columnId === 'pending') columnId = 'todo';
+                if (columnId === 'in_progress') columnId = 'in-progress';
+                if (columnId === 'completed') columnId = 'done';
+                
+                const column = this.kanbanColumns.find(col => col.id === columnId);
+                if (column) {
+                    column.tasks.push({
+                        ...task,
+                        priority: task.priority || 'medium',
+                        assignee: task.assignee || ['JD', 'SM', 'BJ', 'AK'][Math.floor(Math.random() * 4)]
+                    });
+                }
+            });
+            
             this.loading = false;
             
             // Initialize drag and drop after DOM update
