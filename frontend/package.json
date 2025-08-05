@@ -34,7 +34,7 @@
     "zustand": "^5.0.6"
   },
   "devDependencies": {
-    "@eslint/js": "^9.30.0",
+    "@eslint/js": "^9.31.0",
     "@tailwindcss/forms": "^0.5.10",
     "@tanstack/react-query-devtools": "^5.81.5",
     "@testing-library/jest-dom": "^6.6.3",
